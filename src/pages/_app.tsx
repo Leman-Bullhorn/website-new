@@ -6,11 +6,18 @@ import { Nunito } from "@next/font/google";
 
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
+import Head from "next/head";
 
 const headlineFont = localFont({
   src: "./amador.woff2",
   weight: "400",
   variable: "--font-headline",
+});
+
+const sectionFont = localFont({
+  src: "./helvetica-neue.woff2",
+  weight: "400",
+  variable: "--font-section",
 });
 
 const brandFont = Nunito({
@@ -23,11 +30,39 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <main className={`${headlineFont.variable} ${brandFont.variable}`}>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
-    </main>
+    <>
+      <Head>
+        <link
+          rel="apple-touch-icon"
+          sizes="144x144"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="description" content="The Leman Bullhorn newspaper" />
+      </Head>
+      <main
+        className={`${headlineFont.variable} ${sectionFont.variable} ${brandFont.variable}`}
+      >
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+      </main>
+    </>
   );
 };
 

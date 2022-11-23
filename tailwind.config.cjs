@@ -8,6 +8,7 @@ module.exports = {
       },
       fontFamily: {
         headline: ["var(--font-headline)"],
+        section: ["var(--font-section)"],
         brand: ["var(--font-brand)"],
       },
     },

@@ -3,41 +3,20 @@ import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
-import { MastHead } from "../components/homePage/mastHead";
+import Masthead from "../components/homePage/masthead";
+import NavigationBar from "../components/navigationBar";
+import { useState } from "react";
 
-const Home: NextPage = () => {
-  // const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
+export const Home: NextPage = () => {
+  const [showMasthead, setShowMasthead] = useState(true);
 
   return (
     <>
       <Head>
-        <link
-          rel="apple-touch-icon"
-          sizes="144x144"
-          href="/apple-touch-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/favicon-32x32.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/favicon-16x16.png"
-        />
-        <link rel="manifest" href="/site.webmanifest" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
-        <meta name="msapplication-TileColor" content="#da532c" />
-        <meta name="theme-color" content="#ffffff" />
-
         <title>The Bullhorn</title>
-        <meta name="description" content="The Leman Bullhorn newspaper" />
       </Head>
-      <MastHead />
-      <main className="min-h-screen"></main>
+      <Masthead onChangeVisibility={setShowMasthead} />
+      <NavigationBar visible={!showMasthead} />
     </>
   );
 };
