@@ -2,16 +2,21 @@ import type { AppType } from "next/app";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import localFont from "@next/font/local";
-import { Nunito } from "@next/font/google";
+import { Nunito, Bodoni_Moda, Libre_Franklin } from "@next/font/google";
+import Head from "next/head";
 
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
-import Head from "next/head";
 
-const headlineFont = localFont({
+const primaryFont = Libre_Franklin({
+  subsets: ["latin"],
+  variable: "--font-primary",
+});
+
+const brandFont = localFont({
   src: "./amador.woff2",
   weight: "400",
-  variable: "--font-headline",
+  variable: "--font-brand",
 });
 
 const sectionFont = localFont({
@@ -20,9 +25,15 @@ const sectionFont = localFont({
   variable: "--font-section",
 });
 
-const brandFont = Nunito({
+const headlineFont = Bodoni_Moda({
   subsets: ["latin"],
-  variable: "--font-brand",
+  weight: "400",
+  variable: "--font-headline",
+});
+
+const schoolFont = Nunito({
+  subsets: ["latin"],
+  variable: "--font-school",
 });
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -56,7 +67,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <meta name="description" content="The Leman Bullhorn newspaper" />
       </Head>
       <main
-        className={`${headlineFont.variable} ${sectionFont.variable} ${brandFont.variable}`}
+        className={`${primaryFont.variable} ${primaryFont.className} ${brandFont.variable} ${sectionFont.variable} ${schoolFont.variable} ${headlineFont.variable}`}
       >
         <SessionProvider session={session}>
           <Component {...pageProps} />

@@ -26,7 +26,7 @@ const Masthead: React.FC<{
           <Link
             href="/"
             style={{ WebkitTextStroke: "2px #4DA9DF" }}
-            className="font-headline text-8xl"
+            className="font-brand text-8xl"
           >
             The Bullhorn
           </Link>
@@ -37,7 +37,7 @@ const Masthead: React.FC<{
         href="https://www.lemanmanhattan.org/"
         target="_blank"
         rel="noreferrer"
-        className="link-hover link font-brand text-slate-500"
+        className="link-hover link font-school text-slate-500"
       >
         Léman Manhattan Preparatory School
       </a>
