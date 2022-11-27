@@ -1,23 +1,38 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
-// Prisma adapter for NextAuth, optional and can be removed
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import CredentialsProvider from "next-auth/providers/credentials";
 
-// import { env } from "../../../env/server.mjs";
-import { prisma } from "../../../server/db/client";
+import { env } from "../../../env/server.mjs";
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
   callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
       }
-      return session;
+
+      return token;
     },
   },
-  // Configure one or more authentication providers
-  adapter: PrismaAdapter(prisma),
-  providers: [],
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        username: { label: "Username", type: "text" },
+        password: { labe: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (
+          credentials?.username === env.ADMIN_USERNAME &&
+          credentials.password === env.ADMIN_PASSWORD
+        ) {
+          return { id: "admin", name: "admin" };
+        }
+        return null;
+      },
+    }),
+  ],
 };
 
 export default NextAuth(authOptions);
