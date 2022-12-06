@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import localFont from "@next/font/local";
 import { Nunito, Bodoni_Moda, Libre_Franklin } from "@next/font/google";
 import Head from "next/head";
+import { Analytics } from "@vercel/analytics/react";
 
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
@@ -42,6 +43,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <>
+      <Analytics />
       <Head>
         <link
           rel="apple-touch-icon"
