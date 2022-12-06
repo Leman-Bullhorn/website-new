@@ -7,9 +7,11 @@ module.exports = {
         "leman-blue": "#4DA9DF",
       },
       fontFamily: {
-        headline: ["var(--font-headline)"],
-        section: ["var(--font-section)"],
+        primary: ["var(--font-primary)"],
         brand: ["var(--font-brand)"],
+        section: ["var(--font-section)"],
+        school: ["var(--font-school)"],
+        headline: ["var(--font-headline)"],
       },
     },
   },

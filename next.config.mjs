@@ -9,6 +9,15 @@
 const config = {
   reactStrictMode: true,
   swcMinify: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.thebullhorn.net",
+        pathname: "/**",
+      },
+    ],
+  },
   i18n: {
     locales: ["en"],
     defaultLocale: "en",
