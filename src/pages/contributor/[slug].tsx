@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Prisma } from "@prisma/client";
 import type { Section, Contributor, Media } from "@prisma/client";
 import {
@@ -9,6 +10,8 @@ import {
 import { type ParsedUrlQuery } from "querystring";
 import Image from "next/image";
 import { prisma } from "../../server/db/client";
+import NavigationBar from "../../components/navigationBar";
+import ArticleBlock from "../../components/articleBlock";
 
 interface StaticParams extends ParsedUrlQuery {
   slug: string;
@@ -99,22 +102,6 @@ export const getStaticProps: GetStaticProps<
   };
 };
 
-import { useMemo } from "react";
-import NavigationBar from "../../components/navigationBar";
-import ArticleBlock from "../../components/articleBlock";
-import { articleRouter } from "../../server/trpc/router/article";
-
-// const BioContainer = styled(Container)`
-//   margin-top: 50px;
-//   border-bottom: 1px solid
-//     rgba(${({ theme }) => theme.lemanColorComponents}, 0.4);
-// `;
-
-// const BorderedDiv = styled.div`
-//   border-right: 1px solid #dddddd;
-//   padding-right: 50px;
-// `;
-
 const ContributorPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ contributor }) => {
@@ -130,8 +117,8 @@ const ContributorPage: NextPage<
   return (
     <>
       <NavigationBar />
-      <div className="container mx-auto mt-8">
-        <div className="border-b border-leman-blue pb-4">
+      <div className="container mx-auto mt-8 px-4">
+        <div className="border-b-4 border-leman-blue pb-4">
           <p className="font-headline">{contributor.title}</p>
           <div className="flex">
             <h1 className="font-headline text-3xl font-bold">
@@ -152,10 +139,13 @@ const ContributorPage: NextPage<
           </p>
         </div>
 
-        <p className="-mb-1 ml-1 mt-2 font-medium">Recent Articles</p>
-        <div className="border-r border-gray-300 pr-12 lg:w-3/5">
+        <p className="mt-6 font-medium">Recent Articles</p>
+        <div className="border-gray-300 lg:w-4/5 lg:border-r lg:pr-12">
           {articles.map((article) => (
-            <div className=" border-t border-gray-300 py-6" key={article.id}>
+            <div
+              className="border-t border-gray-300 py-6 first:border-t-2"
+              key={article.id}
+            >
               <ArticleBlock key={article.id} article={article} />
             </div>
           ))}
