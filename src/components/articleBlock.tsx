@@ -39,7 +39,7 @@ const ArticleBlock: React.FC<{
           </h4>
         </Link>
 
-        <p className="pb-2 text-sm">{article.focus}</p>
+        <p className="mr-6 pb-2 text-sm">{article.focus}</p>
         <ByLine writers={article.writers} />
       </div>
 
