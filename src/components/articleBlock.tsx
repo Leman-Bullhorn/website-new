@@ -28,7 +28,7 @@ const ArticleBlock: React.FC<{
 
   return (
     <div className="flex">
-      <p className="mt-1 min-w-fit text-xs text-gray-500">
+      <p className="mt-1 hidden min-w-fit text-xs text-gray-500 lg:block">
         <TimeStamp timestamp={article.publicationDate} />
       </p>
 
@@ -40,7 +40,14 @@ const ArticleBlock: React.FC<{
         </Link>
 
         <p className="mr-6 pb-2 text-sm">{article.focus}</p>
-        <ByLine writers={article.writers} />
+
+        <p className="text-xs text-gray-500">
+          <ByLine writers={article.writers} />
+          <span className="lg:hidden">
+            {" "}
+            &bull; <TimeStamp timestamp={article.publicationDate} />
+          </span>
+        </p>
       </div>
 
       <div className="ml-auto min-w-[9rem] sm:min-w-[13rem]">
