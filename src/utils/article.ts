@@ -4,14 +4,18 @@ export type SerializableArticle = Omit<Article, "publicationDate"> & {
   publicationDate: string;
 };
 
-export const serializeArticle = (article: Article): SerializableArticle => {
+export const serializeArticle = <T>(
+  article: Article & T
+): SerializableArticle & T => {
   return {
     ...article,
     publicationDate: article.publicationDate.toString(),
   };
 };
 
-export const deserializeArticle = (article: SerializableArticle): Article => {
+export const deserializeArticle = <T>(
+  article: SerializableArticle & T
+): Article & T => {
   return {
     ...article,
     publicationDate: new Date(article.publicationDate),
