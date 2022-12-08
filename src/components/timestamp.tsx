@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 
 const MONTH_NAMES = [
-  "January",
-  "February",
+  "Jan.",
+  "Feb.",
   "March",
   "April",
   "May",
   "June",
   "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "Aug.",
+  "Sept.",
+  "Oct.",
+  "Nov.",
+  "Dec.",
 ];
 
 function getFormattedDate(
