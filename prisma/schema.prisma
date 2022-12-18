@@ -31,21 +31,22 @@ enum Section {
 }
 
 model Media {
-  id            String       @id @default(cuid())
-  contentUrl    String
-  contributor   Contributor? @relation(fields: [contributorId], references: [id])
-  contributorId String?
-  article       Article?     @relation(fields: [articleId], references: [id])
-  articleId     String?
+  id                String       @id @default(cuid())
+  contentUrl        String
+  alt               String
+  contributor       Contributor? @relation(fields: [contributorId], references: [id])
+  contributorId     String?
+  thumbnailArticles Article[]    @relation("thumbnail")
+  mediaArticles     Article[]    @relation("media")
 
   @@index([contributorId])
-  @@index([articleId])
 }
 
 model Article {
   id              String        @id @default(cuid())
   slug            String        @unique
   headline        String
+  // FIXME: need to make the string longer
   focus           String
   body            Json
   published       Boolean       @default(false)
@@ -53,5 +54,9 @@ model Article {
   featured        Boolean       @default(false)
   section         Section
   writers         Contributor[]
-  media           Media[]
+  thumbnail       Media?        @relation(name: "thumbnail", fields: [thumbnnailId], references: [id])
+  thumbnnailId    String?
+  media           Media[]       @relation("media")
+
+  @@index([thumbnnailId])
 }
