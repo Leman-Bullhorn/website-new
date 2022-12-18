@@ -46,8 +46,7 @@ model Article {
   id              String        @id @default(cuid())
   slug            String        @unique
   headline        String
-  // FIXME: need to make the string longer
-  focus           String
+  focus           String        @db.Text
   body            Json
   published       Boolean       @default(false)
   publicationDate DateTime
