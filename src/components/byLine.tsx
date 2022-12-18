@@ -6,7 +6,7 @@ const ByLine: React.FC<{
   writers: Contributor[];
 }> = ({ writers }) => {
   return (
-    <span className="text-xs text-gray-500">
+    <span>
       By{" "}
       {writers.map((writer, idx) => (
         <React.Fragment key={writer.id}>
