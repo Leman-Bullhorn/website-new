@@ -60,18 +60,18 @@ const ArticleBlock: React.FC<{
             className="w-full"
             contributor={article.thumbnail.contributor}
           >
-            <Link href={articleUrl}>
-              {/* Padding makes the element's height 2/3 the width, allowing for 3:2 AR */}
-              <div className="relative pb-[66.6667%]">
+            {/* Padding makes the element's height 2/3 the width, allowing for 3:2 AR */}
+            <div className="relative pb-[66.6667%]">
+              <Link href={articleUrl}>
                 <Image
                   className="overflow-hidden object-cover"
                   src={article.thumbnail.contentUrl}
-                  alt=""
+                  alt={article.thumbnail.alt}
                   fill
                   sizes="45vw"
                 />
-              </div>
-            </Link>
+              </Link>
+            </div>
           </CaptionedImage>
         )}
       </div>
