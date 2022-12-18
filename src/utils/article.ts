@@ -1,5 +1,6 @@
 import type { Article } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
+import { useMemo } from "react";
 import { z } from "zod";
 
 export type SerializableArticle = Omit<Article, "publicationDate"> & {
@@ -22,6 +23,18 @@ export const deserializeArticle = <T>(
     ...article,
     publicationDate: new Date(article.publicationDate),
   };
+};
+
+export const useDeserializeArticle = <T>(
+  article: SerializableArticle & T
+): Article & T => {
+  return useMemo(() => deserializeArticle(article), [article]);
+};
+
+export const useDeserializeArticles = <T>(
+  articles: (SerializableArticle & T)[]
+): (Article & T)[] => {
+  return useMemo(() => articles.map(deserializeArticle), [articles]);
 };
 
 const spanText = z.object({
