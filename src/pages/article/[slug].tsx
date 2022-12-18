@@ -9,9 +9,9 @@ import NavigationBar from "../../components/navigationBar";
 import { sections } from "../../utils/section";
 import { prisma } from "../../server/db/client";
 import {
-  deserializeArticle,
   serializeArticle,
   validateArticleBody,
+  useDeserializeArticle,
   type SerializableArticle,
   type ArticleBody,
 } from "../../utils/article";
@@ -101,10 +101,7 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   serializedArticle,
   articleBody,
 }) => {
-  const article = useMemo(
-    () => deserializeArticle(serializedArticle),
-    [serializedArticle]
-  );
+  const article = useDeserializeArticle(serializedArticle);
 
   const articleSection = useMemo(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -9,11 +9,10 @@ import NavigationBar from "../../components/navigationBar";
 import { sections } from "../../utils/section";
 import { prisma } from "../../server/db/client";
 import {
-  type SerializableArticle,
-  deserializeArticle,
   serializeArticle,
+  useDeserializeArticles,
+  type SerializableArticle,
 } from "../../utils/article";
-import { useMemo } from "react";
 import ArticleBlock from "../../components/articleBlock";
 import { type Article, Prisma } from "@prisma/client";
 
@@ -88,9 +87,7 @@ const SectionPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   serializedArticles,
   section,
 }) => {
-  const articles = useMemo(() => {
-    return serializedArticles.map(deserializeArticle);
-  }, [serializedArticles]);
+  const articles = useDeserializeArticles(serializedArticles);
 
   return (
     <>

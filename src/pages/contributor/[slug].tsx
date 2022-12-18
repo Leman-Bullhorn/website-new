@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { type Article, Prisma } from "@prisma/client";
 import type { Contributor } from "@prisma/client";
 import {
@@ -13,8 +12,8 @@ import { prisma } from "../../server/db/client";
 import NavigationBar from "../../components/navigationBar";
 import ArticleBlock from "../../components/articleBlock";
 import {
-  deserializeArticle,
   serializeArticle,
+  useDeserializeArticles,
   type SerializableArticle,
 } from "../../utils/article";
 
@@ -102,10 +101,8 @@ export const getStaticProps: GetStaticProps<
 const ContributorPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ contributor }) => {
-  const articles = useMemo(
-    () => contributor.articles.map(deserializeArticle),
-    [contributor]
-  );
+  const articles = useDeserializeArticles(contributor.articles);
+
   return (
     <>
       <NavigationBar />
