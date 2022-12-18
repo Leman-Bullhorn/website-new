@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import logoImage from "../logo.png";
 import { sections } from "../utils/section";
+import AwareLink from "./awareLink";
 
 const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
   visible = true,
@@ -26,13 +27,13 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
             </Link>
             <div className="flex gap-4 text-base">
               {sections.map((section) => (
-                <Link
+                <AwareLink
                   href={section.href}
                   className="link-hover link font-section opacity-60 hover:opacity-75"
                   key={section.id}
                 >
                   {section.display}
-                </Link>
+                </AwareLink>
               ))}
             </div>
           </div>
