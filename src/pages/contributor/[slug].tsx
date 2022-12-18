@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { Prisma } from "@prisma/client";
-import type { Section, Contributor, Media } from "@prisma/client";
+import { type Article, Prisma } from "@prisma/client";
+import type { Contributor } from "@prisma/client";
 import {
   type GetStaticProps,
   type GetStaticPaths,
@@ -12,6 +12,11 @@ import Image from "next/image";
 import { prisma } from "../../server/db/client";
 import NavigationBar from "../../components/navigationBar";
 import ArticleBlock from "../../components/articleBlock";
+import {
+  deserializeArticle,
+  serializeArticle,
+  type SerializableArticle,
+} from "../../utils/article";
 
 interface StaticParams extends ParsedUrlQuery {
   slug: string;
@@ -32,41 +37,33 @@ export const getStaticPaths: GetStaticPaths<StaticParams> = async () => {
   };
 };
 
-const contributorQuery = (slug: string) =>
-  Prisma.validator<Prisma.ContributorFindUniqueArgs>()({
-    where: {
-      slug,
-    },
+const contributorArticles = Prisma.validator<Prisma.ContributorInclude>()({
+  articles: {
     include: {
-      articles: {
+      thumbnail: {
         include: {
-          writers: true,
-          media: {
-            include: {
-              contributor: true,
-            },
-          },
+          contributor: true,
         },
-        take: 50,
+      },
+      writers: true,
+      media: {
+        include: {
+          contributor: true,
+        },
       },
     },
-  });
+    take: 50,
+  },
+});
+
+type FullContributor = Prisma.ContributorGetPayload<{
+  include: typeof contributorArticles;
+}>;
 
 type SerializableContributor = {
   contributor: Contributor & {
-    articles: {
-      id: string;
-      slug: string;
-      headline: string;
-      focus: string;
-      body: Prisma.JsonValue;
-      published: boolean;
-      publicationDate: string;
-      featured: boolean;
-      section: Section;
-      writers: Contributor[];
-      media: (Media & { contributor: Contributor | null })[];
-    }[];
+    articles: (SerializableArticle &
+      Omit<FullContributor["articles"][0], keyof Article>)[];
   };
 };
 
@@ -77,9 +74,12 @@ export const getStaticProps: GetStaticProps<
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { slug } = context.params!;
 
-  const contributor = await prisma.contributor.findUnique(
-    contributorQuery(slug)
-  );
+  const contributor = await prisma.contributor.findUnique({
+    where: {
+      slug,
+    },
+    include: contributorArticles,
+  });
 
   if (contributor == null) {
     return {
@@ -89,10 +89,7 @@ export const getStaticProps: GetStaticProps<
 
   const serializedContributor = {
     ...contributor,
-    articles: contributor.articles.map((article) => ({
-      ...article,
-      publicationDate: article.publicationDate.toString(),
-    })),
+    articles: contributor.articles.map(serializeArticle),
   };
 
   return {
@@ -106,14 +103,9 @@ const ContributorPage: NextPage<
   InferGetStaticPropsType<typeof getStaticProps>
 > = ({ contributor }) => {
   const articles = useMemo(
-    () =>
-      contributor.articles.map((article) => ({
-        ...article,
-        publicationDate: new Date(article.publicationDate),
-      })),
+    () => contributor.articles.map(deserializeArticle),
     [contributor]
   );
-
   return (
     <>
       <NavigationBar />

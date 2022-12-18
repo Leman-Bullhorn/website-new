@@ -15,11 +15,32 @@ import {
 } from "../../utils/article";
 import { useMemo } from "react";
 import ArticleBlock from "../../components/articleBlock";
-import type { Contributor, Media } from "@prisma/client";
+import { type Article, Prisma } from "@prisma/client";
 
 interface StaticParams extends ParsedUrlQuery {
   id: string;
 }
+
+const articlesInclude = Prisma.validator<Prisma.ArticleInclude>()({
+  thumbnail: {
+    include: {
+      contributor: true,
+    },
+  },
+  writers: true,
+  media: {
+    include: {
+      contributor: true,
+    },
+  },
+});
+
+type FullArticle = Prisma.ArticleGetPayload<{
+  include: typeof articlesInclude;
+}>;
+
+type FullSerializableArticle = SerializableArticle &
+  Omit<FullArticle, keyof Article>;
 
 export const getStaticPaths: GetStaticPaths<StaticParams> = async () => {
   const paths = sections.map((s) => ({ params: { id: s.id } }));
@@ -32,12 +53,7 @@ export const getStaticPaths: GetStaticPaths<StaticParams> = async () => {
 
 export const getStaticProps: GetStaticProps<
   {
-    serializedArticles: (SerializableArticle & {
-      media: (Media & {
-        contributor: Contributor | null;
-      })[];
-      writers: Contributor[];
-    })[];
+    serializedArticles: FullSerializableArticle[];
     section: typeof sections[0];
   },
   StaticParams
@@ -55,14 +71,7 @@ export const getStaticProps: GetStaticProps<
     where: {
       section: section.dbSection,
     },
-    include: {
-      media: {
-        include: {
-          contributor: true,
-        },
-      },
-      writers: true,
-    },
+    include: articlesInclude,
   });
 
   const serializedArticles = sectionArticles.map(serializeArticle);
