@@ -122,17 +122,19 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
             {articleSection.display}
           </Link>
         </p>
-        <h1 className="text-center font-headline text-4xl font-bold">
+        <h1 className="my-2 text-center font-headline text-4xl font-bold">
           {article.headline}
         </h1>
 
-        <ByLine writers={article.writers} />
-        <p className="text-sm text-gray-500">
-          <Timestamp timestamp={article.publicationDate} />
-        </p>
+        <div className="flex justify-between">
+          <ByLine writers={article.writers} />
+          <p className="text-gray-400">
+            <Timestamp timestamp={article.publicationDate} />
+          </p>
+        </div>
 
-        <article className="mt-4 border-t-2 border-leman-blue">
-          <div className="mx-auto mt-8 max-w-prose font-serif text-xl">
+        <article className="mt-2 border-t-2 border-leman-blue">
+          <div className="mx-auto mt-8 max-w-prose font-serif text-lg">
             {articleBody.paragraphs.map((paragraph, idx) => (
               <div
                 key={idx}
@@ -167,7 +169,7 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                       } else if ("anchor" in content) {
                         return (
                           <a
-                            className="link text-leman-blue hover:no-underline"
+                            className="link-hover link text-leman-blue"
                             href={content.anchor.href}
                             key={content.anchor.href}
                             rel="noreferrer"
