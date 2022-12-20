@@ -15,7 +15,7 @@ const CaptionedImage: React.FC<Props> = ({
   return (
     <figure className={className}>
       {children}
-      <figcaption className="text-right text-xs text-gray-500">
+      <figcaption className="text-right text-xs text-gray-500 md:text-[0.6rem]">
         {contributor ? (
           <Link href={`/contributor/${contributor.slug}`}>
             {contributor.firstName} {contributor.lastName}
