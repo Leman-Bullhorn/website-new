@@ -14,7 +14,11 @@ const AwareLink: React.FC<Props> = ({
   return (
     <Link
       href={href}
-      className={router.asPath === href ? `${className} opacity-90` : className}
+      className={
+        router.asPath === href
+          ? `${className} brightness-0 hover:no-underline`
+          : className
+      }
       {...props}
     >
       {children}
