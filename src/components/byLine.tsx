@@ -12,12 +12,12 @@ const ByLine: React.FC<{
         <React.Fragment key={writer.id}>
           <Link
             href={`/contributor/${writer.slug}`}
-            className="link-hover hover:text-leman-blue"
+            className="link-hover font-medium hover:text-leman-blue"
           >
             {writer.firstName} {writer.lastName}
           </Link>
-          {idx !== writers.length - 1 ? <>, </> : <></>}
-          {idx === writers.length - 2 ? <>& </> : <></>}
+          {idx !== writers.length - 1 && writers.length > 2 ? <>, </> : <></>}
+          {idx === writers.length - 2 ? <> & </> : <></>}
         </React.Fragment>
       ))}
     </span>
