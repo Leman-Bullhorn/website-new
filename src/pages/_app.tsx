@@ -8,6 +8,7 @@ import { Analytics } from "@vercel/analytics/react";
 
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
+import { MediaContextProvider, mediaStyles } from "../utils/media";
 
 const primaryFont = Libre_Franklin({
   subsets: ["latin"],
@@ -67,13 +68,19 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
         <meta name="description" content="The Leman Bullhorn newspaper" />
+        <style
+          type="text/css"
+          dangerouslySetInnerHTML={{ __html: mediaStyles }}
+        />
       </Head>
       <main
         className={`${primaryFont.variable} ${primaryFont.className} ${brandFont.variable} ${sectionFont.variable} ${schoolFont.variable} ${headlineFont.variable}`}
       >
-        <SessionProvider session={session}>
-          <Component {...pageProps} />
-        </SessionProvider>
+        <MediaContextProvider disableDynamicMediaQueries>
+          <SessionProvider session={session}>
+            <Component {...pageProps} />
+          </SessionProvider>
+        </MediaContextProvider>
       </main>
     </>
   );
