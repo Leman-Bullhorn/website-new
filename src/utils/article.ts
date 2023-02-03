@@ -53,12 +53,13 @@ const spanAnchor = z.object({
 const spanImage = z.object({
   image: z.object({
     mediaId: z.string(),
-    width: z.string(),
-    height: z.string(),
+    width: z.number(),
+    height: z.number(),
   }),
 });
 
 const spanContent = z.union([spanText, spanAnchor, spanImage]);
+export type SpanContent = z.infer<typeof spanContent>;
 
 const articleSpan = z.object({
   fontStyle: z.string(),
@@ -67,19 +68,20 @@ const articleSpan = z.object({
   fontWeight: z.string(),
   content: spanContent.array(),
 });
+export type ArticleSpan = z.infer<typeof articleSpan>;
 
-const articleBodySchema = z.object({
-  paragraphs: z.array(
-    z.object({
-      marginLeft: z.string(),
-      marginRight: z.string(),
-      textAlignment: z.string(),
-      textIndent: z.string(),
-      spans: articleSpan.array(),
-    })
-  ),
+const articleParagraph = z.object({
+  marginLeft: z.string(),
+  marginRight: z.string(),
+  textAlignment: z.string(),
+  textIndent: z.string(),
+  spans: articleSpan.array(),
 });
+export type ArticleParagraph = z.infer<typeof articleParagraph>;
 
+export const articleBodySchema = z.object({
+  paragraphs: articleParagraph.array(),
+});
 export type ArticleBody = z.infer<typeof articleBodySchema>;
 
 export const validateArticleBody = (

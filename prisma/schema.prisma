@@ -9,15 +9,19 @@ datasource db {
 }
 
 model Contributor {
-  id          String    @id @default(cuid())
-  slug        String    @unique
-  firstName   String
-  lastName    String
-  title       String
-  bio         String?   @db.Text
-  headshotUrl String?
-  articles    Article[]
-  media       Media[]
+  id                  String             @id @default(cuid())
+  slug                String             @unique
+  firstName           String
+  lastName            String
+  title               String
+  bio                 String?            @db.Text
+  headshotUrl         String?
+  articles            Article[]
+  media               Media[]
+  articleSubmission   ArticleSubmission? @relation(fields: [articleSubmissionId], references: [id])
+  articleSubmissionId String?
+
+  @@index([articleSubmissionId])
 }
 
 enum Section {
@@ -31,13 +35,14 @@ enum Section {
 }
 
 model Media {
-  id                String       @id @default(cuid())
-  contentUrl        String
-  alt               String
-  contributor       Contributor? @relation(fields: [contributorId], references: [id])
-  contributorId     String?
-  thumbnailArticles Article[]    @relation("thumbnail")
-  mediaArticles     Article[]    @relation("media")
+  id                          String              @id @default(cuid())
+  contentUrl                  String
+  alt                         String
+  contributor                 Contributor?        @relation(fields: [contributorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  contributorId               String?
+  thumbnailArticles           Article[]           @relation("thumbnail")
+  mediaArticles               Article[]           @relation("media")
+  thumbnailArticleSubmissions ArticleSubmission[] @relation("thumbnailArticleSubmissions")
 
   @@index([contributorId])
 }
@@ -52,10 +57,25 @@ model Article {
   publicationDate DateTime
   featured        Boolean       @default(false)
   section         Section
+  frontPageIndex  Int?
   writers         Contributor[]
   thumbnail       Media?        @relation(name: "thumbnail", fields: [thumbnnailId], references: [id])
   thumbnnailId    String?
   media           Media[]       @relation("media")
 
   @@index([thumbnnailId])
+}
+
+model ArticleSubmission {
+  id        String        @id @default(cuid())
+  headline  String
+  focus     String        @db.Text
+  body      Json
+  section   Section
+  writers   Contributor[]
+  thumbnail Media?        @relation(name: "thumbnailArticleSubmissions", fields: [thumbnailId], references: [id])
+
+  thumbnailId String?
+
+  @@index([thumbnailId])
 }
