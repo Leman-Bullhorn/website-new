@@ -15,6 +15,12 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
+  pages: {
+    signIn: "/auth/signin",
+  },
+  theme: {
+    colorScheme: "light",
+  },
   providers: [
     CredentialsProvider({
       name: "Credentials",

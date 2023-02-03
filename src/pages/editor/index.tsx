@@ -1,5 +1,10 @@
 declare let google: any;
-import type { InferGetStaticPropsType, NextPage } from "next";
+import type {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import { Button, Divider, FileInput, Input, Textarea } from "react-daisyui";
 import { prisma } from "../../server/db/client";
 import NavigationBar from "../../components/navigationBar";
@@ -20,8 +25,20 @@ import type {
   ArticleSpan,
   SpanContent,
 } from "../../utils/article";
+import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const session = await getServerAuthSession(ctx);
+  if (session?.user == null) {
+    ctx.res.setHeader("set-cookie", "redirect-origin=/editor");
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/api/auth/signin",
+      },
+    };
+  }
+
   const writers = await prisma.contributor.findMany({
     select: { firstName: true, lastName: true, id: true },
   });
@@ -40,9 +57,9 @@ const sectionOptions = sections.map((s) => ({
   label: s.display,
 }));
 
-const EditorPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
-  writers,
-}) => {
+const EditorPage: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ writers }) => {
   const [headline, setHeadline] = useState<string>();
   const [focusSentence, setFocusSentence] = useState<string>();
   const sectionSelectId = useId();
@@ -146,29 +163,24 @@ const EditorPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
     const articleContent = parseHtml(html, fileNameToMediaMap);
 
+    const submissionArguments: Parameters<typeof createSubmission>[0] = {
+      headline,
+      focusSentence,
+      section,
+      articleContent,
+      contributorIds: articleWriters,
+    };
+
     if (thumbnailFile != null) {
       const thumbnail = await uploadAndGenerateMedia({
         file: thumbnailFile,
         contributorId: thumbnailContributor,
         altText: thumbnailAlt,
       });
-      await createSubmission({
-        headline,
-        focusSentence,
-        section,
-        articleContent,
-        contributorIds: articleWriters,
-        thumbnailMediaId: thumbnail.id,
-      });
-    } else {
-      await createSubmission({
-        headline,
-        focusSentence,
-        section,
-        articleContent,
-        contributorIds: articleWriters,
-      });
+      submissionArguments.thumbnailMediaId = thumbnail.id;
     }
+    await createSubmission(submissionArguments);
+
     setIsSubmitting(false);
     resetFields();
     alert("Article submitted successfully");
