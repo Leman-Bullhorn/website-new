@@ -4,7 +4,8 @@ import logoImage from "../logo.png";
 import { sections } from "../utils/section";
 import AwareLink from "./awareLink";
 import { type RefObject, useEffect, useRef, useState } from "react";
-import { Menu } from "react-daisyui";
+import { Button, Menu } from "react-daisyui";
+import { signOut, useSession } from "next-auth/react";
 
 const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
   visible = true,
@@ -12,6 +13,8 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
 }) => {
   const [showDrawer, setShowDrawer] = useState(false);
   const drawerButtonRef = useRef<HTMLLabelElement>(null);
+
+  const session = useSession();
 
   const toggleDrawer = () => {
     setShowDrawer((s) => !s);
@@ -52,6 +55,11 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
           </div>
         </div>
         <div className="navbar-end">
+          {session.status === "authenticated" && (
+            <Button onClick={() => signOut()} color="error">
+              Sign out
+            </Button>
+          )}
           <div className="flex-none sm:hidden">
             <label
               className="swap-rotate swap btn-ghost btn-square btn h-10 min-h-min w-10"
