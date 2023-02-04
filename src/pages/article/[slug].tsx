@@ -196,8 +196,8 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                               className="overflow-hidden"
                               src={media.contentUrl}
                               alt={media.alt}
-                              width={parseInt(content.image.width)}
-                              height={parseInt(content.image.height)}
+                              width={content.image.width}
+                              height={content.image.height}
                             />
                           </CaptionedImage>
                         );
