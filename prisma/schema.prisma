@@ -54,7 +54,6 @@ model Article {
   headline        String
   focus           String        @db.Text
   body            Json
-  published       Boolean       @default(false)
   publicationDate DateTime
   featured        Boolean       @default(false)
   section         Section
