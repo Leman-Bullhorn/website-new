@@ -1,5 +1,4 @@
-import type { Article } from "@prisma/client";
-import type { Prisma } from "@prisma/client";
+import type { Prisma, Article } from "@prisma/client";
 import { useMemo } from "react";
 import { z } from "zod";
 
