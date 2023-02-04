@@ -29,6 +29,7 @@ export const articleRouter = router({
         contributorIds: z.string().array(),
         articleContent: articleBodySchema,
         thumbnailMediaId: z.string().optional(),
+        bodyMediaIds: z.string().array(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -42,6 +43,7 @@ export const articleRouter = router({
           thumbnail: input.thumbnailMediaId
             ? { connect: { id: input.thumbnailMediaId } }
             : undefined,
+          media: { connect: input.bodyMediaIds.map((id) => ({ id })) },
         },
       });
     }),

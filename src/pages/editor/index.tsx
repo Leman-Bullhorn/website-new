@@ -1,6 +1,5 @@
 declare let google: any;
 import type {
-  GetServerSideProps,
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
   NextPage,
@@ -163,12 +162,18 @@ const EditorPage: NextPage<
 
     const articleContent = parseHtml(html, fileNameToMediaMap);
 
+    const bodyMediaIds: string[] = [];
+    for (const media of fileNameToMediaMap.values()) {
+      bodyMediaIds.push(media.id);
+    }
+
     const submissionArguments: Parameters<typeof createSubmission>[0] = {
       headline,
       focusSentence,
       section,
       articleContent,
       contributorIds: articleWriters,
+      bodyMediaIds,
     };
 
     if (thumbnailFile != null) {

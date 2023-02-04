@@ -43,6 +43,7 @@ model Media {
   thumbnailArticles           Article[]           @relation("thumbnail")
   mediaArticles               Article[]           @relation("media")
   thumbnailArticleSubmissions ArticleSubmission[] @relation("thumbnailArticleSubmissions")
+  mediaSubmissions            ArticleSubmission[] @relation("mediaSubmissions")
 
   @@index([contributorId])
 }
@@ -73,7 +74,8 @@ model ArticleSubmission {
   body      Json
   section   Section
   writers   Contributor[]
-  thumbnail Media?        @relation(name: "thumbnailArticleSubmissions", fields: [thumbnailId], references: [id])
+  thumbnail Media?        @relation(name: "thumbnailArticleSubmissions", fields: [thumbnailId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  media     Media[]       @relation(name: "mediaSubmissions")
 
   thumbnailId String?
 
