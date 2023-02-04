@@ -23,7 +23,7 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
   return (
     <>
       <div
-        className={`navbar fixed top-0 z-[9999] bg-slate-50 shadow-md transition-transform ${
+        className={`navbar fixed top-0 z-10 bg-slate-50 shadow-md transition-transform ${
           visible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
@@ -148,7 +148,7 @@ const Drawer: React.FC<{
   return (
     <div
       ref={drawerRef}
-      className={`fixed top-[64px] right-0 z-[99999] overflow-hidden rounded-bl-md bg-slate-50 shadow-md transition-transform sm:hidden ${
+      className={`fixed top-[64px] right-0 z-10 overflow-hidden rounded-bl-md bg-slate-50 shadow-md transition-transform sm:hidden ${
         open ? "translate-x-0" : "translate-x-full"
       }`}
     >
