@@ -7,7 +7,7 @@ import { Button, Input, Menu, Table, Textarea } from "react-daisyui";
 import NavigationBar from "../../components/navigationBar";
 import { prisma } from "../../server/db/client";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
-import { ArticleSubmission, Contributor, Section } from "@prisma/client";
+import type { ArticleSubmission, Contributor, Section } from "@prisma/client";
 import {
   createColumnHelper,
   flexRender,
@@ -20,6 +20,7 @@ import Select from "react-select";
 import { sections } from "../../utils/section";
 import { trpc } from "../../utils/trpc";
 import Link from "next/link";
+import { validateArticleBody } from "../../utils/article";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getServerAuthSession(ctx);
@@ -35,7 +36,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 
   const articleSubmissions = await prisma.articleSubmission.findMany({
-    include: { writers: true },
+    include: { writers: true, media: { select: { id: true } } },
   });
 
   return {
@@ -63,34 +64,13 @@ const SectionPage: NextPage<
           <SubmissionsView submissions={articleSubmissions} />
         </div>
       </div>
-      {/* </div> */}
-      {/* <NavigationBar />
-      <div className="container mx-auto mt-4 px-2">
-        <h1 className="border-b-4 border-leman-blue pb-2 text-center font-section text-5xl">
-          {section.display}
-        </h1>
-
-        {articles.length === 0 && (
-          <p className="text-center text-2xl">No articles here yet...</p>
-        )}
-
-        <div className="mx-auto mt-6 border-gray-300 lg:w-2/3 lg:border-x lg:px-6">
-          {articles.map((article) => (
-            <div
-              className="border-b border-gray-300 py-4 first:pt-0"
-              key={article.id}
-            >
-              <ArticleBlock article={article} />
-            </div>
-          ))}
-        </div>
-      </div> */}
     </>
   );
 };
 
 type SubmissionWithContributors = ArticleSubmission & {
   writers: Contributor[];
+  media: { id: string }[];
 };
 
 const SubmissionsView = ({
@@ -208,6 +188,8 @@ const PublishModal = ({
   const [writers, setWriters] = useState(submission.writers);
 
   const { data: contributors } = trpc.contributor.all.useQuery();
+  const { mutateAsync: createArticle, isLoading: isUploading } =
+    trpc.article.create.useMutation();
 
   const writerOptions = useMemo(
     () =>
@@ -218,8 +200,19 @@ const PublishModal = ({
     [contributors]
   );
 
-  const onClickPublish = () => {
-    console.log("publish");
+  const onClickPublish = async () => {
+    const articleBody = validateArticleBody(submission.body);
+    if (articleBody == null) return;
+    await createArticle({
+      headline,
+      focus: focusSentence,
+      section,
+      body: articleBody,
+      writerIds: writers.map((w) => w.id),
+      mediaIds: submission.media.map((m) => m.id),
+      thumbnailId: submission.thumbnailId ?? undefined,
+    });
+    onClose();
   };
 
   return (
@@ -289,7 +282,12 @@ const PublishModal = ({
         >
           <Button>View Article Preview</Button>
         </Link>
-        <Button className="w-full" color="primary" onClick={onClickPublish}>
+        <Button
+          className="w-full"
+          color="primary"
+          onClick={onClickPublish}
+          loading={isUploading}
+        >
           Publish
         </Button>
       </Modal.Body>

@@ -1,17 +1,15 @@
 import { Section } from "@prisma/client";
 import { z } from "zod";
-import { articleBodySchema } from "../../../utils/article";
+import { articleBodySchema, slugify } from "../../../utils/article";
 
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import {
+  router,
+  publicProcedure,
+  protectedProcedure,
+  adminProcedure,
+} from "../trpc";
 
 export const articleRouter = router({
-  hello: publicProcedure
-    .input(z.object({ text: z.string().nullish() }).nullish())
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input?.text ?? "world"}`,
-      };
-    }),
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.article.findMany({
       include: {
@@ -63,4 +61,47 @@ export const articleRouter = router({
       featured: featuredArticle,
     };
   }),
+
+  create: adminProcedure
+    .input(
+      z.object({
+        headline: z.string(),
+        focus: z.string(),
+        section: z.nativeEnum(Section),
+        body: articleBodySchema,
+        featured: z.boolean().default(false),
+        frontPageIndex: z.number().optional(),
+        mediaIds: z.string().array(),
+        thumbnailId: z.string().optional(),
+        writerIds: z.string().array(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const {
+        headline,
+        focus,
+        section,
+        body,
+        featured,
+        frontPageIndex,
+        mediaIds,
+        thumbnailId,
+        writerIds,
+      } = input;
+      return await ctx.prisma.article.create({
+        data: {
+          headline,
+          focus,
+          publicationDate: new Date(),
+          slug: slugify(headline),
+          section,
+          body,
+          featured,
+          frontPageIndex,
+          media: { connect: mediaIds.map((id) => ({ id })) },
+          thumbnail: thumbnailId ? { connect: { id: thumbnailId } } : undefined,
+          writers: { connect: writerIds.map((id) => ({ id })) },
+        },
+      });
+    }),
 });

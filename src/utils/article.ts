@@ -92,3 +92,11 @@ export const validateArticleBody = (
 
   return result.data;
 };
+
+export const slugify = (headline: string) =>
+  headline
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
