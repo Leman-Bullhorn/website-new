@@ -5,9 +5,8 @@ import type {
 } from "next";
 import { Button, Input, Menu, Table, Textarea } from "react-daisyui";
 import NavigationBar from "../../components/navigationBar";
-import { prisma } from "../../server/db/client";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
-import type { ArticleSubmission, Contributor, Section } from "@prisma/client";
+import type { Section } from "@prisma/client";
 import {
   createColumnHelper,
   flexRender,
@@ -21,10 +20,11 @@ import { sections } from "../../utils/section";
 import { trpc } from "../../utils/trpc";
 import Link from "next/link";
 import { validateArticleBody } from "../../utils/article";
+import type { RouterOutputs } from "../../utils/trpc";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getServerAuthSession(ctx);
-  // Think about what happens if the user is signed in as editor
+  // TODO: Think about what happens if the user is signed in as editor
   if (session?.user?.name !== "admin") {
     ctx.res.setHeader("set-cookie", "redirect-origin=/admin");
     return {
@@ -34,63 +34,60 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       },
     };
   }
-
-  const articleSubmissions = await prisma.articleSubmission.findMany({
-    include: { writers: true, media: { select: { id: true } } },
-  });
-
   return {
-    props: { articleSubmissions: articleSubmissions },
+    props: {},
   };
 };
 
 const SectionPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ articleSubmissions }) => {
+> = () => {
+  const { data: articleSubmissions } = trpc.article.allSubmissions.useQuery();
   return (
     <>
       <NavigationBar />
       <div className="flex gap-4 pt-4">
-        {/* <div className="grid grid-cols-2"> */}
         <Menu className="col-span-1 h-min min-w-fit rounded-r-2xl bg-base-200 p-2">
           <Menu.Item>
-            <p>Submissions ({articleSubmissions.length})</p>
+            <p>Submissions ({articleSubmissions?.length ?? 0})</p>
           </Menu.Item>
           <Menu.Item>
             <p>Articles</p>
           </Menu.Item>
         </Menu>
         <div className="mr-4 w-full overflow-x-auto">
-          <SubmissionsView submissions={articleSubmissions} />
+          <SubmissionsView />
         </div>
       </div>
     </>
   );
 };
 
-type SubmissionWithContributors = ArticleSubmission & {
-  writers: Contributor[];
-  media: { id: string }[];
-};
-
-const SubmissionsView = ({
-  submissions,
-}: {
-  submissions: SubmissionWithContributors[];
-}) => {
+type Submission = RouterOutputs["article"]["allSubmissions"][0];
+const SubmissionsView = () => {
   const [publishModalOpen, setPublishModalOpen] = useState(false);
-  const [activeRow, setActiveRow] = useState<SubmissionWithContributors>();
+  const [activeRow, setActiveRow] = useState<Submission>();
 
-  const onClickPublish = (row: SubmissionWithContributors) => {
+  const { data: submissions } = trpc.article.allSubmissions.useQuery();
+  const { mutateAsync: deleteSubmission } =
+    trpc.article.deleteSubmission.useMutation();
+
+  const trpcContext = trpc.useContext();
+
+  const onClickPublish = (row: Submission) => {
     setPublishModalOpen(true);
     setActiveRow(row);
   };
 
-  const onClickDelete = (row: SubmissionWithContributors) => {
-    console.log(row);
+  const onClickDelete = async (row: Submission) => {
+    trpcContext.article.allSubmissions.setData((oldSubmissions) =>
+      oldSubmissions?.filter((s) => s.id != row.id)
+    );
+    await deleteSubmission({ id: row.id });
+    trpcContext.article.allSubmissions.invalidate();
   };
 
-  const columnHelper = createColumnHelper<SubmissionWithContributors>();
+  const columnHelper = createColumnHelper<Submission>();
   const columns = [
     columnHelper.accessor("headline", {}),
     columnHelper.accessor("section", {}),
@@ -121,7 +118,7 @@ const SubmissionsView = ({
   ];
 
   const table = useReactTable({
-    data: submissions,
+    data: submissions ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -179,7 +176,7 @@ const PublishModal = ({
   submission,
 }: {
   open: boolean;
-  submission: SubmissionWithContributors;
+  submission: Submission;
   onClose: () => void;
 }) => {
   const [headline, setHeadline] = useState(submission.headline);
@@ -190,6 +187,10 @@ const PublishModal = ({
   const { data: contributors } = trpc.contributor.all.useQuery();
   const { mutateAsync: createArticle, isLoading: isUploading } =
     trpc.article.create.useMutation();
+  const { mutateAsync: deleteSubmission, isLoading: isDeletingSubmission } =
+    trpc.article.deleteSubmission.useMutation();
+
+  const trpcContext = trpc.useContext();
 
   const writerOptions = useMemo(
     () =>
@@ -212,6 +213,11 @@ const PublishModal = ({
       mediaIds: submission.media.map((m) => m.id),
       thumbnailId: submission.thumbnailId ?? undefined,
     });
+    trpcContext.article.allSubmissions.setData((oldSubmissions) =>
+      oldSubmissions?.filter((s) => s.id != submission.id)
+    );
+    await deleteSubmission({ id: submission.id });
+    trpcContext.article.allSubmissions.invalidate();
     onClose();
   };
 
@@ -286,7 +292,7 @@ const PublishModal = ({
           className="w-full"
           color="primary"
           onClick={onClickPublish}
-          loading={isUploading}
+          loading={isUploading || isDeletingSubmission}
         >
           Publish
         </Button>

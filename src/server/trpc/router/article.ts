@@ -61,7 +61,6 @@ export const articleRouter = router({
       featured: featuredArticle,
     };
   }),
-
   create: adminProcedure
     .input(
       z.object({
@@ -103,5 +102,19 @@ export const articleRouter = router({
           writers: { connect: writerIds.map((id) => ({ id })) },
         },
       });
+    }),
+  allSubmissions: adminProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.articleSubmission.findMany({
+      include: {
+        media: { include: { contributor: true } },
+        thumbnail: { include: { contributor: true } },
+        writers: true,
+      },
+    });
+  }),
+  deleteSubmission: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.articleSubmission.delete({ where: { id: input.id } });
     }),
 });
