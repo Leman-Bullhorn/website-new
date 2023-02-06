@@ -47,8 +47,8 @@ const SectionPage: NextPage<
     <>
       <NavigationBar />
       <div className="flex gap-4 pt-4">
-        <Menu className="col-span-1 h-min min-w-fit rounded-r-2xl bg-base-200 p-2">
-          <Menu.Item>
+        <Menu className="col-span-1 h-[75vh] min-w-fit rounded-r-2xl bg-base-200 p-2">
+          <Menu.Item className="border-b border-gray-300">
             <p>Submissions ({articleSubmissions?.length ?? 0})</p>
           </Menu.Item>
           <Menu.Item>
