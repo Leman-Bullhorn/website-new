@@ -9,6 +9,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
 import { MediaContextProvider, mediaStyles } from "../utils/media";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const primaryFont = Libre_Franklin({
   subsets: ["latin"],
@@ -81,6 +82,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
             <Component {...pageProps} />
           </SessionProvider>
         </MediaContextProvider>
+        <ReactQueryDevtools />
       </main>
     </>
   );
