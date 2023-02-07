@@ -117,4 +117,9 @@ export const articleRouter = router({
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.articleSubmission.delete({ where: { id: input.id } });
     }),
+  deleteById: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.article.delete({ where: { id: input.id } });
+    }),
 });

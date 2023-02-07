@@ -22,7 +22,7 @@ import Link from "next/link";
 import { validateArticleBody } from "../../utils/article";
 import type { RouterOutputs } from "../../utils/trpc";
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const session = await getServerAuthSession(ctx);
   // TODO: Think about what happens if the user is signed in as editor
   if (session?.user?.name !== "admin") {
@@ -37,29 +37,146 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {},
   };
-};
+}
 
 const SectionPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
   const { data: articleSubmissions } = trpc.article.allSubmissions.useQuery();
+  const [activeView, setActiveView] = useState<"submissions" | "articles">(
+    "submissions"
+  );
+
   return (
     <>
       <NavigationBar />
       <div className="flex gap-4 pt-4">
         <Menu className="col-span-1 h-[75vh] min-w-fit rounded-r-2xl bg-base-200 p-2">
-          <Menu.Item className="border-b border-gray-300">
+          <Menu.Item
+            className={`border-b border-gray-300 ${
+              activeView === "submissions" ? "underline" : ""
+            }`}
+            onClick={() => setActiveView("submissions")}
+          >
             <p>Submissions ({articleSubmissions?.length ?? 0})</p>
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item
+            className={activeView === "articles" ? "underline" : ""}
+            onClick={() => setActiveView("articles")}
+          >
             <p>Articles</p>
           </Menu.Item>
         </Menu>
         <div className="mr-4 w-full overflow-x-auto">
-          <SubmissionsView />
+          {activeView === "submissions" ? (
+            <SubmissionsView />
+          ) : activeView === "articles" ? (
+            <ArticlesView />
+          ) : null}
         </div>
       </div>
     </>
+  );
+};
+
+type Article = RouterOutputs["article"]["getAll"][0];
+const ArticlesView = () => {
+  const { data: articles } = trpc.article.getAll.useQuery();
+  const { mutateAsync: deleteArticle } = trpc.article.deleteById.useMutation();
+
+  const trpcContext = trpc.useContext();
+
+  const tableArticles = useMemo(() => {
+    return articles?.sort(
+      (a, b) => b.publicationDate.getTime() - a.publicationDate.getTime()
+    );
+  }, [articles]);
+
+  // TODO
+  const onClickEdit = (article: Article) => {
+    console.log(article);
+  };
+
+  const onClickDelete = async (article: Article) => {
+    await trpcContext.article.getAll.cancel();
+    trpcContext.article.getAll.setData((oldSubmissions) =>
+      oldSubmissions?.filter((s) => s.id != article.id)
+    );
+    await deleteArticle({ id: article.id });
+    trpcContext.article.invalidate();
+  };
+
+  const columnHelper = createColumnHelper<Article>();
+  const columns = [
+    columnHelper.accessor("headline", {}),
+    columnHelper.accessor("section", {}),
+    columnHelper.accessor((article) => article.publicationDate.toDateString(), {
+      header: "Publication Date",
+    }),
+    columnHelper.accessor(
+      (row) =>
+        row.writers.map((w) => `${w.firstName} ${w.lastName}`).join(", "),
+      { id: "writers" }
+    ),
+    columnHelper.display({
+      header: "Edit",
+      cell: (props) => (
+        <Button
+          color="success"
+          onClick={() => {
+            onClickEdit(props.row.original);
+          }}
+        >
+          Edit
+        </Button>
+      ),
+    }),
+    columnHelper.display({
+      header: "Dete",
+      cell: (props) => (
+        <Button color="error" onClick={() => onClickDelete(props.row.original)}>
+          Delete
+        </Button>
+      ),
+    }),
+  ];
+
+  const table = useReactTable({
+    data: tableArticles ?? [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  return (
+    <Table zebra className="w-full">
+      <thead>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <th key={header.id} className="!static">
+                {header.isPlaceholder
+                  ? ""
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+              </th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {table.getRowModel().rows.map((row) => (
+          <tr key={row.id}>
+            {row.getVisibleCells().map((cell) => (
+              <td key={cell.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </Table>
   );
 };
 
