@@ -83,6 +83,7 @@ type Article = RouterOutputs["article"]["getAll"][0];
 const ArticlesView = () => {
   const { data: articles } = trpc.article.getAll.useQuery();
   const { mutateAsync: deleteArticle } = trpc.article.deleteById.useMutation();
+  const [confirmDeleteArticle, setConfirmDeleteArticle] = useState<Article>();
 
   const trpcContext = trpc.useContext();
 
@@ -97,13 +98,14 @@ const ArticlesView = () => {
     console.log(article);
   };
 
-  const onClickDelete = async (article: Article) => {
+  const confirmDelete = async (article: Article) => {
     await trpcContext.article.getAll.cancel();
     trpcContext.article.getAll.setData((oldSubmissions) =>
       oldSubmissions?.filter((s) => s.id != article.id)
     );
     await deleteArticle({ id: article.id });
     trpcContext.article.invalidate();
+    setConfirmDeleteArticle(undefined);
   };
 
   const columnHelper = createColumnHelper<Article>();
@@ -134,7 +136,10 @@ const ArticlesView = () => {
     columnHelper.display({
       header: "Dete",
       cell: (props) => (
-        <Button color="error" onClick={() => onClickDelete(props.row.original)}>
+        <Button
+          color="error"
+          onClick={() => setConfirmDeleteArticle(props.row.original)}
+        >
           Delete
         </Button>
       ),
@@ -148,35 +153,57 @@ const ArticlesView = () => {
   });
 
   return (
-    <Table zebra className="w-full">
-      <thead>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <th key={header.id} className="!static">
-                {header.isPlaceholder
-                  ? ""
-                  : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map((row) => (
-          <tr key={row.id}>
-            {row.getVisibleCells().map((cell) => (
-              <td key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </Table>
+    <>
+      {confirmDeleteArticle && (
+        <Modal open onClose={() => setConfirmDeleteArticle(undefined)}>
+          <Modal.Header>Confirm Delete</Modal.Header>
+          <Modal.Body>
+            <div className="flex flex-col gap-4">
+              <p className="text-red-500">
+                ARE YOU SURE YOU WANT TO DELETE &quot;
+                {confirmDeleteArticle.headline}&quot;?
+                <br /> THIS IS PERMANENT
+              </p>
+              <Button
+                color="error"
+                onClick={() => confirmDelete(confirmDeleteArticle)}
+              >
+                Delete
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
+      )}
+      <Table zebra className="w-full">
+        <thead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id} className="!static">
+                  {header.isPlaceholder
+                    ? ""
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </>
   );
 };
 
