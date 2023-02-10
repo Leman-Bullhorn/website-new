@@ -3,7 +3,7 @@ import type {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
-import { Button, Input, Menu, Table, Textarea } from "react-daisyui";
+import { Button, Input, Menu, Table, Textarea, Toggle } from "react-daisyui";
 import NavigationBar from "../../components/navigationBar";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 import type { Section } from "@prisma/client";
@@ -84,18 +84,45 @@ const ArticlesView = () => {
   const { data: articles } = trpc.article.getAll.useQuery();
   const { mutateAsync: deleteArticle } = trpc.article.deleteById.useMutation();
   const [confirmDeleteArticle, setConfirmDeleteArticle] = useState<Article>();
+  const { mutateAsync: editFeatured } = trpc.article.editFeatured.useMutation();
 
   const trpcContext = trpc.useContext();
-
   const tableArticles = useMemo(() => {
-    return articles?.sort(
+    if (articles == null) return undefined;
+    const sorted = [...articles].sort(
       (a, b) => b.publicationDate.getTime() - a.publicationDate.getTime()
     );
+
+    const featuredArticleIdx = sorted?.findIndex((article) => article.featured);
+    if (featuredArticleIdx != null && featuredArticleIdx != -1) {
+      const [featured] = sorted.splice(featuredArticleIdx, 1);
+      if (featured) {
+        return [featured, ...sorted];
+      }
+    }
+    return sorted;
   }, [articles]);
 
   // TODO
   const onClickEdit = (article: Article) => {
     console.log(article);
+  };
+
+  const toggleFeatured = async (article: Article) => {
+    const desiredFeatureState = !article.featured;
+    await trpcContext.article.getAll.cancel();
+    trpcContext.article.getAll.setData((oldArticles) => {
+      if (oldArticles == null) return oldArticles;
+      const copy = [...oldArticles];
+      const selectedArticle = copy.find(({ id }) => id === article.id);
+      if (selectedArticle) selectedArticle.featured = desiredFeatureState;
+    });
+    try {
+      await editFeatured({ id: article.id, featured: desiredFeatureState });
+    } catch (e) {
+      alert("Only one article can be featured at a time");
+    }
+    trpcContext.article.invalidate();
   };
 
   const confirmDelete = async (article: Article) => {
@@ -121,6 +148,16 @@ const ArticlesView = () => {
       { id: "writers" }
     ),
     columnHelper.display({
+      header: "Featured",
+      cell: (props) => (
+        <Toggle
+          color="success"
+          checked={props.row.original.featured}
+          onChange={() => toggleFeatured(props.row.original)}
+        />
+      ),
+    }),
+    columnHelper.display({
       header: "Edit",
       cell: (props) => (
         <Button
@@ -134,7 +171,7 @@ const ArticlesView = () => {
       ),
     }),
     columnHelper.display({
-      header: "Dete",
+      header: "Delete",
       cell: (props) => (
         <Button
           color="error"

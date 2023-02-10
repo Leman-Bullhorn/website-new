@@ -1,4 +1,5 @@
 import { Section } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { articleBodySchema, slugify } from "../../../utils/article";
 
@@ -121,5 +122,21 @@ export const articleRouter = router({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.article.delete({ where: { id: input.id } });
+    }),
+  editFeatured: adminProcedure
+    .input(z.object({ id: z.string(), featured: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      if (input.featured) {
+        const featuredArticlesCount = await ctx.prisma.article.count({
+          where: { featured: true },
+        });
+        if (featuredArticlesCount > 0)
+          throw new TRPCError({ code: "CONFLICT" });
+      }
+
+      return await ctx.prisma.article.update({
+        where: { id: input.id },
+        data: { featured: input.featured },
+      });
     }),
 });
