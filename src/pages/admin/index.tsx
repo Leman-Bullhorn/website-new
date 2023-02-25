@@ -472,6 +472,14 @@ const ArticlesView = () => {
     <>
       {confirmDeleteArticle && (
         <Modal open onClose={() => setConfirmDeleteArticle(undefined)}>
+          <Button
+            size="sm"
+            shape="circle"
+            className="absolute right-2 top-2"
+            onClick={() => setConfirmDeleteArticle(undefined)}
+          >
+            ✕
+          </Button>
           <Modal.Header>Confirm Delete</Modal.Header>
           <Modal.Body>
             <div className="flex flex-col gap-4">
