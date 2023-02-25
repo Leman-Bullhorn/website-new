@@ -139,4 +139,86 @@ export const articleRouter = router({
         data: { featured: input.featured },
       });
     }),
+  setArticleFrontPagePosition: adminProcedure
+    .input(z.object({ index: z.number().nullable(), id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const selectedArticle = await ctx.prisma.article.findUnique({
+        where: { id: input.id },
+      });
+
+      if (selectedArticle == null) return new TRPCError({ code: "NOT_FOUND" });
+
+      if (input.index == null) {
+        if (selectedArticle.frontPageIndex == null) return selectedArticle;
+
+        const [, editedArticle] = await ctx.prisma.$transaction([
+          ctx.prisma.article.updateMany({
+            where: {
+              frontPageIndex: {
+                gt: selectedArticle.frontPageIndex,
+              },
+            },
+            data: { frontPageIndex: { decrement: 1 } },
+          }),
+          ctx.prisma.article.update({
+            where: { id: input.id },
+            data: { frontPageIndex: null },
+          }),
+        ]);
+        return editedArticle;
+      }
+
+      // 0 -> 3
+      // 1 -> 0
+      // 2 -> 1
+      // 3 -> 2
+      // 4
+
+      if (
+        selectedArticle.frontPageIndex == null ||
+        input.index <= selectedArticle.frontPageIndex
+      ) {
+        const [, editedArticle] = await ctx.prisma.$transaction([
+          ctx.prisma.article.updateMany({
+            where: {
+              frontPageIndex: {
+                gte: input.index,
+                lt: selectedArticle.frontPageIndex ?? undefined,
+              },
+            },
+            data: {
+              frontPageIndex: { increment: 1 },
+            },
+          }),
+          ctx.prisma.article.update({
+            where: { id: input.id },
+            data: { frontPageIndex: input.index },
+          }),
+        ]);
+
+        return editedArticle;
+      }
+
+      const [, editedArticle] = await ctx.prisma.$transaction([
+        ctx.prisma.article.updateMany({
+          where: {
+            frontPageIndex: {
+              gt: selectedArticle.frontPageIndex,
+              lte: input.index,
+            },
+          },
+          data: {
+            frontPageIndex: { decrement: 1 },
+          },
+        }),
+        ctx.prisma.article.update({
+          where: {
+            id: input.id,
+          },
+          data: { frontPageIndex: input.index },
+        }),
+      ]);
+
+      return editedArticle;
+    }),
 });
