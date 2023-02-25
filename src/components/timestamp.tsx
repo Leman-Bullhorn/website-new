@@ -76,12 +76,12 @@ const timeSince = (date: Date) => {
 
 const Timestamp: React.FC<{ timestamp: Date }> = ({ timestamp }) => {
   // Updating the dummy state forces a re-render every second
-  const [, setDummy] = useState(Math.random());
+  const [dummy, setDummy] = useState(Math.random());
 
   // Kind of a hack, required to avoid hydration errors since timezone on server
   // may not be the same as the client.
   const [displayTime, setDisplayTime] = useState<string>();
-  useEffect(() => setDisplayTime(timeSince(timestamp)), [timestamp]);
+  useEffect(() => setDisplayTime(timeSince(timestamp)), [timestamp, dummy]);
 
   useEffect(() => {
     const interval = setInterval(() => setDummy(Math.random()), 1000);
