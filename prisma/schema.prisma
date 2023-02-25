@@ -59,11 +59,11 @@ model Article {
   section         Section
   frontPageIndex  Int?
   writers         Contributor[]
-  thumbnail       Media?        @relation(name: "thumbnail", fields: [thumbnnailId], references: [id])
-  thumbnnailId    String?
+  thumbnail       Media?        @relation(name: "thumbnail", fields: [thumbnailId], references: [id])
+  thumbnailId     String?
   media           Media[]       @relation("media")
 
-  @@index([thumbnnailId])
+  @@index([thumbnailId])
 }
 
 model ArticleSubmission {
