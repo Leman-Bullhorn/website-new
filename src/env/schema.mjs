@@ -12,6 +12,8 @@ export const serverSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string(),
   ADMIN_USERNAME: z.string(),
   ADMIN_PASSWORD: z.string(),
+  EDITOR_USERNAME: z.string(),
+  EDITOR_PASSWORD: z.string(),
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
       ? z.string().min(1)

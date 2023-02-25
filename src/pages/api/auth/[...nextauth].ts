@@ -35,6 +35,14 @@ export const authOptions: NextAuthOptions = {
         ) {
           return { id: "admin", name: "admin" };
         }
+
+        if (
+          credentials?.username === env.EDITOR_USERNAME &&
+          credentials.password === env.EDITOR_PASSWORD
+        ) {
+          return { id: "editor", name: "editor" };
+        }
+
         return null;
       },
     }),
