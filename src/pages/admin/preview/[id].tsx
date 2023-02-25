@@ -111,7 +111,7 @@ const PreviewPage: NextPage<
         </div>
 
         <article className="mt-2 border-t-2 border-leman-blue">
-          <div className="mx-auto mt-8 max-w-prose font-serif text-lg">
+          <div className="mx-auto mt-8 flex max-w-prose flex-col gap-2 font-serif text-lg">
             {submissionBody.paragraphs.map((paragraph, idx) => (
               <div
                 key={idx}
