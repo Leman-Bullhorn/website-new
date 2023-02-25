@@ -364,7 +364,15 @@ const parseHtml = (
             },
           });
         } else if (child.nodeName === "IMG") {
-          const { width, height, src } = child as HTMLImageElement;
+          const { width, height } = (child as HTMLImageElement).style;
+          let imageWidth = parseFloat(width.split("px")[0] ?? "");
+          let imageHeight = parseFloat(height.split("px")[0] ?? "");
+          if (isNaN(imageWidth) || isNaN(imageHeight)) {
+            // Random defaults — this case should never happen
+            imageWidth = 300;
+            imageHeight = 200;
+          }
+          const { src } = child as HTMLImageElement;
           // can't just do a lookup of the map because
           // `src` gets the absolute path prepended by the DOMParser
           for (const [name, media] of fileNameToMediaMap) {
@@ -372,8 +380,8 @@ const parseHtml = (
               content.push({
                 image: {
                   mediaId: media.id,
-                  width,
-                  height,
+                  width: imageWidth,
+                  height: imageHeight,
                 },
               });
               break;
