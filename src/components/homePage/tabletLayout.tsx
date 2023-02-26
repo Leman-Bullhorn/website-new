@@ -5,7 +5,7 @@ import type {
 } from "@prisma/client";
 import { useState } from "react";
 import NavigationBar from "../navigationBar";
-import Article from "./article";
+import { SideImageArticle, TopImageArticle } from "./article";
 import FeaturedArticle from "./featuredArticle";
 import Masthead from "./masthead";
 
@@ -40,25 +40,49 @@ const TabletLayout: React.FC<{
         <div className="mt-2 grid grid-cols-2 gap-4">
           <div className="col-span-1 ">
             {articles
-              .filter((_, idx) => idx % 2 === 0)
-              .map((article) => (
-                <Article
-                  key={article.id}
-                  article={article}
-                  className="border-b border-gray-300 py-2 last:border-none"
-                />
-              ))}
+              .filter(
+                (article) =>
+                  article.frontPageIndex != null &&
+                  article.frontPageIndex % 2 === 0
+              )
+              .map((article, idx) => {
+                return idx === 0 ? (
+                  <TopImageArticle
+                    key={article.id}
+                    article={article}
+                    className="border-b border-gray-300 py-2 last:border-none"
+                  />
+                ) : (
+                  <SideImageArticle
+                    key={article.id}
+                    article={article}
+                    className="border-b border-gray-300 py-2 last:border-none"
+                  />
+                );
+              })}
           </div>
           <div className="relative col-span-1 before:absolute before:-left-2 before:h-full before:border-l before:border-gray-300">
             {articles
-              .filter((_, idx) => idx % 2 === 1)
-              .map((article) => (
-                <Article
-                  key={article.id}
-                  article={article}
-                  className="border-b border-gray-300 py-2 last:border-none"
-                />
-              ))}
+              .filter(
+                (article) =>
+                  article.frontPageIndex != null &&
+                  article.frontPageIndex % 2 === 1
+              )
+              .map((article, idx) => {
+                return idx === 0 ? (
+                  <TopImageArticle
+                    key={article.id}
+                    article={article}
+                    className="border-b border-gray-300 py-2 last:border-none"
+                  />
+                ) : (
+                  <SideImageArticle
+                    key={article.id}
+                    article={article}
+                    className="border-b border-gray-300 py-2 last:border-none"
+                  />
+                );
+              })}
           </div>
         </div>
       </div>

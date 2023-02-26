@@ -4,7 +4,7 @@ import type {
   Media,
 } from "@prisma/client";
 import NavigationBar from "../navigationBar";
-import Article from "./article";
+import { SideImageArticle, TopImageArticle } from "./article";
 import FeaturedArticle from "./featuredArticle";
 
 type FullArticle = PrismaArticle & {
@@ -30,20 +30,15 @@ const MobileLayout: React.FC<{
         article={featuredArticle}
         className="mx-5 mt-2 border-b-2 border-black pb-2"
       />
-      {articles.map((article) => (
-        <Article
-          article={article}
-          className="mx-5 border-b border-gray-300 py-2"
-          key={article.id}
-        />
-      ))}
-      {articles.map((article) => (
-        <Article
-          article={article}
-          className="mx-5 border-b border-gray-300 py-2"
-          key={article.id}
-        />
-      ))}
+      {articles
+        .filter((article) => article.frontPageIndex != null)
+        .map((article) => (
+          <SideImageArticle
+            article={article}
+            className="mx-5 border-b border-gray-300 py-2"
+            key={article.id}
+          />
+        ))}
     </>
   );
 };
