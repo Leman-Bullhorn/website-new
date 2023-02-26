@@ -28,9 +28,9 @@ import { sections } from "../../utils/section";
 import { trpc } from "../../utils/trpc";
 import Link from "next/link";
 import {
-  ArticleBody,
   parseHtml,
   validateArticleBody,
+  type ArticleBody,
 } from "../../utils/article";
 import type { RouterOutputs } from "../../utils/trpc";
 import SelectSection from "../../components/selectSection";
@@ -207,7 +207,6 @@ const FrontPageLayout = () => {
 
   const frontPageTableColumns = [
     columnHelper.accessor("headline", {}),
-    columnHelper.accessor("focus", {}),
     columnHelper.display({
       header: "Move",
       cell: (props) =>
@@ -249,7 +248,6 @@ const FrontPageLayout = () => {
   ];
   const notFrontPageTableColumns = [
     columnHelper.accessor("headline", {}),
-    columnHelper.accessor("focus", {}),
     columnHelper.display({
       header: "Move",
       cell: (props) => (
@@ -301,7 +299,7 @@ const FrontPageLayout = () => {
 
   return (
     <div className="grid h-[80vh] grid-cols-2 gap-2">
-      <div className="col-span-1">
+      <div className="col-span-1 overflow-x-scroll">
         <p>Front page articles order</p>
         <Table zebra className="w-full">
           <thead>
