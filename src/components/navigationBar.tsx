@@ -55,6 +55,17 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
           </div>
         </div>
         <div className="navbar-end">
+          {session.data?.user?.name === "admin" ? (
+            <Link href="/admin">
+              <Button>admin</Button>
+            </Link>
+          ) : null}
+          {session.data?.user?.name === "editor" ||
+          session.data?.user?.name === "admin" ? (
+            <Link href="/editor">
+              <Button>editor</Button>
+            </Link>
+          ) : null}
           {session.status === "authenticated" && (
             <Button onClick={() => signOut()} color="error">
               Sign out
