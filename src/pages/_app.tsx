@@ -31,7 +31,7 @@ const sectionFont = localFont({
 
 const headlineFont = Bodoni_Moda({
   subsets: ["latin"],
-  weight: "400",
+  weight: "variable",
   variable: "--font-headline",
 });
 

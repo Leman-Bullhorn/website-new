@@ -44,9 +44,25 @@ export default function Footer() {
       </div>
       <div>
         <DaisyFooter.Title>About</DaisyFooter.Title>
-        <a className="link-hover link">Suggestions</a>
-        <a className="link-hover link">Join</a>
-        <a className="link-hover link">Staff</a>
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSc13tr2WnpnlHdH88S3kwveNed-g178mZN8W6377T5vZXMVTQ/viewform"
+          rel="noreferrer"
+          target="_blank"
+          className="link-hover link"
+        >
+          Suggestions
+        </a>
+        <a
+          href="https://forms.gle/Vk1wBTRvKeKd9gUb6"
+          rel="noreferrer"
+          target="_blank"
+          className="link-hover link"
+        >
+          Join
+        </a>
+        <Link href="/staff" className="link-hover link">
+          Staff
+        </Link>
       </div>
     </DaisyFooter>
   );
