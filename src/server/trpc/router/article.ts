@@ -168,12 +168,6 @@ export const articleRouter = router({
         return editedArticle;
       }
 
-      // 0 -> 3
-      // 1 -> 0
-      // 2 -> 1
-      // 3 -> 2
-      // 4
-
       if (
         selectedArticle.frontPageIndex == null ||
         input.index <= selectedArticle.frontPageIndex
@@ -220,5 +214,38 @@ export const articleRouter = router({
       ]);
 
       return editedArticle;
+    }),
+  editArticle: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        headline: z.string().optional(),
+        focus: z.string().optional(),
+        section: z.nativeEnum(Section).optional(),
+        writerIds: z.string().array().optional(),
+        thumbnailId: z.string().optional(),
+        body: articleBodySchema.optional(),
+        mediaIds: z.string().array().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.article.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          headline: input.headline,
+          focus: input.focus,
+          section: input.section,
+          writers: { set: input.writerIds?.map((id) => ({ id })) },
+          thumbnail: input.thumbnailId
+            ? { connect: { id: input.thumbnailId } }
+            : undefined,
+          media: input.mediaIds
+            ? { set: input.mediaIds.map((id) => ({ id })) }
+            : undefined,
+          body: input.body,
+        },
+      });
     }),
 });

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { protectedProcedure, router } from "../trpc";
+import { adminProcedure, protectedProcedure, router } from "../trpc";
 
 export const mediaRouter = router({
   create: protectedProcedure
@@ -16,6 +16,34 @@ export const mediaRouter = router({
           contentUrl: input.contentUrl,
           alt: input.alt,
           contributor: { connect: { id: input.contributorId } },
+        },
+      });
+    }),
+  byId: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.media.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+  editMedia: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        contributorId: z.string().nullable().optional(),
+        alt: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.media.update({
+        where: { id: input.id },
+        data: {
+          alt: input.alt,
+          contributor: input.contributorId
+            ? { connect: { id: input.contributorId } }
+            : undefined,
         },
       });
     }),

@@ -1,4 +1,4 @@
-import type { Prisma, Article } from "@prisma/client";
+import type { Prisma, Article, Media } from "@prisma/client";
 import { useMemo } from "react";
 import { z } from "zod";
 
@@ -100,3 +100,81 @@ export const slugify = (headline: string) =>
     .replace(/[^\w\s-]/g, "")
     .replace(/[\s_-]+/g, "-")
     .replace(/^-+|-+$/g, "");
+
+export const parseHtml = (
+  document: Document,
+  fileNameToMediaMap: Map<string, Media>
+) => {
+  const paragraphs = document.getElementsByTagName("p");
+
+  const articleParagraphs: ArticleParagraph[] = [];
+  for (const paragraph of new Array(...paragraphs).slice(1)) {
+    let { textAlign, textIndent, marginLeft, marginRight } = paragraph.style;
+    if (textAlign.length === 0) textAlign = "left";
+    if (textIndent.length === 0) textIndent = "0";
+    if (marginLeft.length === 0) marginLeft = "0";
+    if (marginRight.length === 0) marginRight = "0";
+    const articleSpans: ArticleSpan[] = [];
+    for (const span of paragraph.getElementsByTagName("span")) {
+      let { fontStyle, textDecoration, color, fontWeight } = span.style;
+      if (fontStyle.length === 0) fontStyle = "normal";
+      if (textDecoration.length === 0) textDecoration = "none";
+      if (color.length === 0) color = "#000000";
+      if (fontWeight.length === 0) fontWeight = "400";
+      const content: SpanContent[] = [];
+      for (const child of span.childNodes) {
+        if (child.nodeName === "A") {
+          content.push({
+            anchor: {
+              content: child.textContent ?? "",
+              href: (child as HTMLAnchorElement).href,
+            },
+          });
+        } else if (child.nodeName === "IMG") {
+          const { width, height } = (child as HTMLImageElement).style;
+          let imageWidth = parseFloat(width.split("px")[0] ?? "");
+          let imageHeight = parseFloat(height.split("px")[0] ?? "");
+          if (isNaN(imageWidth) || isNaN(imageHeight)) {
+            // Random defaults — this case should never happen
+            imageWidth = 300;
+            imageHeight = 200;
+          }
+          const { src } = child as HTMLImageElement;
+          // can't just do a lookup of the map because
+          // `src` gets the absolute path prepended by the DOMParser
+          for (const [name, media] of fileNameToMediaMap) {
+            if (src.includes(name)) {
+              content.push({
+                image: {
+                  mediaId: media.id,
+                  width: imageWidth,
+                  height: imageHeight,
+                },
+              });
+              break;
+            }
+          }
+        } else {
+          content.push({
+            text: { content: child.textContent ?? "" },
+          });
+        }
+      }
+      articleSpans.push({
+        fontStyle,
+        textDecoration,
+        color,
+        fontWeight,
+        content,
+      });
+    }
+    articleParagraphs.push({
+      marginLeft,
+      marginRight,
+      textAlignment: textAlign,
+      textIndent,
+      spans: articleSpans,
+    });
+  }
+  return { paragraphs: articleParagraphs };
+};
