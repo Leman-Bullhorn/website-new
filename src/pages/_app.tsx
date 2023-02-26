@@ -10,6 +10,7 @@ import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
 import { MediaContextProvider, mediaStyles } from "../utils/media";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Footer from "../components/footer";
 
 const primaryFont = Libre_Franklin({
   subsets: ["latin"],
@@ -84,6 +85,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         </MediaContextProvider>
         <ReactQueryDevtools />
       </main>
+      <Footer />
     </>
   );
 };
