@@ -126,7 +126,7 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           {article.headline}
         </h1>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between text-sm">
           <ByLine writers={article.writers} />
           <p className="text-gray-400">
             <Timestamp timestamp={article.publicationDate} />

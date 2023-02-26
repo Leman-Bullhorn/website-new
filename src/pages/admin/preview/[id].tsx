@@ -103,7 +103,7 @@ const PreviewPage: NextPage<
           {headline}
         </h1>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between text-sm">
           <ByLine writers={writers} />
           <p className="text-gray-400">
             <Timestamp timestamp={new Date()} />
