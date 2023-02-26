@@ -122,7 +122,7 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
             {articleSection.display}
           </Link>
         </p>
-        <h1 className="my-2 text-center font-headline text-4xl font-bold">
+        <h1 className="my-2 text-center font-headline text-4xl font-semibold">
           {article.headline}
         </h1>
 

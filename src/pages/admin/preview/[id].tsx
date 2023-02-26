@@ -99,7 +99,7 @@ const PreviewPage: NextPage<
             {section.display}
           </Link>
         </p>
-        <h1 className="my-2 text-center font-headline text-4xl font-bold">
+        <h1 className="my-2 text-center font-headline text-4xl font-semibold">
           {headline}
         </h1>
 

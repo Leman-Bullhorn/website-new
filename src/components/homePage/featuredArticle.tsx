@@ -37,7 +37,7 @@ const FeaturedArticle: React.FC<{
   return (
     <Card bordered={false} side="md" className={`rounded-none ${className}`}>
       <Card.Body className="grow-[2] basis-0 gap-1 p-0 [&>p]:grow-0">
-        <h2 className="link-hover font-headline text-2xl font-semibold hover:text-leman-blue">
+        <h2 className="link-hover font-headline text-2xl font-medium hover:text-leman-blue">
           <Link href={articleUrl}>{article.headline}</Link>
         </h2>
         <p className="text-sm">{article.focus}</p>

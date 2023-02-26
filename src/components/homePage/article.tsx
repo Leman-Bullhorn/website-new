@@ -39,7 +39,7 @@ export function TopImageArticle({
   return (
     <Card bordered={false} side className={`rounded-none ${className}`}>
       <Card.Body className="gap-0 p-0 [&>p]:grow-0">
-        <h2 className="link-hover font-headline text-lg font-semibold leading-5 hover:text-leman-blue">
+        <h2 className="link-hover font-headline text-lg font-medium leading-5 hover:text-leman-blue">
           <Link href={articleUrl}>{article.headline}</Link>
         </h2>
 
@@ -109,7 +109,7 @@ export function SideImageArticle({
           )}
 
           <div className="grow-[3] basis-0">
-            <h2 className="link-hover font-headline text-lg font-semibold leading-5 hover:text-leman-blue">
+            <h2 className="link-hover font-headline text-lg font-medium leading-5 hover:text-leman-blue">
               <Link href={articleUrl}>{article.headline}</Link>
             </h2>
             <p className="mt-1 text-sm">{article.focus}</p>
