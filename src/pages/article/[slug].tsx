@@ -53,6 +53,11 @@ export const getStaticProps: GetStaticProps<
       media: (Media & {
         contributor: Contributor | null;
       })[];
+      thumbnail:
+        | (Media & {
+            contributor: Contributor | null;
+          })
+        | null;
     };
     articleBody: ArticleBody;
   },
@@ -72,6 +77,7 @@ export const getStaticProps: GetStaticProps<
           contributor: true,
         },
       },
+      thumbnail: { include: { contributor: true } },
     },
   });
 
@@ -135,6 +141,24 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
         <article className="mt-2 border-t-2 border-leman-blue">
           <div className="mx-auto mt-8 flex max-w-prose flex-col gap-2 font-serif text-lg">
+            {article.thumbnail ? (
+              <CaptionedImage
+                contributor={article.thumbnail.contributor}
+                alt={article.thumbnail.alt}
+                className="mx-auto w-4/5"
+              >
+                <div className="relative h-0  pb-[66.6667%]">
+                  <Image
+                    priority
+                    className="object-cover"
+                    src={article.thumbnail.contentUrl}
+                    alt={article.thumbnail.alt}
+                    fill
+                    sizes="80vw"
+                  />
+                </div>
+              </CaptionedImage>
+            ) : null}
             {articleBody.paragraphs.map((paragraph, idx) => (
               <div
                 key={idx}
@@ -191,6 +215,7 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                             className="inline-block"
                             contributor={media.contributor}
                             key={media.id}
+                            alt={media.alt}
                           >
                             <Image
                               className="overflow-hidden"

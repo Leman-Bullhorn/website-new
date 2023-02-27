@@ -29,6 +29,9 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
           contributor: true,
         },
       },
+      thumbnail: {
+        include: { contributor: true },
+      },
       writers: true,
     },
   });
@@ -112,6 +115,24 @@ const PreviewPage: NextPage<
 
         <article className="mt-2 border-t-2 border-leman-blue">
           <div className="mx-auto mt-8 flex max-w-prose flex-col gap-2 font-serif text-lg">
+            {submission.thumbnail ? (
+              <CaptionedImage
+                contributor={submission.thumbnail.contributor}
+                alt={submission.thumbnail.alt}
+                className="mx-auto w-4/5"
+              >
+                <div className="relative h-0  pb-[66.6667%]">
+                  <Image
+                    priority
+                    className="object-cover"
+                    src={submission.thumbnail.contentUrl}
+                    alt={submission.thumbnail.alt}
+                    fill
+                    sizes="80vw"
+                  />
+                </div>
+              </CaptionedImage>
+            ) : null}
             {submissionBody.paragraphs.map((paragraph, idx) => (
               <div
                 key={idx}
@@ -168,6 +189,7 @@ const PreviewPage: NextPage<
                             className="inline-block"
                             contributor={media.contributor}
                             key={media.id}
+                            alt={media.alt}
                           >
                             <Image
                               className="overflow-hidden"
