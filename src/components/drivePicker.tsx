@@ -41,8 +41,10 @@ export default function DrivePicker({
     const config: PickerConfiguration = {
       clientId: env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
       developerKey: env.NEXT_PUBLIC_GOOGLE_API_KEY,
-      viewId: "DOCS",
-      viewMimeTypes: "application/vnd.google-apps.document",
+      setIncludeFolders: true,
+      viewMimeTypes:
+        "application/vnd.google-apps.document,application/vnd.google-apps.folder",
+
       callbackFunction: async (data) => {
         if (data.action === "picked") {
           setFileName(data.docs[0]?.name);
