@@ -5,11 +5,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { Button, Card, FileInput, Input, Table, Textarea } from "react-daisyui";
 import { trpc } from "../../utils/trpc";
 import Modal from "../modal";
 import RequiredStar from "../requiredStar";
+import Image from "next/image";
 
 export default function ContributorsView() {
   const [firstName, setFirstName] = useState<string>();
@@ -34,7 +36,23 @@ export default function ContributorsView() {
     columnHelper.display({
       header: "Name",
       cell: ({ row }) => (
-        <p>{`${row.original.lastName}, ${row.original.firstName}`}</p>
+        <Link
+          className="flex items-center gap-1"
+          href={`/contributor/${row.original.slug}`}
+        >
+          {row.original.headshotUrl && (
+            <Image
+              className="rounded-full"
+              src={row.original.headshotUrl}
+              width={25}
+              height={25}
+              alt=""
+            />
+          )}
+          <span className="link-hover link">
+            {row.original.lastName}, {row.original.firstName}
+          </span>
+        </Link>
       ),
     }),
     columnHelper.display({
@@ -125,9 +143,9 @@ export default function ContributorsView() {
         />
       ) : null}
       <div className="flex gap-2">
-        <div className="grow basis-0">
-          <Table zebra compact className="w-full overflow-x-scroll">
-            <thead>
+        <div className="h-[70vh] grow basis-0 overflow-x-auto">
+          <Table zebra compact className="w-full">
+            <thead className="sticky top-0">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
