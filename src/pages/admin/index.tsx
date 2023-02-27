@@ -60,7 +60,9 @@ const SectionPage: NextPage<
             <p>Submissions ({articleSubmissions?.length ?? 0})</p>
           </Menu.Item>
           <Menu.Item
-            className={activeView === "frontPage" ? "underline" : ""}
+            className={`border-b border-gray-300 ${
+              activeView === "frontPage" ? "underline" : ""
+            }`}
             onClick={() => setActiveView("frontPage")}
           >
             <p>Front Page Layout</p>
