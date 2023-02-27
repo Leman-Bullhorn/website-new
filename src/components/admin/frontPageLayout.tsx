@@ -1,8 +1,9 @@
 import type { Article } from "@prisma/client";
 import { flexRender, useReactTable } from "@tanstack/react-table";
 import { createColumnHelper, getCoreRowModel } from "@tanstack/table-core";
+import Link from "next/link";
 import { useMemo } from "react";
-import { Button, Table } from "react-daisyui";
+import { Button, Table, Tooltip } from "react-daisyui";
 import { trpc } from "../../utils/trpc";
 
 export default function FrontPageLayout() {
@@ -104,7 +105,27 @@ export default function FrontPageLayout() {
   };
 
   const frontPageTableColumns = [
-    columnHelper.accessor("headline", {}),
+    columnHelper.accessor("headline", {
+      cell: (props) => (
+        <Link
+          className="link-hover link"
+          data-tip={props.row.original.headline}
+          href={`/article/${props.row.original.slug}`}
+        >
+          {props.row.original.headline.length > 50 ? (
+            <Tooltip
+              position="top"
+              className="link-hover link before:whitespace-pre-wrap before:content-[attr(data-tip)]"
+              message={props.row.original.headline}
+            >
+              {props.row.original.headline.substring(0, 47) + "..."}
+            </Tooltip>
+          ) : (
+            props.row.original.headline
+          )}
+        </Link>
+      ),
+    }),
     columnHelper.display({
       header: "Move",
       cell: (props) =>
