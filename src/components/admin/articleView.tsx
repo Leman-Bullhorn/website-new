@@ -1,6 +1,7 @@
 import type { Media, Section } from "@prisma/client";
 import { flexRender, useReactTable } from "@tanstack/react-table";
 import { createColumnHelper, getCoreRowModel } from "@tanstack/table-core";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   Button,
@@ -9,6 +10,7 @@ import {
   Table,
   Textarea,
   Toggle,
+  Tooltip,
 } from "react-daisyui";
 import { parseHtml, type ArticleBody } from "../../utils/article";
 import { type RouterOutputs, trpc } from "../../utils/trpc";
@@ -79,11 +81,40 @@ export default function ArticlesView() {
 
   const columnHelper = createColumnHelper<Article>();
   const columns = [
-    columnHelper.accessor("headline", {}),
-    columnHelper.accessor("section", {}),
-    columnHelper.accessor((article) => article.publicationDate.toDateString(), {
-      header: "Publication Date",
+    columnHelper.accessor("headline", {
+      cell: (props) => (
+        <Link
+          className="link-hover link"
+          data-tip={props.row.original.headline}
+          href={`/article/${props.row.original.slug}`}
+        >
+          {props.row.original.headline.length > 50 ? (
+            <Tooltip
+              position="right"
+              className="link-hover link before:whitespace-pre-wrap before:content-[attr(data-tip)]"
+              message={props.row.original.headline}
+            >
+              {props.row.original.headline.substring(0, 47) + "..."}
+            </Tooltip>
+          ) : (
+            props.row.original.headline
+          )}
+        </Link>
+      ),
     }),
+    columnHelper.accessor("section", {}),
+
+    columnHelper.accessor(
+      (article) =>
+        new Intl.DateTimeFormat("en-US", {
+          month: "2-digit",
+          day: "2-digit",
+          year: "2-digit",
+        }).format(article.publicationDate),
+      {
+        header: "Published",
+      }
+    ),
     columnHelper.accessor(
       (row) =>
         row.writers.map((w) => `${w.firstName} ${w.lastName}`).join(", "),
