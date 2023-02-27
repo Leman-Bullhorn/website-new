@@ -124,37 +124,42 @@ export default function ContributorsView() {
           onClose={() => setActiveContributor(undefined)}
         />
       ) : null}
-      <div className="grid grid-cols-2 gap-x-2">
-        <Table zebra className="col-span-1 overflow-x-scroll">
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="!static">
-                    {header.isPlaceholder
-                      ? ""
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-        <div className="relative col-span-1 before:absolute before:-left-1 before:h-full before:border-l before:border-gray-300">
+      <div className="flex gap-2">
+        <div className="grow basis-0">
+          <Table zebra compact className="w-full overflow-x-scroll">
+            <thead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th key={header.id} className="!static">
+                      {header.isPlaceholder
+                        ? ""
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+        <div className="relative col-span-1 grow basis-0 before:absolute before:-left-1 before:h-full before:border-l before:border-gray-300">
           <Card>
             <Card.Title>Create Contributor</Card.Title>
             <Card.Body className="pb-0">
