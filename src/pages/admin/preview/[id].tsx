@@ -3,6 +3,7 @@ import type {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -87,10 +88,11 @@ const PreviewPage: NextPage<
     return allWriters.filter((w) => queryWriters.includes(w.id));
   }, [allWriters, router.query.writers, submission.writers]);
 
-  console.log(writers);
-
   return (
     <>
+      <Head>
+        <title>Article Preview</title>
+      </Head>
       <NavigationBar />
       <div className="mx-auto mt-12 flex flex-col px-2 lg:max-w-[75%]">
         <div className="h-px w-full bg-black" />

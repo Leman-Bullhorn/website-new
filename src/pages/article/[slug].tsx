@@ -22,6 +22,7 @@ import ByLine from "../../components/byLine";
 import Timestamp from "../../components/timestamp";
 import Image from "next/image";
 import CaptionedImage from "../../components/captionedImage";
+import Head from "next/head";
 
 interface StaticParams extends ParsedUrlQuery {
   slug: string;
@@ -117,6 +118,11 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <>
+      <Head>
+        <title>
+          {articleSection.display} | {article.headline}
+        </title>
+      </Head>
       <NavigationBar />
       <div className="mx-auto mt-12 flex flex-col px-2 lg:max-w-[75%]">
         <div className="h-px w-full bg-black" />

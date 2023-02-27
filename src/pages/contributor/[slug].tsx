@@ -16,6 +16,7 @@ import {
   useDeserializeArticles,
   type SerializableArticle,
 } from "../../utils/article";
+import Head from "next/head";
 
 interface StaticParams extends ParsedUrlQuery {
   slug: string;
@@ -105,6 +106,11 @@ const ContributorPage: NextPage<
 
   return (
     <>
+      <Head>
+        <title>
+          {contributor.firstName} {contributor.lastName} - The Bullhorn
+        </title>
+      </Head>
       <NavigationBar />
       <div className="container mx-auto mt-8 px-4">
         <div className="border-b-4 border-leman-blue pb-4">

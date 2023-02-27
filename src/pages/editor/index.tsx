@@ -15,6 +15,7 @@ import { parseHtml } from "../../utils/article";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 import DrivePicker from "../../components/drivePicker";
 import RequiredStar from "../../components/requiredStar";
+import Head from "next/head";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getServerAuthSession(ctx);
@@ -192,6 +193,9 @@ const EditorPage: NextPage<
   };
   return (
     <>
+      <Head>
+        <title>Editor Dashboard</title>
+      </Head>
       <NavigationBar />
       <div className="container mx-auto">
         <h1 className="mt-4 text-center text-2xl">

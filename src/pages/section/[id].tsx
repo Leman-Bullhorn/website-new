@@ -15,6 +15,7 @@ import {
 } from "../../utils/article";
 import ArticleBlock from "../../components/articleBlock";
 import { type Article, Prisma } from "@prisma/client";
+import Head from "next/head";
 
 interface StaticParams extends ParsedUrlQuery {
   id: string;
@@ -91,6 +92,9 @@ const SectionPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   return (
     <>
+      <Head>
+        <title>{section.display} - The Bullhorn</title>
+      </Head>
       <NavigationBar />
       <div className="container mx-auto mt-4 px-2">
         <h1 className="border-b-4 border-leman-blue pb-2 text-center font-section text-5xl">

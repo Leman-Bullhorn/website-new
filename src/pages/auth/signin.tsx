@@ -1,4 +1,5 @@
 import { signIn } from "next-auth/react";
+import Head from "next/head";
 import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
@@ -30,6 +31,9 @@ const SignInPage: NextPage<
 
   return (
     <>
+      <Head>
+        <title>Sign In</title>
+      </Head>
       <NavigationBar buffer={false} />
       <div className="flex h-screen items-center justify-center">
         <form

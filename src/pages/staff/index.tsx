@@ -1,3 +1,4 @@
+import Head from "next/head";
 import NavigationBar from "../../components/navigationBar";
 
 const SectionTitle = ({ children }: { children: string }) => (
@@ -7,6 +8,9 @@ const SectionTitle = ({ children }: { children: string }) => (
 export default function StaffPage() {
   return (
     <>
+      <Head>
+        <title>The Bullhorn Staff</title>
+      </Head>
       <NavigationBar />
       <div className="container mx-auto">
         <h1 className="mt-4 text-center font-headline text-2xl font-medium">

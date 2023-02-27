@@ -12,6 +12,7 @@ import FrontPageLayout from "../../components/admin/frontPageLayout";
 import ContributorsView from "../../components/admin/contributorView";
 import ArticlesView from "../../components/admin/articleView";
 import SubmissionsView from "../../components/admin/submissionsView";
+import Head from "next/head";
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const session = await getServerAuthSession(ctx);
@@ -40,6 +41,9 @@ const SectionPage: NextPage<
 
   return (
     <>
+      <Head>
+        <title>Admin Dashboard</title>
+      </Head>
       <NavigationBar />
       <div className="flex gap-4 pt-4">
         <Menu className="col-span-1 h-[75vh] min-w-fit rounded-r-2xl bg-base-200 p-2">
