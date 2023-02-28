@@ -7,7 +7,7 @@ export const mediaRouter = router({
       z.object({
         contentUrl: z.string(),
         alt: z.string(),
-        contributorId: z.string(),
+        contributorId: z.string().nullable(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -15,7 +15,9 @@ export const mediaRouter = router({
         data: {
           contentUrl: input.contentUrl,
           alt: input.alt,
-          contributor: { connect: { id: input.contributorId } },
+          contributor: input.contributorId
+            ? { connect: { id: input.contributorId } }
+            : undefined,
         },
       });
     }),

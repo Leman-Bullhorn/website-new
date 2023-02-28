@@ -16,6 +16,7 @@ import { getServerAuthSession } from "../../server/common/get-server-auth-sessio
 import DrivePicker from "../../components/drivePicker";
 import RequiredStar from "../../components/requiredStar";
 import Head from "next/head";
+import { SelectContributor } from "../../components/selectContributor";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getServerAuthSession(ctx);
@@ -56,7 +57,7 @@ const EditorPage: NextPage<
   const [articleWriters, setArticleWriters] = useState<string[]>([]);
   const [driveData, setDriveData] = useState<{
     images: {
-      contributorId?: string;
+      contributorId: string | null;
       altText?: string;
       file: File;
     }[];
@@ -65,9 +66,10 @@ const EditorPage: NextPage<
   // used to reset certain form element's state
   const [resetKey, setResetKey] = useState(1);
   const [thumbnailFile, setThumbnailFile] = useState<File>();
-  const [thumbnailContributor, setThumbnailContributor] = useState<string>();
+  const [thumbnailContributor, setThumbnailContributor] = useState<
+    string | null
+  >(null);
   const [thumbnailAlt, setThumbnailAlt] = useState<string>();
-  const thumbnailSelectId = useId();
   const writerOptions = useMemo(
     () =>
       writers.map((w) => ({
@@ -86,7 +88,7 @@ const EditorPage: NextPage<
   const { mutateAsync: createMedia } = trpc.media.create.useMutation();
 
   const uploadAndGenerateMedia = async (image: {
-    contributorId?: string;
+    contributorId: string | null;
     altText?: string;
     file: File;
   }) => {
@@ -112,7 +114,7 @@ const EditorPage: NextPage<
     return await createMedia({
       contentUrl: `https://cdn.thebullhorn.net/${imagePath}`,
       alt: image.altText!,
-      contributorId: image.contributorId!,
+      contributorId: image.contributorId,
     });
   };
 
@@ -125,10 +127,7 @@ const EditorPage: NextPage<
       articleWriters.length === 0 ||
       driveData == null ||
       driveData.htmlFileText == null ||
-      driveData.images.some(
-        ({ altText, contributorId }) => altText == null || contributorId == null
-      ) ||
-      (thumbnailFile != null && thumbnailContributor == null) ||
+      driveData.images.some(({ altText }) => altText == null) ||
       (thumbnailFile != null && thumbnailAlt == null)
     ) {
       // TODO: make this nicer
@@ -188,7 +187,7 @@ const EditorPage: NextPage<
     setDriveData(undefined);
     setResetKey((v) => -v);
     setThumbnailFile(undefined);
-    setThumbnailContributor(undefined);
+    setThumbnailContributor(null);
     setThumbnailAlt(undefined);
   };
   return (
@@ -290,16 +289,14 @@ const EditorPage: NextPage<
               key={resetKey}
             />
             {thumbnailFile && (
-              <div className="mt-4 flex gap-2">
-                <Select
-                  className="grow"
-                  instanceId={thumbnailSelectId}
+              <div className="mt-4">
+                <SelectContributor
+                  className="float-left w-1/2"
                   placeholder="Thumbnail Contributor"
-                  onChange={(v) => setThumbnailContributor(v?.value)}
-                  options={writerOptions}
+                  onChange={setThumbnailContributor}
                 />
                 <Textarea
-                  className="grow"
+                  className="w-1/2"
                   placeholder="Thumbnail Alt text."
                   onChange={({ target }) => setThumbnailAlt(target.value)}
                 />

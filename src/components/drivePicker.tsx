@@ -17,7 +17,7 @@ export default function DrivePicker({
   onChange,
 }: {
   onChange?: (stuff: {
-    images: { contributorId?: string; altText?: string; file: File }[];
+    images: { contributorId: string | null; altText?: string; file: File }[];
     htmlFileText?: string;
   }) => void;
 }) {
@@ -25,7 +25,7 @@ export default function DrivePicker({
   const [fileName, setFileName] = useState<string>();
   const [htmlFileText, setHtmlFileText] = useState<string>();
   const [images, setImages] = useState<
-    { contributorId?: string; altText?: string; file: File }[]
+    { contributorId: string | null; altText?: string; file: File }[]
   >([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
@@ -71,7 +71,7 @@ export default function DrivePicker({
 
             const articleImages = files
               .filter((file) => file.name.startsWith("images"))
-              .map((file) => ({ file }));
+              .map((file) => ({ file, contributorId: null }));
 
             // onChange?.(articleImages, htmlFileText);
 
@@ -146,7 +146,7 @@ export default function DrivePicker({
                   const oldCopy = [...old];
                   oldCopy[idx] = {
                     ...old[idx]!,
-                    contributorId: v?.value,
+                    contributorId: v?.value ?? null,
                   };
                   return oldCopy;
                 })

@@ -47,21 +47,21 @@ export function SelectContributor({
   className,
 }: {
   selectedContributor?: string | null;
-  onChange?: (writerId: string) => void;
+  onChange?: (writerId: string | null) => void;
   placeholder?: string;
   className?: string;
 }) {
   const { data: contributors } = trpc.contributor.all.useQuery();
   const instanceId = useId();
 
-  const contributorOptions = useMemo(
-    () =>
-      contributors?.map((x) => ({
-        value: x.id,
-        label: `${x.firstName} ${x.lastName}`,
-      })),
-    [contributors]
-  );
+  const contributorOptions = useMemo(() => {
+    const options = contributors?.map((x) => ({
+      value: x.id,
+      label: `${x.firstName} ${x.lastName}`,
+    }));
+    const publicDomain = { value: null, label: "Public Domain" };
+    return [publicDomain, ...(options ?? [])];
+  }, [contributors]);
 
   return (
     <Select
