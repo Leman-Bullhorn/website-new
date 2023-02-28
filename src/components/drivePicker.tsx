@@ -2,16 +2,15 @@
 declare let google: any;
 
 import { unzip } from "fflate";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Textarea } from "react-daisyui";
 import useDrivePicker from "react-google-drive-picker/dist";
 import type {
   authResult,
   PickerConfiguration,
 } from "react-google-drive-picker/dist/typeDefs";
-import Select from "react-select";
 import { env } from "../env/client.mjs";
-import { trpc } from "../utils/trpc";
+import { SelectContributor } from "./selectContributor";
 
 export default function DrivePicker({
   onChange,
@@ -21,7 +20,6 @@ export default function DrivePicker({
     htmlFileText?: string;
   }) => void;
 }) {
-  const { data: contributorsList } = trpc.contributor.all.useQuery();
   const [fileName, setFileName] = useState<string>();
   const [htmlFileText, setHtmlFileText] = useState<string>();
   const [images, setImages] = useState<
@@ -30,7 +28,6 @@ export default function DrivePicker({
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
   const [openPicker] = useDrivePicker();
-  const selectId = useId();
 
   useEffect(
     () => onChange?.({ images, htmlFileText }),
@@ -136,25 +133,20 @@ export default function DrivePicker({
             <picture>
               <img alt={`Image ${idx + 1}`} src={url} width={100} />
             </picture>
-            <Select
-              isLoading={contributorsList == null}
+            <SelectContributor
               className="grow"
-              instanceId={selectId}
               placeholder="Contributor"
+              selectedContributor={images[idx]?.contributorId}
               onChange={(v) =>
                 setImages((old) => {
                   const oldCopy = [...old];
                   oldCopy[idx] = {
                     ...old[idx]!,
-                    contributorId: v?.value ?? null,
+                    contributorId: v,
                   };
                   return oldCopy;
                 })
               }
-              options={contributorsList?.map((c) => ({
-                value: c.id,
-                label: `${c.firstName} ${c.lastName}`,
-              }))}
             />
             <Textarea
               className="grow"
