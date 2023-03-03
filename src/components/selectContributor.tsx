@@ -60,15 +60,14 @@ export function SelectContributor({
   const { data: contributors } = trpc.contributor.all.useQuery();
   const instanceId = useId();
 
-  const contributorOptions = useMemo(() => {
-    const options = contributors?.map((x) => ({
-      value: x.id,
-      label: `${x.firstName} ${x.lastName}`,
-    }));
-    return options;
-    // const publicDomain = { value: null, label: "Public Domain" };
-    // return [publicDomain, ...(options ?? [])];
-  }, [contributors]);
+  const contributorOptions = useMemo(
+    () =>
+      contributors?.map((x) => ({
+        value: x.id,
+        label: `${x.firstName} ${x.lastName}`,
+      })),
+    [contributors]
+  );
 
   const selectValue = useMemo(() => {
     if (selectedContributorId != null) {
@@ -88,6 +87,9 @@ export function SelectContributor({
       instanceId={instanceId}
       options={contributorOptions}
       allowCreateWhileLoading={false}
+      formatCreateLabel={(value) => (
+        <p>Outside contributor: &quot;{value}&quot;</p>
+      )}
       onCreateOption={(newOption) => {
         onChange?.({ contributorText: newOption, contributorId: undefined });
       }}
