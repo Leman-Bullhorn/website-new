@@ -40,6 +40,7 @@ model Media {
   alt                         String
   contributor                 Contributor?        @relation(fields: [contributorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   contributorId               String?
+  contributorText             String
   thumbnailArticles           Article[]           @relation("thumbnail")
   mediaArticles               Article[]           @relation("media")
   thumbnailArticleSubmissions ArticleSubmission[] @relation("thumbnailArticleSubmissions")

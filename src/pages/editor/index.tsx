@@ -17,6 +17,7 @@ import DrivePicker from "../../components/drivePicker";
 import RequiredStar from "../../components/requiredStar";
 import Head from "next/head";
 import { SelectContributor } from "../../components/selectContributor";
+import { useUploadAndGenerateMedia } from "../../utils/media";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getServerAuthSession(ctx);
@@ -57,7 +58,8 @@ const EditorPage: NextPage<
   const [articleWriters, setArticleWriters] = useState<string[]>([]);
   const [driveData, setDriveData] = useState<{
     images: {
-      contributorId: string | null;
+      contributorId?: string;
+      contributorText: string;
       altText?: string;
       file: File;
     }[];
@@ -66,9 +68,10 @@ const EditorPage: NextPage<
   // used to reset certain form element's state
   const [resetKey, setResetKey] = useState(1);
   const [thumbnailFile, setThumbnailFile] = useState<File>();
-  const [thumbnailContributor, setThumbnailContributor] = useState<
-    string | null
-  >(null);
+  const [thumbnailContributor, setThumbnailContributor] = useState<{
+    contributorId?: string;
+    contributorText?: string;
+  }>({});
   const [thumbnailAlt, setThumbnailAlt] = useState<string>();
   const writerOptions = useMemo(
     () =>
@@ -83,40 +86,7 @@ const EditorPage: NextPage<
   const { mutateAsync: createSubmission } =
     trpc.article.createSubmission.useMutation();
 
-  const { mutateAsync: createSignedUrl } =
-    trpc.s3.createSignedUrl.useMutation();
-  const { mutateAsync: createMedia } = trpc.media.create.useMutation();
-
-  const uploadAndGenerateMedia = async (image: {
-    contributorId: string | null;
-    altText?: string;
-    file: File;
-  }) => {
-    const now = new Date();
-    const year = now.getUTCFullYear();
-    const month = now.getUTCMonth() + 1;
-    const day = now.getUTCDate();
-
-    const imageExtension = image.file.name.split(".").pop() ?? "jpg";
-    const { signedUrl, imagePath } = await createSignedUrl({
-      imagePath: `images/${year}/${month}/${day}`,
-      extension: imageExtension,
-    });
-
-    fetch(signedUrl, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      body: image.file,
-    });
-
-    return await createMedia({
-      contentUrl: `https://cdn.thebullhorn.net/${imagePath}`,
-      alt: image.altText!,
-      contributorId: image.contributorId,
-    });
-  };
+  const uploadAndGenerateMedia = useUploadAndGenerateMedia();
 
   const onSubmit = async () => {
     if (
@@ -128,7 +98,8 @@ const EditorPage: NextPage<
       driveData == null ||
       driveData.htmlFileText == null ||
       driveData.images.some(({ altText }) => altText == null) ||
-      (thumbnailFile != null && thumbnailAlt == null)
+      (thumbnailFile != null &&
+        (thumbnailAlt == null || thumbnailContributor.contributorText == null))
     ) {
       // TODO: make this nicer
       alert("missing required fields");
@@ -138,9 +109,21 @@ const EditorPage: NextPage<
 
     const fileNameToMediaMap = new Map<string, Media>();
 
-    for (const image of driveData.images) {
-      const media = await uploadAndGenerateMedia(image);
-      fileNameToMediaMap.set(image.file.name, media);
+    for (const {
+      file,
+      contributorText,
+      altText,
+      contributorId,
+    } of driveData.images) {
+      const media = await uploadAndGenerateMedia({
+        file,
+        contributorId,
+        contributorText,
+        // Checked already above
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        altText: altText!,
+      });
+      fileNameToMediaMap.set(file.name, media);
     }
 
     const html = new DOMParser().parseFromString(
@@ -167,8 +150,13 @@ const EditorPage: NextPage<
     if (thumbnailFile != null) {
       const thumbnail = await uploadAndGenerateMedia({
         file: thumbnailFile,
-        contributorId: thumbnailContributor,
-        altText: thumbnailAlt,
+        contributorId: thumbnailContributor.contributorId,
+        // Checked already above
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        contributorText: thumbnailContributor.contributorText!,
+        // Checked already above
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        altText: thumbnailAlt!,
       });
       submissionArguments.thumbnailMediaId = thumbnail.id;
     }
@@ -187,7 +175,10 @@ const EditorPage: NextPage<
     setDriveData(undefined);
     setResetKey((v) => -v);
     setThumbnailFile(undefined);
-    setThumbnailContributor(null);
+    setThumbnailContributor({
+      contributorId: undefined,
+      contributorText: undefined,
+    });
     setThumbnailAlt(undefined);
   };
   return (
@@ -294,6 +285,8 @@ const EditorPage: NextPage<
                   className="float-left w-1/2"
                   placeholder="Thumbnail Contributor"
                   onChange={setThumbnailContributor}
+                  selectedContributorId={thumbnailContributor.contributorId}
+                  selectedContributorText={thumbnailContributor.contributorText}
                 />
                 <Textarea
                   className="w-1/2"

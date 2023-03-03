@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from "react-daisyui";
 import { parseHtml, type ArticleBody } from "../../utils/article";
+import { useUploadAndGenerateMedia } from "../../utils/media";
 import { type RouterOutputs, trpc } from "../../utils/trpc";
 import DrivePicker from "../drivePicker";
 import Modal from "../modal";
@@ -253,6 +254,7 @@ const ArticleEditModal = ({
   );
   const [driveData, setDriveData] = useState<{
     images: {
+      contributorText: string;
       contributorId?: string;
       altText?: string;
       file: File;
@@ -260,9 +262,10 @@ const ArticleEditModal = ({
     htmlFileText?: string;
   }>();
   const [thumbnailFile, setThumbnailFile] = useState<File>();
-  const [thumbnailContributor, setThumbnailContributor] = useState<
-    string | null
-  >();
+  const [thumbnailContributor, setThumbnailContributor] = useState<{
+    contributorId?: string;
+    contributorText?: string;
+  }>({});
   const [thumbnailAlt, setThumbnailAlt] = useState<string>();
   const [thumbnailChanged, setThumbnailChanged] = useState(false);
   const thumbnailUrl = useMemo(
@@ -278,11 +281,14 @@ const ArticleEditModal = ({
     { id: article.thumbnailId! },
     {
       enabled: article.thumbnailId != null,
-      onSuccess: async (data) => {
-        if (data == null || thumbnailFile != null) return;
-        setThumbnailAlt(data.alt);
-        setThumbnailContributor(data.contributorId);
-        const res = await fetch(data.contentUrl);
+      onSuccess: async (media) => {
+        if (media == null || thumbnailFile != null) return;
+        setThumbnailAlt(media.alt);
+        setThumbnailContributor({
+          contributorId: media.contributorId ?? undefined,
+          contributorText: media.contributorText,
+        });
+        const res = await fetch(media.contentUrl);
         const resData = await res.blob();
         const file = new File([resData], "thumbnail.jpg", {
           type: "image/jpeg",
@@ -297,40 +303,7 @@ const ArticleEditModal = ({
   });
   const { mutateAsync: editMedia } = trpc.media.editMedia.useMutation();
 
-  const { mutateAsync: createSignedUrl } =
-    trpc.s3.createSignedUrl.useMutation();
-  const { mutateAsync: createMedia } = trpc.media.create.useMutation();
-
-  const uploadAndGenerateMedia = async (image: {
-    contributorId?: string;
-    altText?: string;
-    file: File;
-  }) => {
-    const now = new Date();
-    const year = now.getUTCFullYear();
-    const month = now.getUTCMonth() + 1;
-    const day = now.getUTCDate();
-
-    const imageExtension = image.file.name.split(".").pop() ?? "jpg";
-    const { signedUrl, imagePath } = await createSignedUrl({
-      imagePath: `images/${year}/${month}/${day}`,
-      extension: imageExtension,
-    });
-
-    fetch(signedUrl, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      body: image.file,
-    });
-
-    return await createMedia({
-      contentUrl: `https://cdn.thebullhorn.net/${imagePath}`,
-      alt: image.altText!,
-      contributorId: image.contributorId!,
-    });
-  };
+  const uploadAndGenerateMedia = useUploadAndGenerateMedia();
 
   const onClickEdit = async () => {
     if (
@@ -353,7 +326,14 @@ const ArticleEditModal = ({
       const fileNameToMediaMap = new Map<string, Media>();
 
       for (const image of driveData.images) {
-        const media = await uploadAndGenerateMedia(image);
+        const media = await uploadAndGenerateMedia({
+          file: image.file,
+          // Checked already above
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          altText: image.altText!,
+          contributorText: image.contributorText,
+          contributorId: image.contributorId,
+        });
         fileNameToMediaMap.set(image.file.name, media);
       }
 
@@ -364,7 +344,6 @@ const ArticleEditModal = ({
 
       articleContent = parseHtml(html, fileNameToMediaMap);
 
-      // const bodyMediaIds: string[] = [];
       for (const media of fileNameToMediaMap.values()) {
         bodyMediaIds.push(media.id);
       }
@@ -375,7 +354,7 @@ const ArticleEditModal = ({
     if (thumbnailChanged) {
       if (
         thumbnailFile == null ||
-        thumbnailContributor == null ||
+        thumbnailContributor?.contributorText == null ||
         thumbnailAlt == null ||
         thumbnailAlt === ""
       ) {
@@ -386,7 +365,8 @@ const ArticleEditModal = ({
       const thumbnailMedia = await uploadAndGenerateMedia({
         file: thumbnailFile,
         altText: thumbnailAlt,
-        contributorId: thumbnailContributor,
+        contributorText: thumbnailContributor.contributorText,
+        contributorId: thumbnailContributor.contributorId,
       });
 
       thumbnailMediaId = thumbnailMedia.id;
@@ -394,7 +374,8 @@ const ArticleEditModal = ({
       await editMedia({
         id: article.thumbnailId,
         alt: thumbnailAlt,
-        contributorId: thumbnailContributor,
+        contributorId: thumbnailContributor.contributorId ?? null,
+        contributorText: thumbnailContributor.contributorText,
       });
     }
 
@@ -483,7 +464,7 @@ const ArticleEditModal = ({
               setThumbnailChanged(true);
               setThumbnailFile(target.files?.[0]);
               setThumbnailAlt("");
-              setThumbnailContributor(undefined);
+              setThumbnailContributor({});
             }}
           />
           {thumbnailFile ? (
@@ -491,8 +472,12 @@ const ArticleEditModal = ({
               <SelectContributor
                 className="float-left w-1/2"
                 placeholder="Thumbnail Contributor"
-                onChange={setThumbnailContributor}
-                selectedContributor={thumbnailContributor}
+                onChange={(stuff) => {
+                  console.log("setting it to", stuff);
+                  setThumbnailContributor(stuff);
+                }}
+                selectedContributorId={thumbnailContributor.contributorId}
+                selectedContributorText={thumbnailContributor.contributorText}
               />
               <Textarea
                 className="w-1/2"

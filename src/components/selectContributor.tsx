@@ -1,6 +1,7 @@
 import { useId, useMemo } from "react";
 import Select from "react-select";
 import { trpc } from "../utils/trpc";
+import CreatableSelect from "react-select/creatable";
 
 export function MultiSelectContributor({
   selectedWriters,
@@ -41,13 +42,18 @@ export function MultiSelectContributor({
 }
 
 export function SelectContributor({
-  selectedContributor,
+  selectedContributorId,
+  selectedContributorText,
   onChange,
   placeholder,
   className,
 }: {
-  selectedContributor?: string | null;
-  onChange?: (writerId: string | null) => void;
+  selectedContributorId?: string;
+  selectedContributorText?: string;
+  onChange?: (contributor: {
+    contributorId?: string;
+    contributorText?: string;
+  }) => void;
   placeholder?: string;
   className?: string;
 }) {
@@ -59,20 +65,40 @@ export function SelectContributor({
       value: x.id,
       label: `${x.firstName} ${x.lastName}`,
     }));
-    const publicDomain = { value: null, label: "Public Domain" };
-    return [publicDomain, ...(options ?? [])];
+    return options;
+    // const publicDomain = { value: null, label: "Public Domain" };
+    // return [publicDomain, ...(options ?? [])];
   }, [contributors]);
 
+  const selectValue = useMemo(() => {
+    if (selectedContributorId != null) {
+      return contributorOptions?.find((c) => c.value === selectedContributorId);
+    }
+
+    if (selectedContributorText != null) {
+      return { value: selectedContributorText, label: selectedContributorText };
+    }
+  }, [contributorOptions, selectedContributorId, selectedContributorText]);
+
   return (
-    <Select
+    <CreatableSelect
       className={className}
       placeholder={placeholder}
       isLoading={contributors == null}
       instanceId={instanceId}
       options={contributorOptions}
-      value={contributorOptions?.find((c) => c.value === selectedContributor)}
+      allowCreateWhileLoading={false}
+      onCreateOption={(newOption) => {
+        onChange?.({ contributorText: newOption, contributorId: undefined });
+      }}
+      value={selectValue}
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      onChange={(it) => onChange?.(it!.value)}
+      onChange={(it) =>
+        onChange?.({
+          contributorId: it?.value,
+          contributorText: it?.label,
+        })
+      }
     />
   );
 }

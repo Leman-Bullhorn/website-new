@@ -7,7 +7,8 @@ export const mediaRouter = router({
       z.object({
         contentUrl: z.string(),
         alt: z.string(),
-        contributorId: z.string().nullable(),
+        contributorId: z.string().optional(),
+        contributorText: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -18,6 +19,7 @@ export const mediaRouter = router({
           contributor: input.contributorId
             ? { connect: { id: input.contributorId } }
             : undefined,
+          contributorText: input.contributorText,
         },
       });
     }),
@@ -35,6 +37,7 @@ export const mediaRouter = router({
       z.object({
         id: z.string(),
         contributorId: z.string().nullable().optional(),
+        contributorText: z.string().optional(),
         alt: z.string().optional(),
       })
     )
@@ -43,8 +46,11 @@ export const mediaRouter = router({
         where: { id: input.id },
         data: {
           alt: input.alt,
+          contributorText: input.contributorText,
           contributor: input.contributorId
             ? { connect: { id: input.contributorId } }
+            : input.contributorId === null
+            ? { disconnect: true }
             : undefined,
         },
       });

@@ -5,6 +5,7 @@ interface Props {
   children: React.ReactNode;
   className?: string;
   contributor: Contributor | null;
+  contributorText: string;
   alt?: string;
 }
 
@@ -12,6 +13,7 @@ const CaptionedImage: React.FC<Props> = ({
   className,
   children,
   contributor,
+  contributorText,
   alt,
 }) => {
   return (
@@ -26,7 +28,7 @@ const CaptionedImage: React.FC<Props> = ({
               {contributor.firstName} {contributor.lastName}
             </Link>
           ) : (
-            <span>Public Domain</span>
+            <span>{contributorText}</span>
           )}
         </figcaption>
       ) : (
@@ -36,7 +38,7 @@ const CaptionedImage: React.FC<Props> = ({
               {contributor.firstName} {contributor.lastName}
             </Link>
           ) : (
-            <p>Public Domain</p>
+            <p>{contributorText}</p>
           )}
         </figcaption>
       )}

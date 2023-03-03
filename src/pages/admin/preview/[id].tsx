@@ -119,9 +119,10 @@ const PreviewPage: NextPage<
           <div className="mx-auto mt-8 flex max-w-prose flex-col gap-2 font-serif text-lg">
             {submission.thumbnail ? (
               <CaptionedImage
-                contributor={submission.thumbnail.contributor}
-                alt={submission.thumbnail.alt}
                 className="mx-auto w-4/5"
+                contributor={submission.thumbnail.contributor}
+                contributorText={submission.thumbnail.contributorText}
+                alt={submission.thumbnail.alt}
               >
                 <div className="relative h-0  pb-[66.6667%]">
                   <Image
@@ -190,6 +191,7 @@ const PreviewPage: NextPage<
                           <CaptionedImage
                             className="inline-block"
                             contributor={media.contributor}
+                            contributorText={media.contributorText}
                             key={media.id}
                             alt={media.alt}
                           >

@@ -47,6 +47,7 @@ export function TopImageArticle({
           <CaptionedImage
             className="flex-col rounded-none"
             contributor={article.thumbnail.contributor}
+            contributorText={article.thumbnail.contributorText}
           >
             {/* Padding makes the element's height 2/3 the width, allowing for 3:2 AR */}
             <div className="relative h-0 pb-[66.6667%]">
@@ -91,6 +92,7 @@ export function SideImageArticle({
             <CaptionedImage
               className="float-right w-2/5 flex-col rounded-none"
               contributor={article.thumbnail.contributor}
+              contributorText={article.thumbnail.contributorText}
             >
               {/* Padding makes the element's height 2/3 the width, allowing for 3:2 AR */}
               <div className="relative h-0 pb-[66.6667%]">

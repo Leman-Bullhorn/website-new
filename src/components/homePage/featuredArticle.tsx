@@ -48,8 +48,9 @@ const FeaturedArticle: React.FC<{
       </Card.Body>
       {article.thumbnail && (
         <CaptionedImage
-          contributor={article.thumbnail.contributor}
           className="!block grow-[3] flex-col rounded-none md:basis-0"
+          contributor={article.thumbnail.contributor}
+          contributorText={article.thumbnail.contributorText}
         >
           <div className="relative h-0 pb-[66.6667%]">
             <Link href={articleUrl}>

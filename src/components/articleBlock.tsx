@@ -59,6 +59,7 @@ const ArticleBlock: React.FC<{
           <CaptionedImage
             className="w-full"
             contributor={article.thumbnail.contributor}
+            contributorText={article.thumbnail.contributorText}
           >
             {/* Padding makes the element's height 2/3 the width, allowing for 3:2 AR */}
             <div className="relative pb-[66.6667%]">

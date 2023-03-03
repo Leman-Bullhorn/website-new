@@ -16,14 +16,24 @@ export default function DrivePicker({
   onChange,
 }: {
   onChange?: (stuff: {
-    images: { contributorId: string | null; altText?: string; file: File }[];
+    images: {
+      contributorId?: string;
+      contributorText: string;
+      altText?: string;
+      file: File;
+    }[];
     htmlFileText?: string;
   }) => void;
 }) {
   const [fileName, setFileName] = useState<string>();
   const [htmlFileText, setHtmlFileText] = useState<string>();
   const [images, setImages] = useState<
-    { contributorId: string | null; altText?: string; file: File }[]
+    {
+      contributorId?: string;
+      contributorText: string;
+      altText?: string;
+      file: File;
+    }[]
   >([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
@@ -68,7 +78,7 @@ export default function DrivePicker({
 
             const articleImages = files
               .filter((file) => file.name.startsWith("images"))
-              .map((file) => ({ file, contributorId: null }));
+              .map((file) => ({ file, contributorText: "" }));
 
             // onChange?.(articleImages, htmlFileText);
 
@@ -136,13 +146,17 @@ export default function DrivePicker({
             <SelectContributor
               className="grow"
               placeholder="Contributor"
-              selectedContributor={images[idx]?.contributorId}
-              onChange={(v) =>
+              selectedContributorId={images[idx]?.contributorId}
+              selectedContributorText={images[idx]?.contributorText}
+              onChange={(contributorInfo) =>
                 setImages((old) => {
                   const oldCopy = [...old];
+                  const oldImage = old[idx];
+                  if (oldImage == null) return oldCopy;
+
                   oldCopy[idx] = {
-                    ...old[idx]!,
-                    contributorId: v,
+                    ...oldImage,
+                    ...contributorInfo,
                   };
                   return oldCopy;
                 })

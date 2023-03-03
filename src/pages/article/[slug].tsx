@@ -149,9 +149,10 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           <div className="mx-auto mt-8 flex max-w-prose flex-col gap-2 font-serif text-lg">
             {article.thumbnail ? (
               <CaptionedImage
-                contributor={article.thumbnail.contributor}
-                alt={article.thumbnail.alt}
                 className="mx-auto w-4/5"
+                contributor={article.thumbnail.contributor}
+                contributorText={article.thumbnail.contributorText}
+                alt={article.thumbnail.alt}
               >
                 <div className="relative h-0  pb-[66.6667%]">
                   <Image
@@ -220,6 +221,7 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                           <CaptionedImage
                             className="inline-block"
                             contributor={media.contributor}
+                            contributorText={media.contributorText}
                             key={media.id}
                             alt={media.alt}
                           >
