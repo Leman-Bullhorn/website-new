@@ -224,6 +224,7 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                             contributorText={media.contributorText}
                             key={media.id}
                             alt={media.alt}
+                            width={content.image.width}
                           >
                             <Image
                               className="overflow-hidden"

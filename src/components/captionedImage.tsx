@@ -7,6 +7,7 @@ interface Props {
   contributor: Contributor | null;
   contributorText: string;
   alt?: string;
+  width?: number;
 }
 
 const CaptionedImage: React.FC<Props> = ({
@@ -15,9 +16,10 @@ const CaptionedImage: React.FC<Props> = ({
   contributor,
   contributorText,
   alt,
+  width,
 }) => {
   return (
-    <figure className={className}>
+    <figure className={className} style={{ width }}>
       {children}
       {alt ? (
         <figcaption className="ml-1 text-left text-xs leading-none text-gray-500 md:text-[0.6rem]">
