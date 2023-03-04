@@ -26,10 +26,10 @@ const CaptionedImage: React.FC<Props> = ({
           <span className="text-sm">{alt}</span>
           {contributor ? (
             <Link href={`/contributor/${contributor.slug}`}>
-              {contributor.firstName} {contributor.lastName}
+              &ensp;{contributor.firstName} {contributor.lastName}
             </Link>
           ) : (
-            <span>{contributorText}</span>
+            <span>&ensp;{contributorText}</span>
           )}
         </figcaption>
       ) : (
@@ -39,7 +39,10 @@ const CaptionedImage: React.FC<Props> = ({
               {contributor.firstName} {contributor.lastName}
             </Link>
           ) : (
-            <p>{contributorText}</p>
+            <p>
+              &ensp;
+              {contributorText}
+            </p>
           )}
         </figcaption>
       )}
