@@ -1,13 +1,8 @@
-import type {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-  NextPage,
-} from "next";
+import type { GetServerSidePropsContext, NextPage } from "next";
 import { Button, Divider, FileInput, Input, Textarea } from "react-daisyui";
-import { prisma } from "../../server/db/client";
 import NavigationBar from "../../components/navigationBar";
 import { sections } from "../../utils/section";
-import { useId, useMemo, useState } from "react";
+import { useId, useState } from "react";
 import Select from "react-select";
 import { trpc } from "../../utils/trpc";
 import type { Media, Section } from "@prisma/client";
@@ -16,7 +11,10 @@ import { getServerAuthSession } from "../../server/common/get-server-auth-sessio
 import DrivePicker from "../../components/drivePicker";
 import RequiredStar from "../../components/requiredStar";
 import Head from "next/head";
-import { SelectContributor } from "../../components/selectContributor";
+import {
+  MultiSelectContributor,
+  SelectContributor,
+} from "../../components/selectContributor";
 import { useUploadAndGenerateMedia } from "../../utils/media";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -30,16 +28,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       },
     };
   }
-
-  const writers = await prisma.contributor.findMany({
-    select: { firstName: true, lastName: true, id: true },
-  });
-
-  return {
-    props: {
-      writers,
-    },
-  };
 };
 
 const sectionOptions = sections.map((s) => ({
@@ -47,14 +35,11 @@ const sectionOptions = sections.map((s) => ({
   label: s.display,
 }));
 
-const EditorPage: NextPage<
-  InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ writers }) => {
+const EditorPage: NextPage = () => {
   const [headline, setHeadline] = useState<string>();
   const [focusSentence, setFocusSentence] = useState<string>();
   const sectionSelectId = useId();
   const [section, setSection] = useState<Section>();
-  const writersSelectId = useId();
   const [articleWriters, setArticleWriters] = useState<string[]>([]);
   const [driveData, setDriveData] = useState<{
     images: {
@@ -73,14 +58,6 @@ const EditorPage: NextPage<
     contributorText?: string;
   }>({});
   const [thumbnailAlt, setThumbnailAlt] = useState<string>();
-  const writerOptions = useMemo(
-    () =>
-      writers.map((w) => ({
-        value: w.id,
-        label: `${w.firstName} ${w.lastName}`,
-      })),
-    [writers]
-  );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { mutateAsync: createSubmission } =
@@ -242,25 +219,10 @@ const EditorPage: NextPage<
             <p>
               Writers <RequiredStar />
             </p>
-            <Select
-              key={`writers-select-${articleWriters == null}`}
-              instanceId={writersSelectId}
-              placeholder="Article writers"
-              isMulti
-              closeMenuOnSelect={false}
-              // styles={{
-              //   control: (baseStyles) => {
-              //     if (error) {
-              //       return { ...baseStyles, borderColor: "red" };
-              //     }
-              //     return baseStyles;
-              //   },
-              // }}
-              options={writerOptions}
-              value={articleWriters.map((v) =>
-                writerOptions.find((o) => o.value === v)
-              )}
-              onChange={(it) => setArticleWriters(it.map((v) => v!.value))}
+            <MultiSelectContributor
+              placeholder="Article Writers"
+              selectedWriters={articleWriters}
+              onChange={setArticleWriters}
             />
           </div>
           <div>
