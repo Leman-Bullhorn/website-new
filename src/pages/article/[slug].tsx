@@ -200,7 +200,7 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
                       } else if ("anchor" in content) {
                         return (
                           <a
-                            className="link-hover link text-leman-blue"
+                            className="link text-leman-blue"
                             href={content.anchor.href}
                             key={content.anchor.href}
                             rel="noreferrer"
