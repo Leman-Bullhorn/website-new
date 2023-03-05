@@ -475,10 +475,7 @@ const ArticleEditModal = ({
               <SelectContributor
                 className="float-left w-1/2"
                 placeholder="Thumbnail Contributor"
-                onChange={(stuff) => {
-                  console.log("setting it to", stuff);
-                  setThumbnailContributor(stuff);
-                }}
+                onChange={setThumbnailContributor}
                 selectedContributorId={thumbnailContributor.contributorId}
                 selectedContributorText={thumbnailContributor.contributorText}
               />

@@ -93,7 +93,7 @@ export function SelectContributor({
       onCreateOption={(newOption) => {
         onChange?.({ contributorText: newOption, contributorId: undefined });
       }}
-      value={selectValue}
+      value={selectValue ?? null}
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       onChange={(it) =>
         onChange?.({
