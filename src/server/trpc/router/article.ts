@@ -16,6 +16,9 @@ export const articleRouter = router({
       include: {
         media: true,
         writers: true,
+        thumbnail: {
+          include: { contributor: true },
+        },
       },
     });
   }),

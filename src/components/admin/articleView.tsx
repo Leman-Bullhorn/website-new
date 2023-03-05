@@ -265,7 +265,10 @@ const ArticleEditModal = ({
   const [thumbnailContributor, setThumbnailContributor] = useState<{
     contributorId?: string;
     contributorText?: string;
-  }>({});
+  }>({
+    contributorId: article.thumbnail?.contributorId ?? undefined,
+    contributorText: article.thumbnail?.contributorText,
+  });
   const [thumbnailAlt, setThumbnailAlt] = useState<string>();
   const [thumbnailChanged, setThumbnailChanged] = useState(false);
   const thumbnailUrl = useMemo(
