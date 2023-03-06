@@ -106,7 +106,7 @@ const SectionPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           <p className="text-center text-2xl">No articles here yet...</p>
         )}
 
-        <div className="mx-auto mt-6 border-gray-300 lg:w-2/3 lg:border-x lg:px-6">
+        <div className="mx-auto mt-6 border-gray-300 lg:w-5/6 lg:border-x lg:px-6">
           {articles.map((article) => (
             <div
               className="border-b border-gray-300 py-4 first:pt-0"
