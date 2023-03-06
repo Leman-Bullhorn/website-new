@@ -81,6 +81,7 @@ export const getStaticProps: GetStaticProps<
       serializedArticles,
       section: section,
     },
+    revalidate: 10,
   };
 };
 

@@ -72,6 +72,7 @@ export const getStaticProps = async () => {
       featuredArticle: serializeArticle(featuredArticle),
       frontPageArticles: frontPageArticles,
     },
+    revalidate: 10,
   };
 };
 

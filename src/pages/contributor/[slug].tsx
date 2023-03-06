@@ -96,6 +96,7 @@ export const getStaticProps: GetStaticProps<
     props: {
       contributor: serializedContributor,
     },
+    revalidate: 10,
   };
 };
 
