@@ -28,6 +28,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       },
     };
   }
+
+  return {
+    props: {},
+  };
 };
 
 const sectionOptions = sections.map((s) => ({
