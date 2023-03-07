@@ -63,6 +63,9 @@ export default function Footer() {
         <Link href="/staff" className="link-hover link">
           Staff
         </Link>
+        <Link href="/privacy" className="link-hover link">
+          Privacy Policy
+        </Link>
       </div>
     </DaisyFooter>
   );
