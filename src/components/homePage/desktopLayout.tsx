@@ -45,7 +45,7 @@ const DesktopLayout: React.FC<{
                   .filter(
                     (article) =>
                       article.frontPageIndex != null &&
-                      article.frontPageIndex % 3 === 0
+                      article.frontPageIndex % 3 === 2
                   )
                   .map((article, idx) => {
                     return idx === 0 ? (
@@ -85,33 +85,6 @@ const DesktopLayout: React.FC<{
                       />
                     );
                   })}
-                {/* {articles
-                  .filter((_, idx) => idx % 3 === 0)
-                  .map((article) => (
-                    <SideImageArticle
-                      key={article.id}
-                      article={article}
-                      className="border-b border-gray-300 py-2 last:border-none"
-                    />
-                  ))}
-                {articles
-                  .filter((_, idx) => idx % 3 === 0)
-                  .map((article) => (
-                    <SideImageArticle
-                      key={article.id}
-                      article={article}
-                      className="border-b border-gray-300 py-2 last:border-none"
-                    />
-                  ))}
-                {articles
-                  .filter((_, idx) => idx % 3 === 0)
-                  .map((article) => (
-                    <SideImageArticle
-                      key={article.id}
-                      article={article}
-                      className="border-b border-gray-300 py-2 last:border-none"
-                    />
-                  ))} */}
               </div>
             </div>
           </div>
@@ -120,7 +93,7 @@ const DesktopLayout: React.FC<{
               .filter(
                 (article) =>
                   article.frontPageIndex != null &&
-                  article.frontPageIndex % 3 == 2
+                  article.frontPageIndex % 3 == 0
               )
               .map((article) => (
                 <SideImageArticle
@@ -129,33 +102,6 @@ const DesktopLayout: React.FC<{
                   className="border-b border-gray-300 py-2 last:border-none"
                 />
               ))}
-            {/* {articles
-              .filter((_, idx) => idx % 3 === 0)
-              .map((article) => (
-                <SideImageArticle
-                  key={article.id}
-                  article={article}
-                  className="border-b border-gray-300 py-2 last:border-none"
-                />
-              ))}
-            {articles
-              .filter((_, idx) => idx % 3 === 0)
-              .map((article) => (
-                <SideImageArticle
-                  key={article.id}
-                  article={article}
-                  className="border-b border-gray-300 py-2 last:border-none"
-                />
-              ))}
-            {articles
-              .filter((_, idx) => idx % 3 === 0)
-              .map((article) => (
-                <SideImageArticle
-                  key={article.id}
-                  article={article}
-                  className="border-b border-gray-300 py-2 last:border-none"
-                />
-              ))} */}
           </div>
         </div>
       </div>
