@@ -4,6 +4,7 @@ import ByLine from "./byLine";
 import TimeStamp from "./timestamp";
 import Image from "next/image";
 import CaptionedImage from "./captionedImage";
+import Balancer from "react-wrap-balancer";
 
 const articleWithWritersAndMedia = Prisma.validator<Prisma.ArticleArgs>()({
   include: {
@@ -39,7 +40,7 @@ const ArticleBlock: React.FC<{
       <div className="pl-8">
         <Link href={articleUrl}>
           <h4 className="link-hover font-headline text-2xl font-medium hover:text-leman-blue">
-            {article.headline}
+            <Balancer>{article.headline}</Balancer>
           </h4>
         </Link>
 

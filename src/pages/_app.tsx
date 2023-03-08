@@ -11,6 +11,7 @@ import "../styles/globals.css";
 import { MediaContextProvider, mediaStyles } from "../utils/media";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Footer from "../components/footer";
+import { Provider } from "react-wrap-balancer";
 
 const primaryFont = Libre_Franklin({
   subsets: ["latin"],
@@ -78,11 +79,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <main
         className={`${primaryFont.variable} ${primaryFont.className} ${brandFont.variable} ${sectionFont.variable} ${schoolFont.variable} ${headlineFont.variable}`}
       >
-        <MediaContextProvider disableDynamicMediaQueries>
-          <SessionProvider session={session}>
-            <Component {...pageProps} />
-          </SessionProvider>
-        </MediaContextProvider>
+        <Provider>
+          <MediaContextProvider disableDynamicMediaQueries>
+            <SessionProvider session={session}>
+              <Component {...pageProps} />
+            </SessionProvider>
+          </MediaContextProvider>
+        </Provider>
         <ReactQueryDevtools />
       </main>
       <Footer />

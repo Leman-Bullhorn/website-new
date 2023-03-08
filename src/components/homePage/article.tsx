@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { Card } from "react-daisyui";
+import Balancer from "react-wrap-balancer";
 import ByLine from "../byLine";
 import CaptionedImage from "../captionedImage";
 import TimeStamp from "../timestamp";
@@ -40,7 +41,9 @@ export function TopImageArticle({
     <Card bordered={false} side className={`rounded-none ${className}`}>
       <Card.Body className="gap-0 p-0 [&>p]:grow-0">
         <h2 className="link-hover font-headline text-lg font-medium leading-5 hover:text-leman-blue">
-          <Link href={articleUrl}>{article.headline}</Link>
+          <Link href={articleUrl}>
+            <Balancer>{article.headline}</Balancer>
+          </Link>
         </h2>
 
         {article.thumbnail && (

@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
+import Balancer from "react-wrap-balancer";
 import ByLine from "../../../components/byLine";
 import CaptionedImage from "../../../components/captionedImage";
 import NavigationBar from "../../../components/navigationBar";
@@ -105,7 +106,7 @@ const PreviewPage: NextPage<
           </Link>
         </p>
         <h1 className="my-2 text-center font-headline text-4xl font-semibold">
-          {headline}
+          <Balancer>{headline}</Balancer>
         </h1>
 
         <div className="flex justify-between text-sm">

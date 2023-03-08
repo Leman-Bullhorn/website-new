@@ -23,6 +23,7 @@ import Timestamp from "../../components/timestamp";
 import Image from "next/image";
 import CaptionedImage from "../../components/captionedImage";
 import Head from "next/head";
+import Balancer from "react-wrap-balancer";
 
 interface StaticParams extends ParsedUrlQuery {
   slug: string;
@@ -136,7 +137,7 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           </Link>
         </p>
         <h1 className="my-2 text-center font-headline text-4xl font-semibold">
-          {article.headline}
+          <Balancer>{article.headline}</Balancer>
         </h1>
 
         <div className="flex justify-between text-sm">

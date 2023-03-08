@@ -35,6 +35,7 @@
     "react-google-drive-picker": "^1.2.0",
     "react-intersection-observer": "^9.4.1",
     "react-select": "^5.7.0",
+    "react-wrap-balancer": "^0.4.0",
     "superjson": "1.9.1",
     "zod": "^3.18.0"
   },
