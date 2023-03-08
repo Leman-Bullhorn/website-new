@@ -28,6 +28,8 @@ const Modal = (props: ModalProps & { onClose?: () => void }) => {
     } else {
       document.body.style.overflow = "unset";
     }
+
+    return () => void (document.body.style.overflow = "unset");
   }, [modalProps.open]);
 
   return (
