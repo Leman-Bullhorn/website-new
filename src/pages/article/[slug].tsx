@@ -121,9 +121,7 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <>
       <Head>
-        <title>
-          {articleSection.display} | {article.headline}
-        </title>
+        <title>{`${articleSection.display} | ${article.headline}`}</title>
       </Head>
       <NavigationBar />
       <div className="mx-auto mt-12 flex flex-col px-2 lg:max-w-[75%]">

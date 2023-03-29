@@ -109,7 +109,7 @@ const ContributorPage: NextPage<
     <>
       <Head>
         <title>
-          {contributor.firstName} {contributor.lastName} - The Bullhorn
+          {`${contributor.firstName} ${contributor.lastName} - The Bullhorn`}
         </title>
       </Head>
       <NavigationBar />

@@ -94,7 +94,7 @@ const SectionPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <>
       <Head>
-        <title>{section.display} - The Bullhorn</title>
+        <title>{`${section.display} - The Bullhorn`}</title>
       </Head>
       <NavigationBar />
       <div className="container mx-auto mt-4 px-2">
