@@ -122,6 +122,39 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
     <>
       <Head>
         <title>{`${articleSection.display} | ${article.headline}`}</title>
+        <meta name="description" content={article.focus} />
+        <meta
+          property="og:url"
+          content={`https://thebullhorn.net/article/${article.slug}`}
+        />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={article.headline} />
+        <meta property="og:description" content={article.focus} />
+        <meta
+          property="twitter:url"
+          content={`https://thebullhorn.net/article/${article.slug}`}
+        />
+        <meta property="twitter:title" content={article.headline} />
+        <meta property="twitter:description" content={article.focus} />
+        <link
+          rel="canonical"
+          href={`https://thebullhorn.net/article/${article.slug}`}
+        />
+        {article.thumbnail ? (
+          <>
+            <meta property="og:image" content={article.thumbnail.contentUrl} />
+            <meta property="og:image:alt" content={article.thumbnail.alt} />
+            <meta
+              property="twitter:image"
+              content={article.thumbnail.contentUrl}
+            />
+            <meta
+              property="twitter:image:alt"
+              content={article.thumbnail.alt}
+            />
+            <meta property="twitter:card" content="summary_large_image" />
+          </>
+        ) : null}
       </Head>
       <NavigationBar />
       <div className="mx-auto mt-12 flex flex-col px-2 lg:max-w-[75%]">

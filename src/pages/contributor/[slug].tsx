@@ -111,6 +111,54 @@ const ContributorPage: NextPage<
         <title>
           {`${contributor.firstName} ${contributor.lastName} - The Bullhorn`}
         </title>
+        <meta
+          name="description"
+          content={`Media and articles by ${contributor.firstName} ${contributor.lastName}.`}
+        />
+        <meta
+          property="og:url"
+          content={`https://thebullhorn.net/contributor/${contributor.slug}`}
+        />
+        <meta property="og:type" content="profile" />
+        <meta
+          property="og:title"
+          content={`${contributor.firstName} ${contributor.lastName}`}
+        />
+        <meta
+          property="og:description"
+          content={`Media and articles by ${contributor.firstName} ${contributor.lastName}.`}
+        />
+        <meta
+          name="twitter:url"
+          content={`https://thebullhorn.net/contributor/${contributor.slug}`}
+        />
+        <meta
+          name="twitter:title"
+          content={`${contributor.firstName} ${contributor.lastName}`}
+        />
+        <meta
+          name="twitter:description"
+          content={`Media and articles by ${contributor.firstName} ${contributor.lastName}.`}
+        />
+        <link
+          rel="canonical"
+          href={`https://thebullhorn.net/contributor/${contributor.slug}`}
+        />
+        {contributor.headshotUrl ? (
+          <>
+            <meta property="og:image" content={contributor.headshotUrl} />
+            <meta
+              property="og:image:alt"
+              content={`Portrait of ${contributor.firstName} ${contributor.lastName}`}
+            />
+            <meta property="twitter:image" content={contributor.headshotUrl} />
+            <meta
+              property="twitter:image:alt"
+              content={`Portrait of ${contributor.firstName} ${contributor.lastName}`}
+            />
+            <meta property="twitter:card" content="summary_large_card" />
+          </>
+        ) : null}
       </Head>
       <NavigationBar />
       <div className="container mx-auto mt-8 px-4">
