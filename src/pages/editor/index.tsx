@@ -74,7 +74,6 @@ const EditorPage: NextPage = () => {
       headline == null ||
       focusSentence == null ||
       section == null ||
-      articleWriters == null ||
       articleWriters.length === 0 ||
       driveData == null ||
       driveData.htmlFileText == null ||
