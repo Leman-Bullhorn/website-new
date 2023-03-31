@@ -9,19 +9,16 @@ datasource db {
 }
 
 model Contributor {
-  id                  String             @id @default(cuid())
-  slug                String             @unique
-  firstName           String
-  lastName            String
-  title               String
-  bio                 String?            @db.Text
-  headshotUrl         String?
-  articles            Article[]
-  media               Media[]
-  articleSubmission   ArticleSubmission? @relation(fields: [articleSubmissionId], references: [id])
-  articleSubmissionId String?
-
-  @@index([articleSubmissionId])
+  id                 String              @id @default(cuid())
+  slug               String              @unique
+  firstName          String
+  lastName           String
+  title              String
+  bio                String?             @db.Text
+  headshotUrl        String?
+  articles           Article[]
+  media              Media[]
+  articleSubmissions ArticleSubmission[]
 }
 
 enum Section {
