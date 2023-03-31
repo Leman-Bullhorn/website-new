@@ -4,7 +4,7 @@ import type {
   Media,
 } from "@prisma/client";
 import NavigationBar from "../navigationBar";
-import { SideImageArticle, TopImageArticle } from "./article";
+import { SideImageArticle } from "./article";
 import FeaturedArticle from "./featuredArticle";
 
 type FullArticle = PrismaArticle & {
