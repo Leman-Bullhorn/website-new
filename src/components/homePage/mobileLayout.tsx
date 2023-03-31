@@ -28,7 +28,7 @@ const MobileLayout: React.FC<{
       <NavigationBar buffer />
       <FeaturedArticle
         article={featuredArticle}
-        className="mx-5 mt-2 border-b-2 border-black pb-2"
+        className="mx-5 mt-2 border-b-2 border-gray-300 pb-2"
       />
       {articles
         .filter((article) => article.frontPageIndex != null)
