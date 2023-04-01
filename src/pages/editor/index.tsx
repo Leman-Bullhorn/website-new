@@ -119,8 +119,9 @@ const EditorPage: NextPage = () => {
     }
 
     const submissionArguments: Parameters<typeof createSubmission>[0] = {
-      headline,
-      focusSentence,
+      // Double spaces break things
+      headline: headline.replaceAll("  ", " "),
+      focusSentence: focusSentence.replaceAll("  ", " "),
       section,
       articleContent,
       contributorIds: articleWriters,
