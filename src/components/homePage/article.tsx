@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card } from "react-daisyui";
 import Balancer from "react-wrap-balancer";
+import { cn } from "../../utils/tw";
 import ByLine from "../byLine";
 import CaptionedImage from "../captionedImage";
 import TimeStamp from "../timestamp";
@@ -86,8 +87,8 @@ export function SideImageArticle({
   const articleUrl = `/article/${article.slug}`;
 
   return (
-    <Card bordered={false} side className={`rounded-none ${className}`}>
-      <Card.Body className="gap-0 p-0 [&>p]:grow-0">
+    <Card bordered={false} side className={cn("rounded-none", className)}>
+      <Card.Body className="gap-0 p-0">
         <div>
           {article.thumbnail && (
             <CaptionedImage
@@ -95,28 +96,24 @@ export function SideImageArticle({
               contributor={article.thumbnail.contributor}
               contributorText={article.thumbnail.contributorText}
             >
-              {/* Padding makes the element's height 2/3 the width, allowing for 3:2 AR */}
-              <div className="relative h-0 pb-[66.6667%]">
-                <Link href={articleUrl}>
+              <Link href={articleUrl}>
+                <div className="relative h-0 pb-[66.6667%]">
                   <Image
                     className="object-cover"
                     src={article.thumbnail.contentUrl}
                     alt={article.thumbnail.alt}
                     fill
-                    sizes="(max-width: 768px) 100vw,
-                       50vw"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                   />
-                </Link>
-              </div>
+                </div>
+              </Link>
             </CaptionedImage>
           )}
 
-          <div className="grow-[3] basis-0">
-            <h2 className="link-hover font-headline text-lg font-medium leading-5 hover:text-leman-blue">
-              <Link href={articleUrl}>{article.headline}</Link>
-            </h2>
-            <p className="mt-1 text-sm">{article.focus}</p>
-          </div>
+          <h2 className="link-hover font-headline text-lg font-medium leading-5 hover:text-leman-blue">
+            <Link href={articleUrl}>{article.headline}</Link>
+          </h2>
+          <p className="mt-1 text-sm">{article.focus}</p>
 
           <p className="text-xs text-gray-500">
             <ByLine writers={article.writers} />

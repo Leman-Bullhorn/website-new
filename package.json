@@ -27,6 +27,7 @@
     "@trpc/server": "10.0.0-rc.4",
     "@vercel/analytics": "^0.1.5",
     "aws-sdk": "^2.1295.0",
+    "clsx": "^1.2.1",
     "fflate": "^0.7.4",
     "next": "13.0.4",
     "next-auth": "^4.15.1",
@@ -37,6 +38,7 @@
     "react-select": "^5.7.0",
     "react-wrap-balancer": "^0.4.0",
     "superjson": "1.9.1",
+    "tailwind-merge": "^1.11.0",
     "zod": "^3.18.0"
   },
   "devDependencies": {
