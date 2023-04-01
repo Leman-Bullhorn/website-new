@@ -50,9 +50,9 @@ export function TopImageArticle({
             contributor={article.thumbnail.contributor}
             contributorText={article.thumbnail.contributorText}
           >
-            {/* Padding makes the element's height 2/3 the width, allowing for 3:2 AR */}
-            <div className="relative h-0 pb-[66.6667%]">
-              <Link href={articleUrl}>
+            <Link href={articleUrl}>
+              {/* Padding makes the element's height 2/3 the width, allowing for 3:2 AR */}
+              <div className="relative h-0 pb-[66.6667%]">
                 <Image
                   className=" object-cover"
                   src={article.thumbnail.contentUrl}
@@ -61,8 +61,8 @@ export function TopImageArticle({
                   sizes="(max-width: 768px) 100vw,
                        50vw"
                 />
-              </Link>
-            </div>
+              </div>
+            </Link>
           </CaptionedImage>
         )}
         <p className="text-sm">{article.focus}</p>

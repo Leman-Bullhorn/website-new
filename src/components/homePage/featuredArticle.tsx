@@ -48,12 +48,12 @@ const FeaturedArticle: React.FC<{
       </Card.Body>
       {article.thumbnail && (
         <CaptionedImage
-          className="!block grow-[3] flex-col rounded-none md:basis-0"
+          className="!block grow-[3] rounded-none md:basis-0"
           contributor={article.thumbnail.contributor}
           contributorText={article.thumbnail.contributorText}
         >
-          <div className="relative h-0 pb-[66.6667%]">
-            <Link href={articleUrl}>
+          <Link href={articleUrl}>
+            <div className="relative h-0 pb-[66.6667%]">
               <Image
                 priority
                 className="object-cover"
@@ -63,8 +63,8 @@ const FeaturedArticle: React.FC<{
                 sizes="(max-width: 768px) 100vw,
                        50vw"
               />
-            </Link>
-          </div>
+            </div>
+          </Link>
         </CaptionedImage>
       )}
     </Card>

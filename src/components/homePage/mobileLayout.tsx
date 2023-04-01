@@ -33,15 +33,14 @@ const MobileLayout: React.FC<{
         article={featuredArticle}
         className="mx-5 mt-2 border-b-2 border-gray-300 pb-2"
       />
-      {articles
-        .filter((article) => article.frontPageIndex != null)
-        .map((article) => (
-          <SideImageArticle
-            article={article}
-            className="mx-5 border-b border-gray-300 py-2"
-            key={article.id}
-          />
-        ))}
+
+      {articles.map((article) => (
+        <SideImageArticle
+          article={article}
+          className="mx-5 border-b border-gray-300 py-2"
+          key={article.id}
+        />
+      ))}
     </>
   );
 };

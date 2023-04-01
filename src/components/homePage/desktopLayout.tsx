@@ -9,7 +9,10 @@ import { SideImageArticle, TopImageArticle } from "./article";
 import FeaturedArticle from "./featuredArticle";
 import Masthead from "./masthead";
 
-type FullArticle = PrismaArticle & {
+type InputArticle = Omit<
+  PrismaArticle,
+  "body" | "featured" | "thumbnailId" | "section"
+> & {
   writers: Contributor[];
   thumbnail:
     | (Media & {
@@ -22,8 +25,8 @@ type FullArticle = PrismaArticle & {
 };
 
 const DesktopLayout: React.FC<{
-  featuredArticle: FullArticle;
-  articles: FullArticle[];
+  featuredArticle: InputArticle;
+  articles: InputArticle[];
 }> = ({ featuredArticle, articles }) => {
   const [mastheadVisible, setMastheadVisible] = useState(true);
 
