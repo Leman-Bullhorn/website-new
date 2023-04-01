@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { cn } from "../utils/tw";
 
 const MONTH_NAMES = [
   "Jan.",
@@ -75,22 +76,30 @@ const timeSince = (date: Date) => {
 };
 
 const Timestamp: React.FC<{ timestamp: Date }> = ({ timestamp }) => {
-  // Updating the dummy state forces a re-render every second
-  const [dummy, setDummy] = useState(Math.random());
-
-  // Kind of a hack, required to avoid hydration errors since timezone on server
-  // may not be the same as the client.
-  const [displayTime, setDisplayTime] = useState<string>();
-  useEffect(() => setDisplayTime(timeSince(timestamp)), [timestamp, dummy]);
+  const [displayTime, setDisplayTime] = useState(timeSince(timestamp));
+  const [serverRendering, setServerRendering] = useState(true);
 
   useEffect(() => {
-    const interval = setInterval(() => setDummy(Math.random()), 1000);
+    setServerRendering(false);
+    setDisplayTime(timeSince(timestamp));
+    const interval = setInterval(
+      () => setDisplayTime(timeSince(timestamp)),
+      1000
+    );
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [timestamp]);
 
-  return <time dateTime={displayTime}>{displayTime}</time>;
+  return (
+    <time
+      // if we are on the server, hide this element but keep its size to avoid too much layout shift
+      className={cn(serverRendering ? "invisible" : null)}
+      suppressHydrationWarning
+    >
+      {displayTime}
+    </time>
+  );
 };
 
 export default Timestamp;
