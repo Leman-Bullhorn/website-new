@@ -7,8 +7,8 @@ export type SerializableArticle = Omit<Article, "publicationDate"> & {
 };
 
 export const serializeArticle = <T>(
-  article: Article & T
-): SerializableArticle & T => {
+  article: { publicationDate: Date } & T
+): { publicationDate: string } & T => {
   return {
     ...article,
     publicationDate: article.publicationDate.toString(),
@@ -16,8 +16,8 @@ export const serializeArticle = <T>(
 };
 
 export const deserializeArticle = <T>(
-  article: SerializableArticle & T
-): Article & T => {
+  article: { publicationDate: string } & T
+): { publicationDate: Date } & T => {
   return {
     ...article,
     publicationDate: new Date(article.publicationDate),
@@ -25,14 +25,14 @@ export const deserializeArticle = <T>(
 };
 
 export const useDeserializeArticle = <T>(
-  article: SerializableArticle & T
-): Article & T => {
+  article: { publicationDate: string } & T
+): { publicationDate: Date } & T => {
   return useMemo(() => deserializeArticle(article), [article]);
 };
 
 export const useDeserializeArticles = <T>(
-  articles: (SerializableArticle & T)[]
-): (Article & T)[] => {
+  articles: ({ publicationDate: string } & T)[]
+): ({ publicationDate: Date } & T)[] => {
   return useMemo(() => articles.map(deserializeArticle), [articles]);
 };
 

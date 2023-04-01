@@ -1,28 +1,18 @@
-import { type Article, Prisma } from "@prisma/client";
-import type { Contributor } from "@prisma/client";
-import {
-  type GetStaticProps,
-  type GetStaticPaths,
-  type NextPage,
-  type InferGetStaticPropsType,
+import { Prisma } from "@prisma/client";
+import type {
+  GetStaticPaths,
+  NextPage,
+  InferGetStaticPropsType,
+  GetStaticPropsContext,
 } from "next";
-import { type ParsedUrlQuery } from "querystring";
 import Image from "next/image";
 import { prisma } from "../../server/db/client";
 import NavigationBar from "../../components/navigationBar";
 import ArticleBlock from "../../components/articleBlock";
-import {
-  serializeArticle,
-  useDeserializeArticles,
-  type SerializableArticle,
-} from "../../utils/article";
+import { serializeArticle, useDeserializeArticles } from "../../utils/article";
 import Head from "next/head";
 
-interface StaticParams extends ParsedUrlQuery {
-  slug: string;
-}
-
-export const getStaticPaths: GetStaticPaths<StaticParams> = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const contributors = await prisma.contributor.findMany({
     select: {
       slug: true,
@@ -39,7 +29,12 @@ export const getStaticPaths: GetStaticPaths<StaticParams> = async () => {
 
 const contributorArticles = Prisma.validator<Prisma.ContributorInclude>()({
   articles: {
-    include: {
+    select: {
+      id: true,
+      headline: true,
+      publicationDate: true,
+      slug: true,
+      focus: true,
       thumbnail: {
         include: {
           contributor: true,
@@ -52,27 +47,18 @@ const contributorArticles = Prisma.validator<Prisma.ContributorInclude>()({
         },
       },
     },
+
     take: 50,
   },
 });
 
-type FullContributor = Prisma.ContributorGetPayload<{
-  include: typeof contributorArticles;
-}>;
-
-type SerializableContributor = {
-  contributor: Contributor & {
-    articles: (SerializableArticle &
-      Omit<FullContributor["articles"][0], keyof Article>)[];
-  };
-};
-
-export const getStaticProps: GetStaticProps<
-  SerializableContributor,
-  StaticParams
-> = async (context) => {
+export const getStaticProps = async (context: GetStaticPropsContext) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { slug } = context.params!;
+  if (typeof slug !== "string")
+    return {
+      notFound: true,
+    };
 
   const contributor = await prisma.contributor.findUnique({
     where: {
@@ -81,11 +67,10 @@ export const getStaticProps: GetStaticProps<
     include: contributorArticles,
   });
 
-  if (contributor == null) {
+  if (contributor == null)
     return {
       notFound: true,
     };
-  }
 
   const serializedContributor = {
     ...contributor,

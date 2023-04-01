@@ -1,4 +1,8 @@
-import { Prisma } from "@prisma/client";
+import type {
+  Article as PrismaArticle,
+  Contributor,
+  Media,
+} from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -8,29 +12,22 @@ import ByLine from "../byLine";
 import CaptionedImage from "../captionedImage";
 import TimeStamp from "../timestamp";
 
-const articleWithWritersAndMediaAndThumbnail =
-  Prisma.validator<Prisma.ArticleArgs>()({
-    include: {
-      writers: true,
-      thumbnail: {
-        include: {
-          contributor: true,
-        },
-      },
-      media: {
-        include: {
-          contributor: true,
-        },
-      },
-    },
-  });
-
-type ArticleWithWritersAndMedia = Prisma.ArticleGetPayload<
-  typeof articleWithWritersAndMediaAndThumbnail
->;
-
+type InputArticle = Omit<
+  PrismaArticle,
+  "body" | "featured" | "thumbnailId" | "section"
+> & {
+  writers: Contributor[];
+  thumbnail:
+    | (Media & {
+        contributor: Contributor | null;
+      })
+    | null;
+  media: (Media & {
+    contributor: Contributor | null;
+  })[];
+};
 const FeaturedArticle: React.FC<{
-  article: ArticleWithWritersAndMedia;
+  article: InputArticle;
   className?: string;
 }> = ({ article, className }) => {
   const articleUrl = `/article/${article.slug}`;

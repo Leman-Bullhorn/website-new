@@ -12,7 +12,7 @@ import TabletLayout from "../components/homePage/tabletLayout";
 import DesktopLayout from "../components/homePage/desktopLayout";
 
 export const getStaticProps = async () => {
-  const articles = await prisma.article.findMany({
+  const articlesPromise = prisma.article.findMany({
     where: {
       frontPageIndex: {
         not: null,
@@ -22,7 +22,14 @@ export const getStaticProps = async () => {
     orderBy: {
       frontPageIndex: "asc",
     },
-    include: {
+    select: {
+      id: true,
+      headline: true,
+      focus: true,
+      frontPageIndex: true,
+      slug: true,
+      section: true,
+      publicationDate: true,
       thumbnail: {
         include: {
           contributor: true,
@@ -37,11 +44,17 @@ export const getStaticProps = async () => {
     },
   });
 
-  const featuredArticle = await prisma.article.findFirst({
+  const featuredArticlePromise = prisma.article.findFirst({
     where: {
       featured: true,
     },
-    include: {
+    select: {
+      id: true,
+      headline: true,
+      focus: true,
+      frontPageIndex: true,
+      slug: true,
+      publicationDate: true,
       thumbnail: {
         include: {
           contributor: true,
@@ -55,6 +68,11 @@ export const getStaticProps = async () => {
       },
     },
   });
+
+  const [articles, featuredArticle] = await Promise.all([
+    articlesPromise,
+    featuredArticlePromise,
+  ]);
 
   // This should never be the case
   if (featuredArticle == null) {

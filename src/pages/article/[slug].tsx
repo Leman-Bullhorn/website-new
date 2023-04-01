@@ -1,10 +1,9 @@
 import type {
   GetStaticPaths,
-  GetStaticProps,
+  GetStaticPropsContext,
   InferGetStaticPropsType,
   NextPage,
 } from "next";
-import type { ParsedUrlQuery } from "querystring";
 import NavigationBar from "../../components/navigationBar";
 import { sections } from "../../utils/section";
 import { prisma } from "../../server/db/client";
@@ -12,11 +11,8 @@ import {
   serializeArticle,
   validateArticleBody,
   useDeserializeArticle,
-  type SerializableArticle,
-  type ArticleBody,
 } from "../../utils/article";
 import { useMemo } from "react";
-import type { Contributor, Media } from "@prisma/client";
 import Link from "next/link";
 import ByLine from "../../components/byLine";
 import Timestamp from "../../components/timestamp";
@@ -25,11 +21,7 @@ import CaptionedImage from "../../components/captionedImage";
 import Head from "next/head";
 import Balancer from "react-wrap-balancer";
 
-interface StaticParams extends ParsedUrlQuery {
-  slug: string;
-}
-
-export const getStaticPaths: GetStaticPaths<StaticParams> = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const recentArticles = await prisma.article.findMany({
     orderBy: {
       publicationDate: "desc",
@@ -48,25 +40,14 @@ export const getStaticPaths: GetStaticPaths<StaticParams> = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<
-  {
-    serializedArticle: SerializableArticle & {
-      writers: Contributor[];
-      media: (Media & {
-        contributor: Contributor | null;
-      })[];
-      thumbnail:
-        | (Media & {
-            contributor: Contributor | null;
-          })
-        | null;
-    };
-    articleBody: ArticleBody;
-  },
-  StaticParams
-> = async (context) => {
+export const getStaticProps = async (context: GetStaticPropsContext) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { slug } = context.params!;
+
+  if (typeof slug !== "string")
+    return {
+      notFound: true,
+    };
 
   const article = await prisma.article.findUnique({
     where: {

@@ -7,13 +7,18 @@ import CaptionedImage from "./captionedImage";
 import Balancer from "react-wrap-balancer";
 
 const articleWithWritersAndMedia = Prisma.validator<Prisma.ArticleArgs>()({
-  include: {
-    writers: true,
+  select: {
+    id: true,
+    headline: true,
+    focus: true,
+    slug: true,
+    publicationDate: true,
     thumbnail: {
       include: {
         contributor: true,
       },
     },
+    writers: true,
     media: {
       include: {
         contributor: true,

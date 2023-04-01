@@ -1,27 +1,23 @@
 import type {
   GetStaticPaths,
-  GetStaticProps,
+  GetStaticPropsContext,
   InferGetStaticPropsType,
   NextPage,
 } from "next";
-import type { ParsedUrlQuery } from "querystring";
 import NavigationBar from "../../components/navigationBar";
 import { sections } from "../../utils/section";
 import { prisma } from "../../server/db/client";
-import {
-  serializeArticle,
-  useDeserializeArticles,
-  type SerializableArticle,
-} from "../../utils/article";
+import { serializeArticle, useDeserializeArticles } from "../../utils/article";
 import ArticleBlock from "../../components/articleBlock";
-import { type Article, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import Head from "next/head";
 
-interface StaticParams extends ParsedUrlQuery {
-  id: string;
-}
-
-const articlesInclude = Prisma.validator<Prisma.ArticleInclude>()({
+const articlesSelect = Prisma.validator<Prisma.ArticleSelect>()({
+  id: true,
+  headline: true,
+  focus: true,
+  slug: true,
+  publicationDate: true,
   thumbnail: {
     include: {
       contributor: true,
@@ -35,14 +31,7 @@ const articlesInclude = Prisma.validator<Prisma.ArticleInclude>()({
   },
 });
 
-type FullArticle = Prisma.ArticleGetPayload<{
-  include: typeof articlesInclude;
-}>;
-
-type FullSerializableArticle = SerializableArticle &
-  Omit<FullArticle, keyof Article>;
-
-export const getStaticPaths: GetStaticPaths<StaticParams> = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const paths = sections.map((s) => ({ params: { id: s.id } }));
 
   return {
@@ -51,13 +40,7 @@ export const getStaticPaths: GetStaticPaths<StaticParams> = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<
-  {
-    serializedArticles: FullSerializableArticle[];
-    section: typeof sections[0];
-  },
-  StaticParams
-> = async (context) => {
+export const getStaticProps = async (context: GetStaticPropsContext) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { id } = context.params!;
 
@@ -71,7 +54,7 @@ export const getStaticProps: GetStaticProps<
     where: {
       section: section.dbSection,
     },
-    include: articlesInclude,
+    select: articlesSelect,
   });
 
   const serializedArticles = sectionArticles.map(serializeArticle);

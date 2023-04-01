@@ -7,7 +7,10 @@ import NavigationBar from "../navigationBar";
 import { SideImageArticle } from "./article";
 import FeaturedArticle from "./featuredArticle";
 
-type FullArticle = PrismaArticle & {
+type InputArticle = Omit<
+  PrismaArticle,
+  "body" | "featured" | "thumbnailId" | "section"
+> & {
   writers: Contributor[];
   thumbnail:
     | (Media & {
@@ -20,8 +23,8 @@ type FullArticle = PrismaArticle & {
 };
 
 const MobileLayout: React.FC<{
-  featuredArticle: FullArticle;
-  articles: FullArticle[];
+  featuredArticle: InputArticle;
+  articles: InputArticle[];
 }> = ({ featuredArticle, articles }) => {
   return (
     <>
