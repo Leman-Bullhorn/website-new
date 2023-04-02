@@ -105,13 +105,13 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
       <Head>
         <title>The Bullhorn</title>
       </Head>
-      <Media lessThan="md">
+      <Media lessThan="sm">
         <MobileLayout
           featuredArticle={featuredArticle}
           articles={frontPageArticles}
         />
       </Media>
-      <Media between={["md", "lg"]}>
+      <Media between={["sm", "lg"]}>
         <TabletLayout
           featuredArticle={featuredArticle}
           articles={frontPageArticles}
