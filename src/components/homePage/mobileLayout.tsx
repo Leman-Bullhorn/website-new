@@ -1,48 +1,19 @@
-import type {
-  Article as PrismaArticle,
-  Contributor,
-  Media,
-} from "@prisma/client";
-import NavigationBar from "../navigationBar";
-import { SideImageArticle } from "./article";
-import FeaturedArticle from "./featuredArticle";
+import { BuilderBlocks } from "@builder.io/react";
 
-type InputArticle = Omit<
-  PrismaArticle,
-  "body" | "featured" | "thumbnailId" | "section"
-> & {
-  writers: Contributor[];
-  thumbnail:
-    | (Media & {
-        contributor: Contributor | null;
-      })
-    | null;
-  media: (Media & {
-    contributor: Contributor | null;
-  })[];
-};
-
-const MobileLayout: React.FC<{
-  featuredArticle: InputArticle;
-  articles: InputArticle[];
-}> = ({ featuredArticle, articles }) => {
+export default function MobileLayout(props: any) {
   return (
-    <>
-      <NavigationBar buffer />
-      <FeaturedArticle
-        article={featuredArticle}
-        className="mx-5 mt-2 border-b-2 border-gray-300 pb-2"
+    <div className="container mx-auto mt-2">
+      <BuilderBlocks
+        parentElementId={props.builderBlock.id}
+        dataPath="component.options.featured"
+        blocks={props.featured}
+        className="border-b-2 border-gray-300 pb-2"
       />
-
-      {articles.map((article) => (
-        <SideImageArticle
-          article={article}
-          className="mx-5 border-b border-gray-300 py-2"
-          key={article.id}
-        />
-      ))}
-    </>
+      <BuilderBlocks
+        parentElementId={props.builderBlock.id}
+        dataPath="component.options.column1"
+        blocks={props.column1}
+      />
+    </div>
   );
-};
-
-export default MobileLayout;
+}

@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@artsy/fresnel": "^6.1.0",
+    "@builder.io/react": "^2.0.17",
+    "@builder.io/utils": "^1.1.10",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-brands-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",

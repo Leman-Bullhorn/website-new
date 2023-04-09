@@ -11,6 +11,12 @@ import { cn } from "../../utils/tw";
 import ByLine from "../byLine";
 import CaptionedImage from "../captionedImage";
 import TimeStamp from "../timestamp";
+import {
+  deserializeArticle,
+  useBuilderPreviewArticle,
+  type SerializableArticle,
+} from "../../utils/article";
+import { Builder } from "@builder.io/react";
 
 type InputArticle = Omit<
   PrismaArticle,
@@ -22,22 +28,45 @@ type InputArticle = Omit<
         contributor: Contributor | null;
       })
     | null;
-  media: (Media & {
-    contributor: Contributor | null;
-  })[];
 };
 
-export function TopImageArticle({
-  article,
-  className,
-}: {
-  article: InputArticle;
+export function TopImageArticle(props: {
+  article: SerializableArticle<InputArticle>;
+  articleReference: { model: string; id: string };
   className?: string;
+  attributes: React.HTMLAttributes<HTMLDivElement>;
 }) {
+  const previewArticle = useBuilderPreviewArticle(props.articleReference);
+  if (
+    (Builder.isPreviewing || Builder.isEditing) &&
+    props.articleReference == null
+  ) {
+    return (
+      <p {...props.attributes}>
+        Click this text. Go to Options, and under Article Reference press choose
+        entry to select what article goes here
+      </p>
+    );
+  }
+  const article =
+    Builder.isPreviewing || Builder.isEditing
+      ? previewArticle
+      : deserializeArticle(props.article);
+  if (article == null) return <p>Loading...</p>;
+
   const articleUrl = `/article/${article.slug}`;
 
   return (
-    <Card bordered={false} side className={`rounded-none ${className}`}>
+    <Card
+      {...props.attributes}
+      bordered={false}
+      side
+      className={cn(
+        "rounded-none border-b border-gray-300 py-2 last:border-none",
+        props.attributes.className,
+        props.className
+      )}
+    >
       <Card.Body className="gap-0 p-0 [&>p]:grow-0">
         <h2 className="link-hover font-headline text-lg font-medium leading-5 hover:text-leman-blue">
           <Link href={articleUrl}>
@@ -77,17 +106,43 @@ export function TopImageArticle({
   );
 }
 
-export function SideImageArticle({
-  article,
-  className,
-}: {
-  article: InputArticle;
+export function SideImageArticle(props: {
+  article: SerializableArticle<InputArticle>;
+  articleReference: { model: string; id: string };
   className?: string;
+  attributes: React.HTMLAttributes<HTMLDivElement>;
 }) {
+  const previewArticle = useBuilderPreviewArticle(props.articleReference);
+  if (
+    (Builder.isPreviewing || Builder.isEditing) &&
+    props.articleReference == null
+  ) {
+    return (
+      <p {...props.attributes}>
+        Click this text. Go to Options, and under Article Reference press choose
+        entry to select what article goes here
+      </p>
+    );
+  }
+  const article =
+    Builder.isPreviewing || Builder.isEditing
+      ? previewArticle
+      : deserializeArticle(props.article);
+  if (article == null) return <p>Loading...</p>;
+
   const articleUrl = `/article/${article.slug}`;
 
   return (
-    <Card bordered={false} side className={cn("rounded-none", className)}>
+    <Card
+      {...props.attributes}
+      bordered={false}
+      side
+      className={cn(
+        "rounded-none border-b border-gray-300 py-2 last:border-none",
+        props.attributes.className,
+        props.className
+      )}
+    >
       <Card.Body className="gap-0 p-0">
         <div>
           {article.thumbnail && (

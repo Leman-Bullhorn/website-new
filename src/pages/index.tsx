@@ -1,94 +1,77 @@
 import type { InferGetStaticPropsType, NextPage } from "next";
 import Head from "next/head";
+import builder, { Builder, BuilderComponent } from "@builder.io/react";
 import { prisma } from "../server/db/client";
-import {
-  serializeArticle,
-  useDeserializeArticle,
-  useDeserializeArticles,
-} from "../utils/article";
+import { serializeArticle } from "../utils/article";
 import { Media } from "../utils/media";
-import MobileLayout from "../components/homePage/mobileLayout";
-import TabletLayout from "../components/homePage/tabletLayout";
-import DesktopLayout from "../components/homePage/desktopLayout";
+import { env } from "../env/client.mjs";
+import Masthead from "../components/homePage/masthead";
+import NavigationBar from "../components/navigationBar";
+import { useState } from "react";
+import {
+  SideImageArticle,
+  TopImageArticle,
+} from "../components/homePage/article";
+
+import { getAsyncProps } from "@builder.io/utils";
+import FeaturedArticle from "../components/homePage/featuredArticle";
+import dynamic from "next/dynamic";
+
+builder.init(env.NEXT_PUBLIC_BUILDER_KEY);
+
+const articleSelect = {
+  id: true,
+  headline: true,
+  focus: true,
+  frontPageIndex: true,
+  slug: true,
+  section: true,
+  publicationDate: true,
+  thumbnail: {
+    include: {
+      contributor: true,
+    },
+  },
+  writers: true,
+  media: {
+    include: {
+      contributor: true,
+    },
+  },
+};
 
 export const getStaticProps = async () => {
-  const articlesPromise = prisma.article.findMany({
-    where: {
-      frontPageIndex: {
-        not: null,
+  const page = await builder
+    .get("page", {
+      userAttributes: {
+        urlPath: "/",
       },
-      featured: false,
-    },
-    orderBy: {
-      frontPageIndex: "asc",
-    },
-    select: {
-      id: true,
-      headline: true,
-      focus: true,
-      frontPageIndex: true,
-      slug: true,
-      section: true,
-      publicationDate: true,
-      thumbnail: {
-        include: {
-          contributor: true,
-        },
-      },
-      writers: true,
-      media: {
-        include: {
-          contributor: true,
-        },
-      },
-    },
-  });
+    })
+    .toPromise();
 
-  const featuredArticlePromise = prisma.article.findFirst({
-    where: {
-      featured: true,
-    },
-    select: {
-      id: true,
-      headline: true,
-      focus: true,
-      frontPageIndex: true,
-      slug: true,
-      publicationDate: true,
-      thumbnail: {
-        include: {
-          contributor: true,
-        },
+  const fetchBuilderArticle = async (props: any) => {
+    const article = await prisma.article.findUnique({
+      where: {
+        id: props.articleReference.value.data.id,
       },
-      writers: true,
-      media: {
-        include: {
-          contributor: true,
-        },
-      },
-    },
-  });
+      select: articleSelect,
+    });
+    if (article == null) return;
 
-  const [articles, featuredArticle] = await Promise.all([
-    articlesPromise,
-    featuredArticlePromise,
-  ]);
-
-  // This should never be the case
-  if (featuredArticle == null) {
     return {
-      notFound: true,
+      article: serializeArticle(article),
     };
-  }
+  };
 
-  // necessary until app directory is stable since `Date`
-  // isn't serializable.
-  const frontPageArticles = articles.map(serializeArticle);
+  await getAsyncProps(page, {
+    SideImageArticle: fetchBuilderArticle,
+    TopImageArticle: fetchBuilderArticle,
+    FeaturedArticle: fetchBuilderArticle,
+  });
 
   return {
     props: {
-      featuredArticle: serializeArticle(featuredArticle),
-      frontPageArticles: frontPageArticles,
+      page: page || null,
     },
     revalidate: 10,
   };
@@ -97,34 +80,140 @@ export const getStaticProps = async () => {
 const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   props
 ) => {
-  const featuredArticle = useDeserializeArticle(props.featuredArticle);
-  const frontPageArticles = useDeserializeArticles(props.frontPageArticles);
+  const [mastheadVisible, setMastheadVisible] = useState(true);
 
   return (
     <>
       <Head>
         <title>The Bullhorn</title>
       </Head>
-      <Media lessThan="sm">
-        <MobileLayout
-          featuredArticle={featuredArticle}
-          articles={frontPageArticles}
-        />
+      <Media lessThan="md">
+        <NavigationBar buffer />
       </Media>
-      <Media between={["sm", "lg"]}>
-        <TabletLayout
-          featuredArticle={featuredArticle}
-          articles={frontPageArticles}
-        />
+
+      <Media greaterThanOrEqual="md">
+        <Masthead onChangeVisibility={setMastheadVisible} />
+        <NavigationBar visible={!mastheadVisible} buffer={false} />
       </Media>
-      <Media greaterThanOrEqual="lg">
-        <DesktopLayout
-          featuredArticle={featuredArticle}
-          articles={frontPageArticles}
-        />
-      </Media>
+
+      <BuilderComponent model="page" content={props.page} />
     </>
   );
 };
 
 export default Home;
+
+Builder.registerComponent(
+  dynamic(() => import("../components/homePage/desktopLayout")),
+  {
+    name: "DesktopLayout",
+    inputs: [
+      {
+        name: "featured",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+      {
+        name: "column1",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+      {
+        name: "column2",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+      {
+        name: "column3",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+    ],
+    defaultStyles: {
+      marginTop: "0px",
+    },
+  }
+);
+
+Builder.registerComponent(
+  dynamic(() => import("../components/homePage/tabletLayout")),
+  {
+    name: "TabletLayout",
+    inputs: [
+      {
+        name: "featured",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+      {
+        name: "column1",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+      {
+        name: "column2",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+    ],
+    defaultStyles: {
+      marginTop: "0px",
+    },
+  }
+);
+
+Builder.registerComponent(
+  dynamic(() => import("../components/homePage/mobileLayout")),
+  {
+    name: "MobileLayout",
+    inputs: [
+      {
+        name: "featured",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+      {
+        name: "column1",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+    ],
+    defaultStyles: {
+      marginTop: "0px",
+    },
+  }
+);
+
+Builder.registerComponent(SideImageArticle, {
+  name: "SideImageArticle",
+  inputs: [
+    {
+      name: "articleReference",
+      type: "reference",
+    },
+  ],
+  defaultStyles: {
+    marginTop: "0px",
+  },
+  noWrap: true,
+});
+
+Builder.registerComponent(TopImageArticle, {
+  name: "TopImageArticle",
+  inputs: [{ name: "articleReference", type: "reference" }],
+  defaultStyles: {
+    marginTop: "0px",
+  },
+  noWrap: true,
+});
+
+Builder.registerComponent(FeaturedArticle, {
+  name: "FeaturedArticle",
+  inputs: [{ name: "articleReference", type: "reference" }],
+  defaultStyles: {
+    marginTop: "0px",
+    marginLeft: "0px",
+    flexDirection: "row",
+  },
+  noWrap: true,
+});

@@ -22,6 +22,35 @@ export const articleRouter = router({
       },
     });
   }),
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.article.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          id: true,
+          headline: true,
+          focus: true,
+          frontPageIndex: true,
+          slug: true,
+          section: true,
+          publicationDate: true,
+          thumbnail: {
+            include: {
+              contributor: true,
+            },
+          },
+          writers: true,
+          media: {
+            include: {
+              contributor: true,
+            },
+          },
+        },
+      });
+    }),
   createSubmission: protectedProcedure
     .input(
       z.object({

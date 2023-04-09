@@ -11,6 +11,13 @@ import Balancer from "react-wrap-balancer";
 import ByLine from "../byLine";
 import CaptionedImage from "../captionedImage";
 import TimeStamp from "../timestamp";
+import { Builder } from "@builder.io/react";
+import {
+  deserializeArticle,
+  useBuilderPreviewArticle,
+  type SerializableArticle,
+} from "../../utils/article";
+import { cn } from "../../utils/tw";
 
 type InputArticle = Omit<
   PrismaArticle,
@@ -22,18 +29,41 @@ type InputArticle = Omit<
         contributor: Contributor | null;
       })
     | null;
-  media: (Media & {
-    contributor: Contributor | null;
-  })[];
 };
-const FeaturedArticle: React.FC<{
-  article: InputArticle;
+
+export function FeaturedArticle(props: {
+  article: SerializableArticle<InputArticle>;
+  articleReference: { model: string; id: string };
   className?: string;
-}> = ({ article, className }) => {
+  attributes: React.HTMLAttributes<HTMLDivElement>;
+}) {
+  const previewArticle = useBuilderPreviewArticle(props.articleReference);
+  if (
+    (Builder.isPreviewing || Builder.isEditing) &&
+    props.articleReference == null
+  ) {
+    return (
+      <p {...props.attributes}>
+        Click this text. Go to Options, and under Article Reference press choose
+        entry to select what article goes here
+      </p>
+    );
+  }
+  const article =
+    Builder.isPreviewing || Builder.isEditing
+      ? previewArticle
+      : deserializeArticle(props.article);
+  if (article == null) return <p>Loading...</p>;
+
   const articleUrl = `/article/${article.slug}`;
 
   return (
-    <Card bordered={false} side="md" className={`rounded-none ${className}`}>
+    <Card
+      {...props.attributes}
+      bordered={false}
+      side="md"
+      className={cn("rounded-none", props.className)}
+    >
       <Card.Body className="grow-[2] basis-0 gap-1 p-0 [&>p]:grow-0">
         <h2 className="link-hover font-headline text-2xl font-medium hover:text-leman-blue">
           <Link href={articleUrl}>
@@ -69,6 +99,6 @@ const FeaturedArticle: React.FC<{
       )}
     </Card>
   );
-};
+}
 
 export default FeaturedArticle;

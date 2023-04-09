@@ -1,8 +1,13 @@
-import type { Prisma, Article, Media } from "@prisma/client";
-import { useMemo } from "react";
+import type { Prisma, Media } from "@prisma/client";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
+import { type RouterOutputs, trpc } from "./trpc";
+import builder, { Builder } from "@builder.io/react";
 
-export type SerializableArticle = Omit<Article, "publicationDate"> & {
+export type SerializableArticle<T extends { publicationDate: Date }> = Omit<
+  T,
+  "publicationDate"
+> & {
   publicationDate: string;
 };
 
@@ -178,3 +183,31 @@ export const parseHtml = (
   }
   return { paragraphs: articleParagraphs };
 };
+
+export function useBuilderPreviewArticle(articleReference: {
+  model: string;
+  id: string;
+}) {
+  const trpcContext = trpc.useContext();
+  const [article, setArticle] = useState<RouterOutputs["article"]["getById"]>();
+  useEffect(() => {
+    (async () => {
+      if (Builder.isPreviewing || Builder.isEditing) {
+        if (articleReference == null) return;
+        const data = await builder
+          .get(articleReference.model, {
+            query: { id: articleReference.id },
+          })
+          .promise();
+        setArticle(
+          await trpcContext.article.getById.fetch({
+            id: data.data.id,
+          })
+        );
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [articleReference]);
+
+  return article;
+}
