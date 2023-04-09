@@ -14,6 +14,7 @@ export const serverSchema = z.object({
   ADMIN_PASSWORD: z.string(),
   EDITOR_USERNAME: z.string(),
   EDITOR_PASSWORD: z.string(),
+  BUILDER_PRIVATE_KEY: z.string(),
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
       ? z.string().min(1)

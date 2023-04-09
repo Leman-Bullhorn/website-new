@@ -190,6 +190,7 @@ Builder.registerComponent(SideImageArticle, {
     {
       name: "articleReference",
       type: "reference",
+      model: "articles",
     },
   ],
   defaultStyles: {
@@ -200,7 +201,7 @@ Builder.registerComponent(SideImageArticle, {
 
 Builder.registerComponent(TopImageArticle, {
   name: "TopImageArticle",
-  inputs: [{ name: "articleReference", type: "reference" }],
+  inputs: [{ name: "articleReference", type: "reference", model: "articles" }],
   defaultStyles: {
     marginTop: "0px",
   },
@@ -209,7 +210,7 @@ Builder.registerComponent(TopImageArticle, {
 
 Builder.registerComponent(FeaturedArticle, {
   name: "FeaturedArticle",
-  inputs: [{ name: "articleReference", type: "reference" }],
+  inputs: [{ name: "articleReference", type: "reference", model: "articles" }],
   defaultStyles: {
     marginTop: "0px",
     marginLeft: "0px",

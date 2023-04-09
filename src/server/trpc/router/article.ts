@@ -9,6 +9,7 @@ import {
   protectedProcedure,
   adminProcedure,
 } from "../trpc";
+import { env } from "../../../env/server.mjs";
 
 export const articleRouter = router({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -120,7 +121,7 @@ export const articleRouter = router({
         thumbnailId,
         writerIds,
       } = input;
-      return await ctx.prisma.article.create({
+      const createdArticle = await ctx.prisma.article.create({
         data: {
           headline,
           focus,
@@ -135,6 +136,22 @@ export const articleRouter = router({
           writers: { connect: writerIds.map((id) => ({ id })) },
         },
       });
+
+      // Add to builder CMS
+      fetch("https://builder.io/api/v1/write/articles", {
+        headers: {
+          Authorization: `Bearer ${env.BUILDER_PRIVATE_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: createdArticle.headline,
+          data: { id: createdArticle.id },
+          published: "published",
+        }),
+        method: "POST",
+      });
+
+      return createdArticle;
     }),
   allSubmissions: adminProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.articleSubmission.findMany({
