@@ -1,8 +1,10 @@
 import type { Prisma, Media } from "@prisma/client";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { z } from "zod";
-import { type RouterOutputs, trpc } from "./trpc";
-import builder, { Builder } from "@builder.io/react";
+import { trpc } from "./trpc";
+import { Builder } from "@builder.io/react";
+import { useQuery } from "@tanstack/react-query";
+import { env } from "../env/client.mjs";
 
 export type SerializableArticle<T extends { publicationDate: Date }> = Omit<
   T,
@@ -188,26 +190,23 @@ export function useBuilderPreviewArticle(articleReference: {
   model: string;
   id: string;
 }) {
-  const trpcContext = trpc.useContext();
-  const [article, setArticle] = useState<RouterOutputs["article"]["getById"]>();
-  useEffect(() => {
-    (async () => {
-      if (Builder.isPreviewing || Builder.isEditing) {
-        if (articleReference == null) return;
-        const data = await builder
-          .get(articleReference.model, {
-            query: { id: articleReference.id },
-          })
-          .promise();
-        setArticle(
-          await trpcContext.article.getById.fetch({
-            id: data.data.id,
-          })
-        );
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [articleReference]);
+  const { data } = useQuery({
+    queryFn: async () => {
+      const data = await fetch(
+        `https://cdn.builder.io/api/v2/content/articles?apiKey=${env.NEXT_PUBLIC_BUILDER_KEY}&query.id=${articleReference.id}`
+      );
+
+      return await data.json();
+    },
+    queryKey: ["builderArticle", articleReference],
+    enabled:
+      articleReference != null && (Builder.isPreviewing || Builder.isEditing),
+  });
+
+  const { data: article } = trpc.article.getById.useQuery(
+    { id: data?.results?.[0]?.data?.id },
+    { enabled: data != null }
+  );
 
   return article;
 }
