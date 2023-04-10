@@ -198,6 +198,7 @@ export function useBuilderPreviewArticle(articleReference: {
 
       return await data.json();
     },
+    staleTime: Infinity,
     queryKey: ["builderArticle", articleReference],
     enabled:
       articleReference != null && (Builder.isPreviewing || Builder.isEditing),
@@ -205,7 +206,7 @@ export function useBuilderPreviewArticle(articleReference: {
 
   const { data: article } = trpc.article.getById.useQuery(
     { id: data?.results?.[0]?.data?.id },
-    { enabled: data != null }
+    { enabled: data != null, staleTime: Infinity }
   );
 
   return article;
