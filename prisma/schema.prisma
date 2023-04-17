@@ -19,6 +19,7 @@ model Contributor {
   articles           Article[]
   media              Media[]
   articleSubmissions ArticleSubmission[]
+  podcasts           Podcast[]
 }
 
 enum Section {
@@ -29,6 +30,7 @@ enum Section {
   Sports
   Arts
   Humor
+  Podcast
 }
 
 model Media {
@@ -44,6 +46,17 @@ model Media {
   mediaSubmissions            ArticleSubmission[] @relation("mediaSubmissions")
 
   @@index([contributorId])
+}
+
+model Podcast {
+  id              String        @id @default(cuid())
+  slug            String        @unique
+  title           String
+  description     String        @db.Text
+  publicationDate DateTime
+  audioUrl        String
+  duration        Int
+  hosts           Contributor[]
 }
 
 model Article {

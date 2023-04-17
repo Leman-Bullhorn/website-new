@@ -4,10 +4,11 @@ import React from "react";
 
 const ByLine: React.FC<{
   writers: Contributor[];
-}> = ({ writers }) => {
+  podcast?: boolean;
+}> = ({ writers, podcast }) => {
   return (
     <span>
-      By{" "}
+      {podcast ? "Hosted by " : "By "}
       {writers.map((writer, idx) => (
         <React.Fragment key={writer.id}>
           <Link

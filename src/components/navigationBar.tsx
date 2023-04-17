@@ -23,7 +23,7 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
   return (
     <>
       <div
-        className={`navbar fixed top-0 z-10 bg-slate-50 shadow-md transition-transform ${
+        className={`navbar fixed top-0 z-20 bg-slate-50 shadow-md transition-transform ${
           visible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
@@ -73,7 +73,7 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
           )}
           <div className="flex-none sm:hidden">
             <label
-              className="swap-rotate swap btn-ghost btn-square btn h-10 min-h-min w-10"
+              className="swap btn-ghost swap-rotate btn-square btn h-10 min-h-min w-10"
               ref={drawerButtonRef}
               onClick={toggleDrawer}
             >
