@@ -16,6 +16,7 @@ import {
   SelectContributor,
 } from "../../components/selectContributor";
 import { useUploadAndGenerateMedia } from "../../utils/media";
+import Link from "next/link";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getServerAuthSession(ctx);
@@ -175,6 +176,12 @@ const EditorPage: NextPage = () => {
         <p className="text-center text-gray-500">
           Note: Hitting submit does not publish the article right away, it is
           still reviewed.
+        </p>
+        <p className="text-center">
+          Uploading a podcast instead? Go{" "}
+          <Link href="/editor/podcast" className="link">
+            here
+          </Link>
         </p>
         <div className="mx-auto mt-4 flex w-1/2 flex-col gap-4">
           <div className="flex flex-col">
