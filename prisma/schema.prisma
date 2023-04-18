@@ -30,7 +30,7 @@ enum Section {
   Sports
   Arts
   Humor
-  Podcast
+  Podcasts
 }
 
 model Media {

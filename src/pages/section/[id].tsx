@@ -32,7 +32,9 @@ const articlesSelect = Prisma.validator<Prisma.ArticleSelect>()({
 });
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = sections.map((s) => ({ params: { id: s.id } }));
+  const paths = sections
+    .filter((e) => e.dbSection != "Podcasts")
+    .map((s) => ({ params: { id: s.id } }));
 
   return {
     fallback: false,

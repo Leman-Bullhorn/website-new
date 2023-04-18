@@ -44,9 +44,9 @@ export const sections = [
     href: "/section/humor",
   },
   {
-    id: "podcast",
-    display: "Podcast",
-    dbSection: Section.Podcast,
-    href: "/section/podcast",
+    id: "podcasts",
+    display: "Podcasts",
+    dbSection: Section.Podcasts,
+    href: "/section/podcasts",
   },
 ];
