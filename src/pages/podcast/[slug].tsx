@@ -6,7 +6,6 @@ import Balancer from "react-wrap-balancer";
 import { Player } from "shikwasa";
 import "shikwasa/dist/style.css";
 import { useState } from "react";
-import ByLine from "../../components/byLine";
 import { useMemo } from "react";
 
 export async function getStaticPaths() {
@@ -61,6 +60,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 export default function PodcastPage(
   props: InferGetStaticPropsType<typeof getStaticProps>
 ) {
+  const [player, setPlayer] = useState<any>();
   const hostText = useMemo(() => {
     const hosts = props.podcast.hosts;
     return props.podcast.hosts.reduce((acc, host, idx) => {
@@ -82,17 +82,24 @@ export default function PodcastPage(
         <div
           className="w-full"
           ref={(node) => {
-            if (node == null) return;
-            new Player({
-              container: node,
-              theme: "light",
-              audio: {
-                title: `${props.podcast.title} - ${hostText}`,
-                artist: "The Megaphone",
-                cover: "/android-chrome-144x144.png",
-                src: props.podcast.audioUrl,
-              },
-            });
+            if (node == null) {
+              player?.pause();
+              return;
+            }
+            if (player == null) {
+              setPlayer(
+                new Player({
+                  container: node,
+                  theme: "light",
+                  audio: {
+                    title: `${props.podcast.title} - ${hostText}`,
+                    artist: "The Megaphone",
+                    cover: "/android-chrome-144x144.png",
+                    src: props.podcast.audioUrl,
+                  },
+                })
+              );
+            }
           }}
         />
         <h1 className="max-w-[20ch] text-center font-headline text-4xl font-bold">
