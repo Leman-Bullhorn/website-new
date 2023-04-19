@@ -9,7 +9,6 @@ import {
   Input,
   Table,
   Textarea,
-  Toggle,
   Tooltip,
 } from "react-daisyui";
 import { parseHtml, type ArticleBody } from "../../utils/article";
@@ -29,7 +28,6 @@ export default function ArticlesView() {
   const { mutateAsync: deleteArticle } = trpc.article.deleteById.useMutation();
   const [confirmDeleteArticle, setConfirmDeleteArticle] = useState<Article>();
   const [editingArticle, setEditingArticle] = useState<Article>();
-  const { mutateAsync: editFeatured } = trpc.article.editFeatured.useMutation();
 
   const trpcContext = trpc.useContext();
   const tableArticles = useMemo(() => {
@@ -38,36 +36,12 @@ export default function ArticlesView() {
       (a, b) => b.publicationDate.getTime() - a.publicationDate.getTime()
     );
 
-    const featuredArticleIdx = sorted?.findIndex((article) => article.featured);
-    if (featuredArticleIdx != null && featuredArticleIdx != -1) {
-      const [featured] = sorted.splice(featuredArticleIdx, 1);
-      if (featured) {
-        return [featured, ...sorted];
-      }
-    }
     return sorted;
   }, [articles]);
 
   // TODO
   const onClickEdit = (article: Article) => {
     setEditingArticle(article);
-  };
-
-  const toggleFeatured = async (article: Article) => {
-    const desiredFeatureState = !article.featured;
-    await trpcContext.article.getAll.cancel();
-    trpcContext.article.getAll.setData((oldArticles) => {
-      if (oldArticles == null) return oldArticles;
-      const copy = [...oldArticles];
-      const selectedArticle = copy.find(({ id }) => id === article.id);
-      if (selectedArticle) selectedArticle.featured = desiredFeatureState;
-    });
-    try {
-      await editFeatured({ id: article.id, featured: desiredFeatureState });
-    } catch (e) {
-      alert("Only one article can be featured at a time");
-    }
-    trpcContext.article.invalidate();
   };
 
   const confirmDelete = async (article: Article) => {
@@ -121,16 +95,6 @@ export default function ArticlesView() {
         row.writers.map((w) => `${w.firstName} ${w.lastName}`).join(", "),
       { id: "writers" }
     ),
-    columnHelper.display({
-      header: "Featured",
-      cell: (props) => (
-        <Toggle
-          color="success"
-          checked={props.row.original.featured}
-          onChange={() => toggleFeatured(props.row.original)}
-        />
-      ),
-    }),
     columnHelper.display({
       header: "Edit",
       cell: (props) => (
