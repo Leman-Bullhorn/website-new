@@ -156,46 +156,13 @@ export default function PodcastEditorPage() {
               key={resetKey}
             />
           </div>
-          {/* <div>
-            <p>
-              Article Drive document <RequiredStar />
-            </p>
-            <DrivePicker onChange={setDriveData} key={resetKey} />
-          </div>
-          <Divider className="m-0" />
-          <div className="flex flex-col">
-            <p>Article thumbnail image</p>
-            <FileInput
-              accept="image/jpeg"
-              bordered
-              className="cursor-pointer"
-              onChange={({ target }) => setThumbnailFile(target.files?.[0])}
-              key={resetKey}
-            />
-            {thumbnailFile && (
-              <div className="mt-4">
-                <SelectContributor
-                  className="float-left w-1/2"
-                  placeholder="Thumbnail Contributor"
-                  onChange={setThumbnailContributor}
-                  selectedContributorId={thumbnailContributor.contributorId}
-                  selectedContributorText={thumbnailContributor.contributorText}
-                />
-                <Textarea
-                  className="w-1/2"
-                  placeholder="Thumbnail Alt text."
-                  onChange={({ target }) => setThumbnailAlt(target.value)}
-                />
-              </div>
-            )}
-          </div> */}
           <Button
             type="submit"
             color="primary"
             onClick={onSubmit}
             loading={isSubmitting}
           >
-            Submit Article
+            Submit Podcast
           </Button>
         </div>
       </div>
