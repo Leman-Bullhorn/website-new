@@ -8,13 +8,13 @@ import NavigationBar from "../../components/navigationBar";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
-import FrontPageLayout from "../../components/admin/frontPageLayout";
 import ContributorsView from "../../components/admin/contributorView";
 import ArticlesView from "../../components/admin/articleView";
 import SubmissionsView from "../../components/admin/submissionsView";
 import Head from "next/head";
 import { cn } from "../../utils/tw";
 import PodcastsView from "../../components/admin/podcastView";
+import Link from "next/link";
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const session = await getServerAuthSession(ctx);
@@ -38,7 +38,7 @@ const SectionPage: NextPage<
 > = () => {
   const { data: articleSubmissions } = trpc.article.allSubmissions.useQuery();
   const [activeView, setActiveView] = useState<
-    "submissions" | "articles" | "frontPage" | "contributors" | "podcasts"
+    "submissions" | "articles" | "contributors" | "podcasts"
   >("articles");
 
   return (
@@ -66,14 +66,6 @@ const SectionPage: NextPage<
             <p>Submissions ({articleSubmissions?.length ?? 0})</p>
           </Menu.Item>
           <Menu.Item
-            className={`border-b border-gray-300 ${
-              activeView === "frontPage" ? "underline" : ""
-            }`}
-            onClick={() => setActiveView("frontPage")}
-          >
-            <p>Front Page Layout</p>
-          </Menu.Item>
-          <Menu.Item
             className={cn(
               "border-b border-gray-300",
               activeView === "podcasts" ? "underline" : null
@@ -81,6 +73,16 @@ const SectionPage: NextPage<
             onClick={() => setActiveView("podcasts")}
           >
             <p>Podcasts</p>
+          </Menu.Item>
+          <Menu.Item className="border-b border-gray-300">
+            <a
+              className="link"
+              href="https://builder.io/content"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Builder.io
+            </a>
           </Menu.Item>
           <Menu.Item
             className={activeView === "contributors" ? "underline" : ""}
@@ -94,8 +96,6 @@ const SectionPage: NextPage<
             <ArticlesView />
           ) : activeView === "submissions" ? (
             <SubmissionsView />
-          ) : activeView === "frontPage" ? (
-            <FrontPageLayout />
           ) : activeView === "podcasts" ? (
             <PodcastsView />
           ) : activeView === "contributors" ? (
