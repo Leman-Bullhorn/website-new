@@ -57,6 +57,9 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       section: section.dbSection,
     },
     select: articlesSelect,
+    orderBy: {
+      publicationDate: "desc",
+    },
   });
 
   const serializedArticles = sectionArticles.map(serializeArticle);
