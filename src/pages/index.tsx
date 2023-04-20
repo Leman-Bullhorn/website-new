@@ -136,6 +136,87 @@ Builder.registerComponent(
 );
 
 Builder.registerComponent(
+  dynamic(() => import("../components/homePage/additionalDesktopLayout")),
+  {
+    name: "AdditionalDesktopLayout",
+    inputs: [
+      {
+        name: "column1",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+      {
+        name: "column2",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+      {
+        name: "column3",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+    ],
+    defaultStyles: {
+      borderColor: "rgba(77, 168, 223, 0.4)",
+      borderStyle: "solid",
+      borderTopWidth: "1px",
+      marginTop: "0.25rem",
+      paddingTop: "0.5rem",
+    },
+    noWrap: true,
+  }
+);
+
+Builder.registerComponent(
+  dynamic(() => import("../components/homePage/additionalTabletLayout")),
+  {
+    name: "AdditionalTabletLayout",
+    inputs: [
+      {
+        name: "column1",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+      {
+        name: "column2",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+    ],
+    defaultStyles: {
+      borderColor: "rgba(77, 168, 223, 0.4)",
+      borderStyle: "solid",
+      borderTopWidth: "1px",
+      marginTop: "0.25rem",
+      paddingTop: "0.5rem",
+    },
+    noWrap: true,
+  }
+);
+
+Builder.registerComponent(
+  dynamic(() => import("../components/homePage/additionalMobileLayout")),
+  {
+    name: "AdditionalMobileLayout",
+    inputs: [
+      {
+        name: "column1",
+        type: "uiBlocks",
+        defaultValue: [],
+      },
+    ],
+    defaultStyles: {
+      borderColor: "rgba(77, 168, 223, 0.4)",
+      borderStyle: "solid",
+      borderTopWidth: "1px",
+      marginTop: "0.25rem",
+      paddingTop: "0.5rem",
+    },
+    noWrap: true,
+  }
+);
+
+Builder.registerComponent(
   dynamic(() => import("../components/homePage/tabletLayout")),
   {
     name: "TabletLayout",
