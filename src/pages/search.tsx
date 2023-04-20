@@ -53,7 +53,11 @@ export default function SearchPage(
     <>
       <NavigationBar />
       <div className="container mx-auto mt-4">
-        <h1 className="text-xl font-semibold">{`Found ${articles.length} search results for "${props.query}"`}</h1>
+        <h1 className="text-xl font-semibold">{`Found ${
+          articles.length
+        } search result${articles.length === 1 ? "" : "s"} for "${
+          props.query
+        }"`}</h1>
         {articles.length === 0 ? (
           <p>Ensure your spelling was correct or try a different query.</p>
         ) : null}
