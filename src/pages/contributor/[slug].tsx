@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import type {
   GetStaticPaths,
   NextPage,
@@ -27,31 +26,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-const contributorArticles = Prisma.validator<Prisma.ContributorInclude>()({
-  articles: {
-    select: {
-      id: true,
-      headline: true,
-      publicationDate: true,
-      slug: true,
-      focus: true,
-      thumbnail: {
-        include: {
-          contributor: true,
-        },
-      },
-      writers: true,
-      media: {
-        include: {
-          contributor: true,
-        },
-      },
-    },
-
-    take: 50,
-  },
-});
-
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const { slug } = context.params!;
@@ -64,7 +38,32 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     where: {
       slug,
     },
-    include: contributorArticles,
+    include: {
+      articles: {
+        select: {
+          id: true,
+          headline: true,
+          publicationDate: true,
+          slug: true,
+          focus: true,
+          thumbnail: {
+            include: {
+              contributor: true,
+            },
+          },
+          writers: true,
+          media: {
+            include: {
+              contributor: true,
+            },
+          },
+        },
+        orderBy: {
+          publicationDate: "desc",
+        },
+        take: 50,
+      },
+    },
   });
 
   if (contributor == null)
