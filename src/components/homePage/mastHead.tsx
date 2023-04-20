@@ -4,6 +4,7 @@ import { useInView } from "react-intersection-observer";
 import { sections } from "../../utils/section";
 import logoImage from "../../logo.png";
 import { useEffect } from "react";
+import { Search } from "../search";
 
 const Masthead: React.FC<{
   onChangeVisibility?: (visible: boolean) => void;
@@ -31,7 +32,9 @@ const Masthead: React.FC<{
             The Bullhorn
           </Link>
         </div>
-        <div className="navbar-end" />
+        <div className="navbar-end self-start">
+          <Search />
+        </div>
       </div>
       <a
         href="https://www.lemanmanhattan.org/"

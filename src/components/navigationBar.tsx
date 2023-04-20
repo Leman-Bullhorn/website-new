@@ -6,6 +6,7 @@ import AwareLink from "./awareLink";
 import { type RefObject, useEffect, useRef, useState } from "react";
 import { Button, Menu } from "react-daisyui";
 import { signOut, useSession } from "next-auth/react";
+import { Search } from "./search";
 
 const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
   visible = true,
@@ -34,7 +35,7 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
               src={logoImage}
               width={40}
               height={40}
-              style={{ height: "40px", width: "40px" }}
+              className="h-10 w-10"
             />
           </Link>
         </div>
@@ -54,7 +55,7 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
             ))}
           </div>
         </div>
-        <div className="navbar-end">
+        <div className="navbar-end self-start">
           {session.data?.user?.name === "admin" ? (
             <Link href="/admin">
               <Button>admin</Button>
@@ -71,9 +72,10 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
               Sign out
             </Button>
           )}
+          <Search />
           <div className="flex-none sm:hidden">
             <label
-              className="swap btn-ghost swap-rotate btn-square btn h-10 min-h-min w-10"
+              className="swap-rotate swap btn-ghost btn-square btn h-10 min-h-min w-10"
               ref={drawerButtonRef}
               onClick={toggleDrawer}
             >
@@ -159,7 +161,7 @@ const Drawer: React.FC<{
   return (
     <div
       ref={drawerRef}
-      className={`fixed top-[64px] right-0 z-10 overflow-hidden rounded-bl-md bg-slate-50 shadow-md transition-transform sm:hidden ${
+      className={`fixed right-0 top-[64px] z-10 overflow-hidden rounded-bl-md bg-slate-50 shadow-md transition-transform sm:hidden ${
         open ? "translate-x-0" : "translate-x-full"
       }`}
     >
