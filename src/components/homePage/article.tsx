@@ -42,7 +42,13 @@ export function TopImageArticle(props: {
     props.articleReference == null
   ) {
     return (
-      <p {...props.attributes}>
+      <p
+        {...props.attributes}
+        className={cn(
+          "border border-red-500 font-bold text-red-500",
+          props.attributes.className
+        )}
+      >
         Click this text. Go to Options, and under Article Reference press choose
         entry to select what article goes here
       </p>
@@ -118,7 +124,13 @@ export function SideImageArticle(props: {
     props.articleReference == null
   ) {
     return (
-      <p {...props.attributes}>
+      <p
+        {...props.attributes}
+        className={cn(
+          "border border-red-500 font-bold text-red-500",
+          props.attributes.className
+        )}
+      >
         Click this text. Go to Options, and under Article Reference press choose
         entry to select what article goes here
       </p>

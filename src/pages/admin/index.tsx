@@ -14,7 +14,6 @@ import SubmissionsView from "../../components/admin/submissionsView";
 import Head from "next/head";
 import { cn } from "../../utils/tw";
 import PodcastsView from "../../components/admin/podcastView";
-import Link from "next/link";
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const session = await getServerAuthSession(ctx);
@@ -74,7 +73,17 @@ const SectionPage: NextPage<
           >
             <p>Podcasts</p>
           </Menu.Item>
-          <Menu.Item className="border-b border-gray-300">
+
+          <Menu.Item
+            className={cn(
+              "border-b border-gray-300",
+              activeView === "contributors" ? "underline" : ""
+            )}
+            onClick={() => setActiveView("contributors")}
+          >
+            <p>Contributors</p>
+          </Menu.Item>
+          <Menu.Item>
             <a
               className="link"
               href="https://builder.io/content"
@@ -83,12 +92,6 @@ const SectionPage: NextPage<
             >
               Builder.io
             </a>
-          </Menu.Item>
-          <Menu.Item
-            className={activeView === "contributors" ? "underline" : ""}
-            onClick={() => setActiveView("contributors")}
-          >
-            <p>Contributors</p>
           </Menu.Item>
         </Menu>
         <div className="mr-4 w-full overflow-x-auto">
