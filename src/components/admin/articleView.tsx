@@ -216,6 +216,16 @@ const ArticleEditModal = ({
   const [articleWriters, setArticleWriters] = useState<string[]>(
     article.writers.map((x) => x.id)
   );
+  const [publicationDate, setPublicationDate] = useState(() =>
+    // convert to yyyy:mm:ddThh:mm:ss for "datetime-local" input
+    new Date(
+      article.publicationDate.getTime() -
+        new Date().getTimezoneOffset() * 60 * 1000
+    )
+      .toISOString()
+      .slice(0, 19)
+  );
+
   const [driveData, setDriveData] = useState<{
     images: {
       contributorText: string;
@@ -351,6 +361,7 @@ const ArticleEditModal = ({
       headline,
       focus: focusSentence,
       section,
+      publicationDate: new Date(publicationDate),
       writerIds: articleWriters,
       thumbnailId: thumbnailMediaId,
       body: articleContent,
@@ -404,6 +415,16 @@ const ArticleEditModal = ({
             placeholder="Article Writers"
             selectedWriters={articleWriters}
             onChange={(ids) => setArticleWriters(ids)}
+          />
+        </div>
+        <div className="flex flex-col">
+          <p>Publication Date</p>
+          <Input
+            type="datetime-local"
+            value={publicationDate}
+            onChange={({ target }) =>
+              target.value.length > 0 && setPublicationDate(target.value)
+            }
           />
         </div>
         <div className="flex flex-col">

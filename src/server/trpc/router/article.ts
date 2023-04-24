@@ -272,6 +272,7 @@ export const articleRouter = router({
         focus: z.string().optional(),
         section: z.nativeEnum(Section).optional(),
         writerIds: z.string().array().optional(),
+        publicationDate: z.date().optional(),
         thumbnailId: z.string().optional(),
         body: articleBodySchema.optional(),
         mediaIds: z.string().array().optional(),
@@ -287,6 +288,7 @@ export const articleRouter = router({
           focus: input.focus,
           section: input.section,
           writers: { set: input.writerIds?.map((id) => ({ id })) },
+          publicationDate: input.publicationDate,
           thumbnail: input.thumbnailId
             ? { connect: { id: input.thumbnailId } }
             : undefined,
