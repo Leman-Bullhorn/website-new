@@ -59,7 +59,18 @@ export function FeaturedArticle(props: {
     Builder.isPreviewing || Builder.isEditing
       ? previewArticle
       : deserializeArticle(props.article);
-  if (article == null) return <p>Loading...</p>;
+  if (article == null)
+    return (
+      <p
+        {...props.attributes}
+        className={cn(
+          "border border-red-500 font-bold text-red-500",
+          props.attributes.className
+        )}
+      >
+        Loading...
+      </p>
+    );
 
   const articleUrl = `/article/${article.slug}`;
 
