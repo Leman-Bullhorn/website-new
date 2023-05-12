@@ -19,20 +19,36 @@ import dynamic from "next/dynamic";
 
 builder.init(env.NEXT_PUBLIC_BUILDER_KEY);
 
+// This uses highly specific "selects" to reduce bundle size to a minimum
 const articleSelect = {
   id: true,
   headline: true,
   focus: true,
-  frontPageIndex: true,
   slug: true,
   section: true,
   publicationDate: true,
   thumbnail: {
-    include: {
-      contributor: true,
+    select: {
+      contentUrl: true,
+      alt: true,
+      contributorText: true,
+      contributor: {
+        select: {
+          slug: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
     },
   },
-  writers: true,
+  writers: {
+    select: {
+      id: true,
+      slug: true,
+      firstName: true,
+      lastName: true,
+    },
+  },
   media: {
     include: {
       contributor: true,
