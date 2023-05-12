@@ -34,7 +34,6 @@ export const articleRouter = router({
           id: true,
           headline: true,
           focus: true,
-          frontPageIndex: true,
           slug: true,
           section: true,
           publicationDate: true,
@@ -103,7 +102,6 @@ export const articleRouter = router({
         section: z.nativeEnum(Section),
         body: articleBodySchema,
         featured: z.boolean().default(false),
-        frontPageIndex: z.number().optional(),
         mediaIds: z.string().array(),
         thumbnailId: z.string().optional(),
         writerIds: z.string().array(),
@@ -116,7 +114,6 @@ export const articleRouter = router({
         section,
         body,
         featured,
-        frontPageIndex,
         mediaIds,
         thumbnailId,
         writerIds,
@@ -130,7 +127,6 @@ export const articleRouter = router({
           section,
           body,
           featured,
-          frontPageIndex,
           media: { connect: mediaIds.map((id) => ({ id })) },
           thumbnail: thumbnailId ? { connect: { id: thumbnailId } } : undefined,
           writers: { connect: writerIds.map((id) => ({ id })) },
@@ -187,82 +183,6 @@ export const articleRouter = router({
         where: { id: input.id },
         data: { featured: input.featured },
       });
-    }),
-  setArticleFrontPagePosition: adminProcedure
-    .input(z.object({ index: z.number().nullable(), id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const selectedArticle = await ctx.prisma.article.findUnique({
-        where: { id: input.id },
-      });
-
-      if (selectedArticle == null) return new TRPCError({ code: "NOT_FOUND" });
-
-      if (input.index == null) {
-        if (selectedArticle.frontPageIndex == null) return selectedArticle;
-
-        const [, editedArticle] = await ctx.prisma.$transaction([
-          ctx.prisma.article.updateMany({
-            where: {
-              frontPageIndex: {
-                gt: selectedArticle.frontPageIndex,
-              },
-            },
-            data: { frontPageIndex: { decrement: 1 } },
-          }),
-          ctx.prisma.article.update({
-            where: { id: input.id },
-            data: { frontPageIndex: null },
-          }),
-        ]);
-        return editedArticle;
-      }
-
-      if (
-        selectedArticle.frontPageIndex == null ||
-        input.index <= selectedArticle.frontPageIndex
-      ) {
-        const [, editedArticle] = await ctx.prisma.$transaction([
-          ctx.prisma.article.updateMany({
-            where: {
-              frontPageIndex: {
-                gte: input.index,
-                lt: selectedArticle.frontPageIndex ?? undefined,
-              },
-            },
-            data: {
-              frontPageIndex: { increment: 1 },
-            },
-          }),
-          ctx.prisma.article.update({
-            where: { id: input.id },
-            data: { frontPageIndex: input.index },
-          }),
-        ]);
-
-        return editedArticle;
-      }
-
-      const [, editedArticle] = await ctx.prisma.$transaction([
-        ctx.prisma.article.updateMany({
-          where: {
-            frontPageIndex: {
-              gt: selectedArticle.frontPageIndex,
-              lte: input.index,
-            },
-          },
-          data: {
-            frontPageIndex: { decrement: 1 },
-          },
-        }),
-        ctx.prisma.article.update({
-          where: {
-            id: input.id,
-          },
-          data: { frontPageIndex: input.index },
-        }),
-      ]);
-
-      return editedArticle;
     }),
   editArticle: adminProcedure
     .input(
