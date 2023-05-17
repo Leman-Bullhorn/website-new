@@ -7,6 +7,7 @@ export default function AdditionalTabletLayout(props: any) {
     <Media between={["sm", "lg"]}>
       <div
         {...props.attributes}
+        key={props.attributes.key}
         className={cn(
           "container mx-auto grid grid-cols-2 gap-4",
           props.attributes.className

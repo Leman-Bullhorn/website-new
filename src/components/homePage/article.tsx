@@ -34,7 +34,7 @@ export function TopImageArticle(props: {
   article: SerializableArticle<InputArticle>;
   articleReference: { model: string; id: string };
   className?: string;
-  attributes: React.HTMLAttributes<HTMLDivElement>;
+  attributes: React.HTMLAttributes<HTMLDivElement> & { key: string };
 }) {
   const previewArticle = useBuilderPreviewArticle(props.articleReference);
   if (
@@ -44,6 +44,7 @@ export function TopImageArticle(props: {
     return (
       <p
         {...props.attributes}
+        key={props.attributes.key}
         className={cn(
           "border border-red-500 font-bold text-red-500",
           props.attributes.className
@@ -62,6 +63,7 @@ export function TopImageArticle(props: {
     return (
       <p
         {...props.attributes}
+        key={props.attributes.key}
         className={cn(
           "border border-red-500 font-bold text-red-500",
           props.attributes.className
@@ -76,6 +78,7 @@ export function TopImageArticle(props: {
   return (
     <Card
       {...props.attributes}
+      key={props.attributes.key}
       bordered={false}
       side
       className={cn(
@@ -127,7 +130,7 @@ export function SideImageArticle(props: {
   article: SerializableArticle<InputArticle>;
   articleReference: { model: string; id: string };
   className?: string;
-  attributes: React.HTMLAttributes<HTMLDivElement>;
+  attributes: React.HTMLAttributes<HTMLDivElement> & { key: string };
 }) {
   const previewArticle = useBuilderPreviewArticle(props.articleReference);
   if (
@@ -137,6 +140,7 @@ export function SideImageArticle(props: {
     return (
       <p
         {...props.attributes}
+        key={props.attributes.key}
         className={cn(
           "border border-red-500 font-bold text-red-500",
           props.attributes.className
@@ -155,6 +159,7 @@ export function SideImageArticle(props: {
     return (
       <p
         {...props.attributes}
+        key={props.attributes.key}
         className={cn(
           "border border-red-500 font-bold text-red-500",
           props.attributes.className
@@ -169,6 +174,7 @@ export function SideImageArticle(props: {
   return (
     <Card
       {...props.attributes}
+      key={props.attributes.key}
       bordered={false}
       side
       className={cn(

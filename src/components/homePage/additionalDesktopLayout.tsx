@@ -7,6 +7,7 @@ export default function AdditionalDesktopLayout(props: any) {
     <Media greaterThanOrEqual="lg">
       <div
         {...props.attributes}
+        key={props.attributes.key}
         className={cn(
           "container mx-auto grid grid-cols-3 gap-4",
           props.attributes.className

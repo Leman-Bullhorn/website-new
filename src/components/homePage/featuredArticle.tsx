@@ -35,7 +35,7 @@ export function FeaturedArticle(props: {
   article: SerializableArticle<InputArticle>;
   articleReference: { model: string; id: string };
   className?: string;
-  attributes: React.HTMLAttributes<HTMLDivElement>;
+  attributes: React.HTMLAttributes<HTMLDivElement> & { key: string };
 }) {
   const previewArticle = useBuilderPreviewArticle(props.articleReference);
   if (
@@ -45,6 +45,7 @@ export function FeaturedArticle(props: {
     return (
       <p
         {...props.attributes}
+        key={props.attributes.key}
         className={cn(
           "border border-red-500 font-bold text-red-500",
           props.attributes.className
@@ -63,6 +64,7 @@ export function FeaturedArticle(props: {
     return (
       <p
         {...props.attributes}
+        key={props.attributes.key}
         className={cn(
           "border border-red-500 font-bold text-red-500",
           props.attributes.className
@@ -77,6 +79,7 @@ export function FeaturedArticle(props: {
   return (
     <Card
       {...props.attributes}
+      key={props.attributes.key}
       bordered={false}
       side="md"
       className={cn("rounded-none", props.className)}

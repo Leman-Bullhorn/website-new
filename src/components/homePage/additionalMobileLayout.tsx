@@ -7,6 +7,7 @@ export default function AdditionalTabletLayout(props: any) {
     <Media lessThan={"sm"}>
       <div
         {...props.attributes}
+        key={props.attributes.key}
         className={cn("container mx-auto", props.attributes.className)}
       >
         <BuilderBlocks
