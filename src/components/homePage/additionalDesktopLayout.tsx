@@ -3,11 +3,11 @@ import { cn } from "../../utils/tw";
 import { Media } from "../../utils/media";
 
 export default function AdditionalDesktopLayout(props: any) {
+  const { key: _, ...attributes } = props.attributes;
   return (
     <Media greaterThanOrEqual="lg">
       <div
-        {...props.attributes}
-        key={props.attributes.key}
+        {...attributes}
         className={cn(
           "container mx-auto grid grid-cols-3 gap-4",
           props.attributes.className

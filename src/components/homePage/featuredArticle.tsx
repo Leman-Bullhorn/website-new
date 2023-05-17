@@ -37,6 +37,7 @@ export function FeaturedArticle(props: {
   className?: string;
   attributes: React.HTMLAttributes<HTMLDivElement> & { key: string };
 }) {
+  const { key: _, ...attributes } = props.attributes;
   const previewArticle = useBuilderPreviewArticle(props.articleReference);
   if (
     (Builder.isPreviewing || Builder.isEditing) &&
@@ -44,8 +45,7 @@ export function FeaturedArticle(props: {
   ) {
     return (
       <p
-        {...props.attributes}
-        key={props.attributes.key}
+        {...attributes}
         className={cn(
           "border border-red-500 font-bold text-red-500",
           props.attributes.className
@@ -63,8 +63,7 @@ export function FeaturedArticle(props: {
   if (article == null)
     return (
       <p
-        {...props.attributes}
-        key={props.attributes.key}
+        {...attributes}
         className={cn(
           "border border-red-500 font-bold text-red-500",
           props.attributes.className
@@ -78,8 +77,7 @@ export function FeaturedArticle(props: {
 
   return (
     <Card
-      {...props.attributes}
-      key={props.attributes.key}
+      {...attributes}
       bordered={false}
       side="md"
       className={cn("rounded-none", props.className)}

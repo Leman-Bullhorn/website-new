@@ -3,11 +3,11 @@ import { cn } from "../../utils/tw";
 import { Media } from "../../utils/media";
 
 export default function AdditionalTabletLayout(props: any) {
+  const { key: _, ...attributes } = props.attributes;
   return (
     <Media lessThan={"sm"}>
       <div
-        {...props.attributes}
-        key={props.attributes.key}
+        {...attributes}
         className={cn("container mx-auto", props.attributes.className)}
       >
         <BuilderBlocks

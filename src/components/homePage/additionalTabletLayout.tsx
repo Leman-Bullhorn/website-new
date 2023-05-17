@@ -3,11 +3,11 @@ import { cn } from "../../utils/tw";
 import { Media } from "../../utils/media";
 
 export default function AdditionalTabletLayout(props: any) {
+  const { key: _, ...attributes } = props.attributes;
   return (
     <Media between={["sm", "lg"]}>
       <div
-        {...props.attributes}
-        key={props.attributes.key}
+        {...attributes}
         className={cn(
           "container mx-auto grid grid-cols-2 gap-4",
           props.attributes.className
