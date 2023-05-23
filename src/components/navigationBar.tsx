@@ -3,20 +3,22 @@ import Image from "next/image";
 import logoImage from "../logo.png";
 import { sections } from "../utils/section";
 import AwareLink from "./awareLink";
-import { type RefObject, useEffect, useRef, useState } from "react";
+import { type RefObject, useEffect, useRef, useState, useId } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { Search } from "./search";
+import { cn } from "../utils/tw";
 
 const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
   visible = true,
   buffer = true,
 }) => {
   const [showDrawer, setShowDrawer] = useState(false);
-  const drawerButtonRef = useRef<HTMLLabelElement>(null);
+  const drawerButtonRef = useRef<HTMLButtonElement>(null);
 
   const session = useSession();
 
   const toggleDrawer = () => {
+    console.log("toggleDrawer()");
     setShowDrawer((s) => !s);
   };
 
@@ -73,12 +75,12 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
           )}
           <Search />
           <div className="flex-none sm:hidden">
-            <label
-              className="swap-rotate swap btn-ghost btn-square btn h-10 min-h-min w-10"
+            <button
               ref={drawerButtonRef}
+              className="swap-rotate swap btn-ghost btn-square btn h-10 min-h-min w-10"
               onClick={toggleDrawer}
+              aria-label="Toggle sections drawer"
             >
-              <input type="checkbox" onClick={toggleDrawer} />
               <svg
                 className="swap-off fill-current"
                 xmlns="http://www.w3.org/2000/svg"
@@ -97,7 +99,7 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
               >
                 <polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
               </svg>
-            </label>
+            </button>
           </div>
           <Drawer
             // overflow-hidden to cover the highlight effect on the rounded corners
@@ -132,7 +134,7 @@ const Drawer: React.FC<{
   open: boolean;
   onClickEscape?: () => void;
   children: React.ReactNode;
-  toggleButtonRef?: RefObject<HTMLLabelElement>;
+  toggleButtonRef?: RefObject<HTMLButtonElement>;
 }> = ({ onClickEscape, children, open = true, toggleButtonRef }) => {
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -160,9 +162,10 @@ const Drawer: React.FC<{
   return (
     <div
       ref={drawerRef}
-      className={`fixed right-0 top-[64px] z-10 overflow-hidden rounded-bl-md bg-slate-50 shadow-md transition-transform sm:hidden ${
-        open ? "translate-x-0" : "translate-x-full"
-      }`}
+      className={cn(
+        "fixed right-0 top-[64px] z-10 overflow-hidden rounded-bl-md bg-slate-50 shadow-md transition-transform sm:hidden",
+        open ? "hello world translate-x-0" : "translate-x-full"
+      )}
     >
       {children}
     </div>
