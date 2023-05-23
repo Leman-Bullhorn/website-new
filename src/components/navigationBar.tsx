@@ -107,7 +107,7 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
           >
             <ul className="menu" role="menu">
               {sections.map((section) => (
-                <li key={section.id}>
+                <li key={section.id} role="menuitem">
                   <AwareLink
                     href={section.href}
                     className="link-hover link font-section opacity-60 hover:opacity-75"
