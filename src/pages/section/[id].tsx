@@ -83,6 +83,12 @@ const SectionPage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
     <>
       <Head>
         <title>{`${section.display} - The Bullhorn`}</title>
+        <meta
+          name="description"
+          content={`The Leman Bullhorn newspaper "${
+            section.display
+          }" section. Find bi-trimestral student articles covering all things ${section.display.toLowerCase()} here.`}
+        />
       </Head>
       <NavigationBar />
       <div className="container mx-auto mt-4 px-2">

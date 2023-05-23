@@ -102,7 +102,12 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
     <>
       <Head>
         <title>The Bullhorn</title>
+        <meta
+          name="description"
+          content="The Leman Bullhorn newspaper. Bi-trimestral student articles covering a range of topics in news, opinions, features, science, sports, arts, and humor. "
+        />
       </Head>
+
       <Media lessThan="md">
         <NavigationBar buffer />
       </Media>
