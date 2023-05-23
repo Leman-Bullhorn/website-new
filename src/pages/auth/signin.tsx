@@ -6,7 +6,6 @@ import type {
   NextPage,
 } from "next/types";
 import { type FormEvent, useState } from "react";
-import { Button, Input } from "react-daisyui";
 import NavigationBar from "../../components/navigationBar";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -41,20 +40,24 @@ const SignInPage: NextPage<
           className="b-gray-500 flex w-1/2 flex-col gap-4 rounded border p-8"
         >
           <h1 className="text-center text-lg">Sign In</h1>
-
-          <Input
+          <input
             type="text"
             placeholder="username"
+            className="input-bordered input focus:outline-offset-0"
             onChange={({ target }) => setUsername(target.value)}
           />
-          <Input
+          <input
             type="password"
             placeholder="password"
+            className="input-bordered input focus:outline-offset-0"
             onChange={({ target }) => setPassword(target.value)}
           />
-          <Button color="primary" disabled={username === "" || password === ""}>
+          <button
+            className="btn-primary btn disabled:disabled"
+            disabled={username === "" || password === ""}
+          >
             Sign In
-          </Button>
+          </button>
         </form>
       </div>
     </>

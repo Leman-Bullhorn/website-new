@@ -4,7 +4,6 @@ import logoImage from "../logo.png";
 import { sections } from "../utils/section";
 import AwareLink from "./awareLink";
 import { type RefObject, useEffect, useRef, useState } from "react";
-import { Button, Menu } from "react-daisyui";
 import { signOut, useSession } from "next-auth/react";
 import { Search } from "./search";
 
@@ -29,9 +28,9 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
         }`}
       >
         <div className="navbar-start self-start">
-          <Link href="/">
+          <Link href="/" aria-label="Go to home page">
             <Image
-              alt=""
+              alt="Bullhorn logo"
               src={logoImage}
               width={40}
               height={40}
@@ -58,19 +57,19 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
         <div className="navbar-end self-start">
           {session.data?.user?.name === "admin" ? (
             <Link href="/admin">
-              <Button>admin</Button>
+              <button className="btn">admin</button>
             </Link>
           ) : null}
           {session.data?.user?.name === "editor" ||
           session.data?.user?.name === "admin" ? (
             <Link href="/editor">
-              <Button>editor</Button>
+              <button className="btn">editor</button>
             </Link>
           ) : null}
           {session.status === "authenticated" && (
-            <Button onClick={() => signOut()} color="error">
+            <button className="btn-error btn" onClick={() => signOut()}>
               Sign out
-            </Button>
+            </button>
           )}
           <Search />
           <div className="flex-none sm:hidden">
@@ -106,18 +105,18 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
             toggleButtonRef={drawerButtonRef}
             onClickEscape={() => setShowDrawer(false)}
           >
-            <Menu>
+            <ul className="menu" role="menu">
               {sections.map((section) => (
-                <Menu.Item key={section.id}>
+                <li key={section.id}>
                   <AwareLink
                     href={section.href}
                     className="link-hover link font-section opacity-60 hover:opacity-75"
                   >
                     {section.display}
                   </AwareLink>
-                </Menu.Item>
+                </li>
               ))}
-            </Menu>
+            </ul>
           </Drawer>
         </div>
       </div>

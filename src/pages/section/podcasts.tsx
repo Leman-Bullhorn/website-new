@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { prisma } from "../../server/db/client";
 import type { InferGetStaticPropsType } from "next";
 import { serializeArticle, useDeserializeArticles } from "../../utils/article";
-import { Card } from "react-daisyui";
 import type { Contributor, Podcast } from "@prisma/client";
 import ByLine from "../../components/byLine";
 import "shikwasa/dist/style.css";
@@ -94,11 +93,12 @@ function PodcastCard(props: {
   );
 
   return (
-    <Card
-      className="overflow-hidden transition-colors hover:bg-gray-200"
+    <div
+      aria-label="Card"
+      className="card-bordered card overflow-hidden transition-colors hover:bg-gray-200"
       onClick={props.onClick}
     >
-      <Card.Body>
+      <div className="card-body">
         {/* Have to do weird stuff here to get the nested links from the ByLine component
             to work properly. */}
         <Link
@@ -106,7 +106,7 @@ function PodcastCard(props: {
           className="before:absolute before:bottom-0 before:left-0 before:right-0 before:top-0"
         >
           <p className="text-sm font-bold text-gray-500">{formattedDate}</p>
-          <Card.Title>{props.podcast.title}</Card.Title>
+          <div className="card-title">{props.podcast.title}</div>
 
           <div className="flex justify-between">
             <span>{props.podcast.description}</span>
@@ -116,8 +116,8 @@ function PodcastCard(props: {
         <p className="z-10 text-sm text-gray-500">
           <ByLine writers={props.podcast.hosts} podcast />
         </p>
-      </Card.Body>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -131,6 +131,10 @@ export default function PodcastPage(
     <>
       <Head>
         <title>The Bullhorn Podcast</title>
+        <meta
+          name="description"
+          content="The Bullhorn podcast. Sharing the true voices of Léman students."
+        />
       </Head>
       <NavigationBar />
       <div className="container mx-auto mt-4 flex flex-col gap-4">

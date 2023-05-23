@@ -7,11 +7,11 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
-import { Button, Card, FileInput, Input, Table, Textarea } from "react-daisyui";
 import { trpc } from "../../utils/trpc";
 import Modal from "../modal";
 import RequiredStar from "../requiredStar";
 import Image from "next/image";
+import { cn } from "../../utils/tw";
 
 export default function ContributorsView() {
   const [firstName, setFirstName] = useState<string>();
@@ -59,12 +59,12 @@ export default function ContributorsView() {
       header: "Edit",
       cell: ({ row }) => (
         <div>
-          <Button
-            color="success"
+          <button
+            className="btn-success btn"
             onClick={() => setActiveContributor(row.original)}
           >
             Edit
-          </Button>
+          </button>
         </div>
       ),
     }),
@@ -144,7 +144,7 @@ export default function ContributorsView() {
       ) : null}
       <div className="flex gap-2">
         <div className="h-[70vh] grow basis-0 overflow-x-auto">
-          <Table zebra compact className="w-full">
+          <table className="table-zebra table-compact table w-full">
             <thead className="sticky top-0">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
@@ -175,17 +175,18 @@ export default function ContributorsView() {
                 </tr>
               ))}
             </tbody>
-          </Table>
+          </table>
         </div>
         <div className="relative col-span-1 grow basis-0 before:absolute before:-left-1 before:h-full before:border-l before:border-gray-300">
-          <Card>
-            <Card.Title>Create Contributor</Card.Title>
-            <Card.Body className="pb-0">
+          <div className="card-bordered card" aria-label="Card">
+            <div className="card-title">Create Contributor</div>
+            <div className="card-body pb-0">
               <p>
                 First Name <RequiredStar />
               </p>
-              <Input
+              <input
                 placeholder="Enter First Name"
+                className="input-bordered input focus:outline-offset-0"
                 type="text"
                 value={firstName ?? ""}
                 onChange={({ target }) => setFirstName(target.value)}
@@ -193,8 +194,9 @@ export default function ContributorsView() {
               <p>
                 Last Name <RequiredStar />
               </p>
-              <Input
+              <input
                 placeholder="Enter Last Name"
+                className="input-bordered input focus:outline-offset-0"
                 type="text"
                 value={lastName ?? ""}
                 onChange={({ target }) => setLastName(target.value)}
@@ -202,37 +204,37 @@ export default function ContributorsView() {
               <p>
                 Title <RequiredStar />
               </p>
-              <Input
+              <input
                 placeholder="Enter Contributor Title"
-                type="text"
+                className="input-bordered input focus:outline-offset-0"
                 value={title ?? ""}
                 onChange={({ target }) => setTitle(target.value)}
               />
               <p>Bio</p>
-              <Textarea
+              <textarea
                 placeholder="Enter Bio"
+                className="textarea-bordered textarea focus:outline-offset-0"
                 value={bio ?? ""}
                 onChange={({ target }) => setBio(target.value)}
               />
               <p>Headshot</p>
-              <FileInput
+              <input
                 ref={headshotRef}
                 accept="image/jpeg"
-                bordered
-                className="cursor-pointer"
+                className="file-input-bordered file-input cursor-pointer"
+                type="file"
               />
-            </Card.Body>
-            <Card.Actions className="my-2 justify-center">
-              <Button
-                className="w-1/2"
-                color="success"
+            </div>
+            <div className="card-actions my-2 justify-center">
+              <button
+                className="btn-success btn w-1/2 disabled:disabled"
                 onClick={onClickCreate}
                 disabled={!firstName || !lastName || !title}
               >
                 Create
-              </Button>
-            </Card.Actions>
-          </Card>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </>
@@ -293,9 +295,9 @@ const ContributorsEditModal = ({
         bio,
         headshotUrl,
       });
-      alert("contributor created successfully");
+      alert("contributor edited successfully");
     } catch (e) {
-      alert("Something went wrong creating the contributor");
+      alert("Something went wrong editing the contributor");
     }
 
     trpcContext.contributor.invalidate();
@@ -305,22 +307,21 @@ const ContributorsEditModal = ({
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Button
-        size="sm"
-        shape="circle"
-        className="absolute right-2 top-2"
+      <button
+        className="btn-sm btn-circle btn absolute right-2 top-2"
         onClick={onClose}
       >
         ✕
-      </Button>
+      </button>
       <Modal.Header className="b-gray-300 mb-4 border-b pb-2">
         Edit &quot;{contributor.firstName} {contributor.lastName}&quot;
       </Modal.Header>
       <Modal.Body className="flex flex-col gap-2">
         <div className="flex flex-col">
           <p>First Name</p>
-          <Input
+          <input
             placeholder="Enter First Name"
+            className="input-bordered input focus:outline-offset-0"
             type="text"
             value={firstName ?? ""}
             onChange={({ target }) => setFirstName(target.value)}
@@ -328,8 +329,9 @@ const ContributorsEditModal = ({
         </div>
         <div className="flex flex-col">
           <p>Last Name</p>
-          <Input
+          <input
             placeholder="Enter Last Name"
+            className="input-bordered input focus:outline-offset-0"
             type="text"
             value={lastName ?? ""}
             onChange={({ target }) => setLastName(target.value)}
@@ -337,8 +339,9 @@ const ContributorsEditModal = ({
         </div>
         <div className="flex flex-col">
           <p>Title</p>
-          <Input
+          <input
             placeholder="Enter Contributor Title"
+            className="input-bordered input focus:outline-offset-0"
             type="text"
             value={title ?? ""}
             onChange={({ target }) => setTitle(target.value)}
@@ -346,8 +349,9 @@ const ContributorsEditModal = ({
         </div>
         <div className="flex flex-col">
           <p>Bio</p>
-          <Textarea
+          <textarea
             placeholder="Enter Bio"
+            className="textarea-bordered textarea focus:outline-offset-0"
             value={bio ?? ""}
             onChange={({ target }) => setBio(target.value)}
           />
@@ -362,23 +366,21 @@ const ContributorsEditModal = ({
         ) : null}
         <div className="flex flex-col">
           <p>{contributor.headshotUrl ? "Change " : ""}Headshot</p>
-          <FileInput
+          <input
             ref={headshotRef}
             accept="image/jpeg"
-            bordered
-            className="cursor-pointer"
+            className="file-input-bordered file-input cursor-pointer"
+            type="file"
           />
         </div>
       </Modal.Body>
       <Modal.Actions>
-        <Button
-          className="w-full"
-          color="success"
+        <button
+          className={cn("btn-success btn w-full", editing && "loading")}
           onClick={onClickEdit}
-          loading={editing}
         >
           Edit
-        </Button>
+        </button>
       </Modal.Actions>
     </Modal>
   );

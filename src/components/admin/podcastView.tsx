@@ -1,4 +1,3 @@
-import { Button, Input, Table, Textarea, Tooltip } from "react-daisyui";
 import { useState } from "react";
 import { type RouterOutputs, trpc } from "../../utils/trpc";
 import { createColumnHelper, getCoreRowModel } from "@tanstack/table-core";
@@ -6,6 +5,7 @@ import Link from "next/link";
 import { flexRender, useReactTable } from "@tanstack/react-table";
 import Modal from "../../components/modal";
 import { MultiSelectContributor } from "../../components/selectContributor";
+import { cn } from "../../utils/tw";
 
 type Podcast = RouterOutputs["podcast"]["getAll"][0];
 export default function PodcastsView() {
@@ -25,13 +25,13 @@ export default function PodcastsView() {
           href={`/podcast/${props.row.original.slug}`}
         >
           {props.row.original.title.length > 50 ? (
-            <Tooltip
-              position="right"
-              className="link-hover link before:whitespace-pre-wrap before:content-[attr(data-tip)]"
-              message={props.row.original.title}
+            <div
+              role="tooltip"
+              data-tip={props.row.original.title}
+              className="link-hover link tooltip tooltip-right before:whitespace-pre-wrap before:content-[attr(data-tip)]"
             >
               {props.row.original.title.substring(0, 47) + "..."}
-            </Tooltip>
+            </div>
           ) : (
             props.row.original.title
           )}
@@ -57,25 +57,25 @@ export default function PodcastsView() {
     columnHelper.display({
       header: "Edit",
       cell: (props) => (
-        <Button
-          color="success"
+        <button
+          className="btn-success btn"
           onClick={() => {
             setEditingPodcast(props.row.original);
           }}
         >
           Edit
-        </Button>
+        </button>
       ),
     }),
     columnHelper.display({
       header: "Delete",
       cell: (props) => (
-        <Button
-          color="error"
+        <button
+          className="btn-error btn"
           onClick={() => setConfirmDeletePodcast(props.row.original)}
         >
           Delete
-        </Button>
+        </button>
       ),
     }),
   ];
@@ -105,14 +105,12 @@ export default function PodcastsView() {
           open={confirmDeletePodcast != null}
           onClose={() => setConfirmDeletePodcast(undefined)}
         >
-          <Button
-            size="sm"
-            shape="circle"
-            className="absolute right-2 top-2"
+          <button
+            className="btn-sm btn-circle btn absolute right-2 top-2"
             onClick={() => setConfirmDeletePodcast(undefined)}
           >
             ✕
-          </Button>
+          </button>
           <Modal.Header>Confirm Delete</Modal.Header>
           <Modal.Body>
             <div className="flex flex-col gap-4">
@@ -121,12 +119,12 @@ export default function PodcastsView() {
                 {confirmDeletePodcast.title}&quot;?
                 <br /> THIS IS PERMANENT
               </p>
-              <Button
-                color="error"
+              <button
+                className="btn-error btn"
                 onClick={() => confirmDelete(confirmDeletePodcast)}
               >
                 Delete
-              </Button>
+              </button>
             </div>
           </Modal.Body>
         </Modal>
@@ -141,7 +139,7 @@ export default function PodcastsView() {
         />
       ) : null}
 
-      <Table compact zebra className="w-full">
+      <table className="table-zebra table-compact table w-full">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -169,7 +167,7 @@ export default function PodcastsView() {
             </tr>
           ))}
         </tbody>
-      </Table>
+      </table>
     </>
   );
 }
@@ -200,111 +198,36 @@ function PodcastEditModal(props: {
 
     await editPodcast({ id: props.podcast.id, title, description, hostIds });
 
-    // let articleContent: ArticleBody | undefined;
-    // const bodyMediaIds: string[] = [];
-    // if (
-    //   driveData?.htmlFileText != null &&
-    //   driveData.images.every(
-    //     (img) => img.altText != null && img.contributorId != null
-    //   )
-    // ) {
-    //   const fileNameToMediaMap = new Map<string, Media>();
-
-    //   for (const image of driveData.images) {
-    //     const media = await uploadAndGenerateMedia({
-    //       file: image.file,
-    //       // Checked already above
-    //       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    //       altText: image.altText!,
-    //       contributorText: image.contributorText,
-    //       contributorId: image.contributorId,
-    //     });
-    //     fileNameToMediaMap.set(image.file.name, media);
-    //   }
-
-    //   const html = new DOMParser().parseFromString(
-    //     driveData.htmlFileText,
-    //     "text/html"
-    //   );
-
-    //   articleContent = parseHtml(html, fileNameToMediaMap);
-
-    //   for (const media of fileNameToMediaMap.values()) {
-    //     bodyMediaIds.push(media.id);
-    //   }
-    // }
-
-    // let thumbnailMediaId: string | undefined;
-
-    // if (thumbnailChanged) {
-    //   if (
-    //     thumbnailFile == null ||
-    //     thumbnailContributor?.contributorText == null ||
-    //     thumbnailAlt == null ||
-    //     thumbnailAlt === ""
-    //   ) {
-    //     alert("Missing required fields");
-    //     return;
-    //   }
-
-    //   const thumbnailMedia = await uploadAndGenerateMedia({
-    //     file: thumbnailFile,
-    //     altText: thumbnailAlt,
-    //     contributorText: thumbnailContributor.contributorText,
-    //     contributorId: thumbnailContributor.contributorId,
-    //   });
-
-    //   thumbnailMediaId = thumbnailMedia.id;
-    // } else if (article.thumbnailId != null) {
-    //   await editMedia({
-    //     id: article.thumbnailId,
-    //     alt: thumbnailAlt,
-    //     contributorId: thumbnailContributor.contributorId ?? null,
-    //     contributorText: thumbnailContributor.contributorText,
-    //   });
-    // }
-
-    // await editArticle({
-    //   id: article.id,
-    //   headline,
-    //   focus: focusSentence,
-    //   section,
-    //   writerIds: articleWriters,
-    //   thumbnailId: thumbnailMediaId,
-    //   body: articleContent,
-    //   mediaIds: bodyMediaIds.length > 0 ? bodyMediaIds : undefined,
-    // });
-
     props.onClose?.();
   };
 
   return (
     <Modal open={props.open} onClose={props.onClose}>
-      <Button
-        size="sm"
-        shape="circle"
-        className="absolute right-2 top-2"
+      <button
+        className="btn-sm btn-circle btn absolute right-2 top-2"
         onClick={props.onClose}
       >
         ✕
-      </Button>
+      </button>
       <Modal.Header className="b-gray-300 mb-4 border-b pb-2">
         {`Edit "${props.podcast.title}"`}
       </Modal.Header>
       <Modal.Body>
         <div className="flex flex-col">
           <p>Title</p>
-          <Input
-            placeholder="Enter Title"
+          <input
+            className="input-bordered input focus:outline-offset-0"
             type="text"
+            placeholder="Enter Title"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div className="flex flex-col">
           <p>Description</p>
-          <Textarea
+          <textarea
             placeholder="Enter description of the podcast"
+            className="textarea-bordered textarea focus:outline-offset-0"
             value={description}
             onChange={({ target }) => setDescription(target.value)}
           />
@@ -318,17 +241,15 @@ function PodcastEditModal(props: {
           />
         </div>
         <div className="mt-4 flex gap-2">
-          <Button className="w-1/2" color="error" onClick={props.onClose}>
+          <button className="btn-error btn w-1/2" onClick={props.onClose}>
             Cancel
-          </Button>
-          <Button
-            className="w-1/2"
-            color="success"
+          </button>
+          <button
+            className={cn("btn-success btn w-1/2", isEditing && "loading")}
             onClick={onClickEdit}
-            loading={isEditing}
           >
             Edit
-          </Button>
+          </button>
         </div>
       </Modal.Body>
     </Modal>

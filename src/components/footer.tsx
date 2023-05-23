@@ -1,21 +1,21 @@
 import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Footer as DaisyFooter, Link } from "react-daisyui";
 import Image from "next/image";
+import Link from "next/link";
 import logoImage from "../logo.png";
 import { sections } from "../utils/section";
 
 export default function Footer() {
   return (
-    <DaisyFooter className="mt-12 bg-gray-100 p-10">
+    <footer className="footer mt-12 bg-gray-100 p-10">
       <div>
-        <Link href="/">
+        <Link href="/" aria-label="Go to home page">
           <Image
-            alt=""
+            alt="Bullhorn logo"
             src={logoImage}
             width={50}
             height={50}
-            style={{ height: "50px", width: "50px" }}
+            className="h-[50px] w-[50px]"
           />
         </Link>
         <p>
@@ -27,6 +27,7 @@ export default function Footer() {
           href="https://www.instagram.com/lemanbullhorn/"
           rel="noreferrer"
           target="_blank"
+          aria-label="Go to the Bullhorn instagram"
         >
           <FontAwesomeIcon
             icon={faInstagram}
@@ -35,7 +36,7 @@ export default function Footer() {
         </a>
       </div>
       <div>
-        <DaisyFooter.Title>Sections</DaisyFooter.Title>
+        <span className="footer-title">Sections</span>
         {sections.map((section) => (
           <Link key={section.id} href={section.href}>
             {section.display}
@@ -43,7 +44,7 @@ export default function Footer() {
         ))}
       </div>
       <div>
-        <DaisyFooter.Title>About</DaisyFooter.Title>
+        <span className="footer-title">About</span>
         <a
           href="https://docs.google.com/forms/d/e/1FAIpQLSc13tr2WnpnlHdH88S3kwveNed-g178mZN8W6377T5vZXMVTQ/viewform"
           rel="noreferrer"
@@ -67,6 +68,6 @@ export default function Footer() {
           Privacy Policy
         </Link>
       </div>
-    </DaisyFooter>
+    </footer>
   );
 }

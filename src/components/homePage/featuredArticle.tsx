@@ -6,7 +6,6 @@ import type {
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { Card } from "react-daisyui";
 import Balancer from "react-wrap-balancer";
 import ByLine from "../byLine";
 import CaptionedImage from "../captionedImage";
@@ -76,13 +75,12 @@ export function FeaturedArticle(props: {
   const articleUrl = `/article/${article.slug}`;
 
   return (
-    <Card
+    <div
+      aria-label="Card"
       {...attributes}
-      bordered={false}
-      side="md"
-      className={cn("rounded-none", props.className)}
+      className={cn("card rounded-none md:card-side", props.className)}
     >
-      <Card.Body className="grow-[2] basis-0 gap-1 p-0 [&>p]:grow-0">
+      <div className="card-body grow-[2] basis-0 gap-1 p-0 [&>p]:grow-0">
         <h2 className="link-hover font-headline text-2xl font-medium hover:text-leman-blue">
           <Link href={articleUrl}>
             <Balancer>{article.headline}</Balancer>
@@ -93,7 +91,7 @@ export function FeaturedArticle(props: {
           <ByLine writers={article.writers} /> &bull;{" "}
           <TimeStamp timestamp={article.publicationDate} />
         </p>
-      </Card.Body>
+      </div>
       {article.thumbnail && (
         <CaptionedImage
           className="!block grow-[3] rounded-none md:basis-0"
@@ -115,7 +113,7 @@ export function FeaturedArticle(props: {
           </Link>
         </CaptionedImage>
       )}
-    </Card>
+    </div>
   );
 }
 

@@ -1,5 +1,4 @@
 import type { GetServerSidePropsContext, NextPage } from "next";
-import { Button, Divider, FileInput, Input, Textarea } from "react-daisyui";
 import NavigationBar from "../../components/navigationBar";
 import { sections } from "../../utils/section";
 import { useId, useState } from "react";
@@ -17,6 +16,7 @@ import {
 } from "../../components/selectContributor";
 import { useUploadAndGenerateMedia } from "../../utils/media";
 import Link from "next/link";
+import { cn } from "../../utils/tw";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getServerAuthSession(ctx);
@@ -188,10 +188,10 @@ const EditorPage: NextPage = () => {
             <p>
               Headline <RequiredStar />
             </p>
-            <Input
+            <input
               placeholder="Enter Headline"
+              className="input-bordered input focus:outline-offset-0"
               type="text"
-              // color={error ? "error" : "ghost"}
               value={headline ?? ""}
               onChange={({ target }) => setHeadline(target.value)}
             />
@@ -201,9 +201,10 @@ const EditorPage: NextPage = () => {
             <p>
               Focus Sentence <RequiredStar />
             </p>
-            <Textarea
+            <textarea
               placeholder="1-2 sentences. This is the preview of the article"
-              /*color={error ? "error" : "ghost"}*/ value={focusSentence ?? ""}
+              className="textarea-bordered textarea focus:outline-offset-0"
+              value={focusSentence ?? ""}
               onChange={({ target }) => setFocusSentence(target.value)}
             />
           </div>
@@ -242,13 +243,13 @@ const EditorPage: NextPage = () => {
             </p>
             <DrivePicker onChange={setDriveData} key={resetKey} />
           </div>
-          <Divider className="m-0" />
+          <div role="separator" className="divider m-0" />
           <div className="flex flex-col">
             <p>Article thumbnail image</p>
-            <FileInput
+            <input
               accept="image/jpeg"
-              bordered
-              className="cursor-pointer"
+              className="file-input-bordered file-input cursor-pointer"
+              type="file"
               onChange={({ target }) => setThumbnailFile(target.files?.[0])}
               key={resetKey}
             />
@@ -261,22 +262,21 @@ const EditorPage: NextPage = () => {
                   selectedContributorId={thumbnailContributor.contributorId}
                   selectedContributorText={thumbnailContributor.contributorText}
                 />
-                <Textarea
-                  className="w-1/2"
+                <textarea
                   placeholder="Thumbnail Alt text."
+                  className="textarea-bordered textarea w-1/2 focus:outline-offset-0"
                   onChange={({ target }) => setThumbnailAlt(target.value)}
                 />
               </div>
             )}
           </div>
-          <Button
+          <button
             type="submit"
-            color="primary"
+            className={cn("btn-primary btn", isSubmitting && "loading")}
             onClick={onSubmit}
-            loading={isSubmitting}
           >
             Submit Article
-          </Button>
+          </button>
         </div>
       </div>
     </>

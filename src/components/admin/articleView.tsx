@@ -3,17 +3,10 @@ import { flexRender, useReactTable } from "@tanstack/react-table";
 import { createColumnHelper, getCoreRowModel } from "@tanstack/table-core";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import {
-  Button,
-  FileInput,
-  Input,
-  Table,
-  Textarea,
-  Tooltip,
-} from "react-daisyui";
 import { parseHtml, type ArticleBody } from "../../utils/article";
 import { useUploadAndGenerateMedia } from "../../utils/media";
 import { type RouterOutputs, trpc } from "../../utils/trpc";
+import { cn } from "../../utils/tw";
 import DrivePicker from "../drivePicker";
 import Modal from "../modal";
 import {
@@ -64,13 +57,13 @@ export default function ArticlesView() {
           href={`/article/${props.row.original.slug}`}
         >
           {props.row.original.headline.length > 50 ? (
-            <Tooltip
-              position="right"
-              className="link-hover link before:whitespace-pre-wrap before:content-[attr(data-tip)]"
-              message={props.row.original.headline}
+            <div
+              role="tooltip"
+              data-tip={props.row.original.headline}
+              className="link-hover link tooltip tooltip-right before:whitespace-pre-wrap before:content-[attr(data-tip)]"
             >
               {props.row.original.headline.substring(0, 47) + "..."}
-            </Tooltip>
+            </div>
           ) : (
             props.row.original.headline
           )}
@@ -98,25 +91,25 @@ export default function ArticlesView() {
     columnHelper.display({
       header: "Edit",
       cell: (props) => (
-        <Button
-          color="success"
+        <button
+          className="btn-success btn"
           onClick={() => {
             onClickEdit(props.row.original);
           }}
         >
           Edit
-        </Button>
+        </button>
       ),
     }),
     columnHelper.display({
       header: "Delete",
       cell: (props) => (
-        <Button
-          color="error"
+        <button
+          className="btn-error btn"
           onClick={() => setConfirmDeleteArticle(props.row.original)}
         >
           Delete
-        </Button>
+        </button>
       ),
     }),
   ];
@@ -134,14 +127,12 @@ export default function ArticlesView() {
           open={confirmDeleteArticle != null}
           onClose={() => setConfirmDeleteArticle(undefined)}
         >
-          <Button
-            size="sm"
-            shape="circle"
-            className="absolute right-2 top-2"
+          <button
+            className="btn-sm btn-circle btn absolute right-2 top-2"
             onClick={() => setConfirmDeleteArticle(undefined)}
           >
             ✕
-          </Button>
+          </button>
           <Modal.Header>Confirm Delete</Modal.Header>
           <Modal.Body>
             <div className="flex flex-col gap-4">
@@ -150,12 +141,12 @@ export default function ArticlesView() {
                 {confirmDeleteArticle.headline}&quot;?
                 <br /> THIS IS PERMANENT
               </p>
-              <Button
-                color="error"
+              <button
+                className="btn-error btn"
                 onClick={() => confirmDelete(confirmDeleteArticle)}
               >
                 Delete
-              </Button>
+              </button>
             </div>
           </Modal.Body>
         </Modal>
@@ -168,7 +159,7 @@ export default function ArticlesView() {
           onClose={() => setEditingArticle(undefined)}
         />
       ) : null}
-      <Table zebra className="w-full">
+      <table className="table-zebra table w-full">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -196,7 +187,7 @@ export default function ArticlesView() {
             </tr>
           ))}
         </tbody>
-      </Table>
+      </table>
     </>
   );
 }
@@ -373,32 +364,31 @@ const ArticleEditModal = ({
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Button
-        size="sm"
-        shape="circle"
-        className="absolute right-2 top-2"
+      <button
+        className="btn-sm btn-circle btn absolute right-2 top-2"
         onClick={onClose}
       >
         ✕
-      </Button>
+      </button>
       <Modal.Header className="b-gray-300 mb-4 border-b pb-2">
         Edit &quot;{article.headline}&quot;
       </Modal.Header>
       <Modal.Body>
         <div className="flex flex-col">
           <p>Headline</p>
-          <Input
-            placeholder="Enter Headline"
+          <input
+            className="input-bordered input focus:outline-offset-0"
             type="text"
+            placeholder="Enter Headline"
             value={headline}
             onChange={({ target }) => setHeadline(target.value)}
           />
         </div>
         <div className="flex flex-col">
           <p>Focus Sentence</p>
-          <Textarea
+          <textarea
             placeholder="1-2 sentences. This is the preview of the article"
-            value={focusSentence}
+            className="textarea-bordered textarea focus:outline-offset-0"
             onChange={({ target }) => setFocusSentence(target.value)}
           />
         </div>
@@ -419,8 +409,9 @@ const ArticleEditModal = ({
         </div>
         <div className="flex flex-col">
           <p>Publication Date</p>
-          <Input
+          <input
             type="datetime-local"
+            className="input-bordered input focus:outline-offset-0"
             value={publicationDate}
             onChange={({ target }) =>
               target.value.length > 0 && setPublicationDate(target.value)
@@ -444,10 +435,10 @@ const ArticleEditModal = ({
             </>
           )}
 
-          <FileInput
+          <input
             accept="image/jpeg"
-            bordered
-            className="cursor-pointer"
+            className="file-input-bordered file-input cursor-pointer"
+            type="file"
             onChange={({ target }) => {
               setThumbnailChanged(true);
               setThumbnailFile(target.files?.[0]);
@@ -464,8 +455,8 @@ const ArticleEditModal = ({
                 selectedContributorId={thumbnailContributor.contributorId}
                 selectedContributorText={thumbnailContributor.contributorText}
               />
-              <Textarea
-                className="w-1/2"
+              <textarea
+                className="textarea-bordered textarea w-1/2 focus:outline-offset-0"
                 placeholder="Thumbnail Alt text."
                 onChange={({ target }) => setThumbnailAlt(target.value)}
                 value={thumbnailAlt}
@@ -474,21 +465,19 @@ const ArticleEditModal = ({
           ) : null}
         </div>
         <div className="mt-4 flex gap-2">
-          <Button className="w-1/2" color="error" onClick={onClose}>
+          <button className="btn-error btn w-1/2" onClick={onClose}>
             Cancel
-          </Button>
-          <Button
-            className="w-1/2"
-            color="success"
+          </button>
+          <button
+            className={cn("btn-success btn w-1/2", editing && "loading")}
             onClick={async () => {
               setEditing(true);
               await onClickEdit();
               setEditing(false);
             }}
-            loading={editing}
           >
             Edit
-          </Button>
+          </button>
         </div>
       </Modal.Body>
     </Modal>

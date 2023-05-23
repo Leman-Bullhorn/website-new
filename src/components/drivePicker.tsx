@@ -3,7 +3,6 @@ declare let google: any;
 
 import { unzip } from "fflate";
 import { useEffect, useState } from "react";
-import { Button, Textarea } from "react-daisyui";
 import useDrivePicker from "react-google-drive-picker/dist";
 import type {
   authResult,
@@ -113,7 +112,7 @@ export default function DrivePicker({
         className="flex cursor-pointer items-center gap-2 rounded-lg border border-neutral border-opacity-20"
         onClick={handleOpenPicker}
       >
-        <Button>
+        <button className="btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="35"
@@ -133,7 +132,7 @@ export default function DrivePicker({
               d="M0 833.329l240.525 416.664 481.006-833.328L481.017 0z"
             />
           </svg>
-        </Button>
+        </button>
         <p>{fileName ?? "No file selected."}</p>
       </div>
       {/* {error && <p className="text-red-500">{error.errorMessage}</p>} */}
@@ -162,8 +161,8 @@ export default function DrivePicker({
                 })
               }
             />
-            <Textarea
-              className="grow"
+            <textarea
+              className="textarea-bordered textarea grow"
               placeholder="Alt text - this is a short, 1-2 sentence description of the image."
               onChange={({ target }) =>
                 setImages((old) => {

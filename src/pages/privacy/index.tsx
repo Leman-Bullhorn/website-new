@@ -1,4 +1,3 @@
-import { Divider } from "react-daisyui";
 import NavigationBar from "../../components/navigationBar";
 
 export default function PrivacyPage() {
@@ -7,7 +6,7 @@ export default function PrivacyPage() {
       <NavigationBar />
       <div className="mx-auto mt-8 max-w-prose">
         <h1 className="text-center text-2xl font-semibold">Privacy Policy</h1>
-        <Divider />
+        <div role="separator" className="divider" />
         <p>Last updated: March 07, 2023</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the

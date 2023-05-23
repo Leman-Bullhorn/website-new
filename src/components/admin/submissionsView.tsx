@@ -7,11 +7,11 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Button, Input, Table, Textarea } from "react-daisyui";
 import Select from "react-select";
 import { validateArticleBody } from "../../utils/article";
 import { sections } from "../../utils/section";
 import { trpc, type RouterOutputs } from "../../utils/trpc";
+import { cn } from "../../utils/tw";
 import Modal from "../modal";
 
 const sectionOptions = sections.map((s) => ({
@@ -55,20 +55,23 @@ export default function SubmissionsView() {
     columnHelper.display({
       header: "Publish",
       cell: (props) => (
-        <Button
-          color="primary"
+        <button
+          className="btn-primary btn"
           onClick={() => onClickPublish(props.row.original)}
         >
           Publish
-        </Button>
+        </button>
       ),
     }),
     columnHelper.display({
       header: "Delete",
       cell: (props) => (
-        <Button color="error" onClick={() => onClickDelete(props.row.original)}>
+        <button
+          className="btn-error btn"
+          onClick={() => onClickDelete(props.row.original)}
+        >
           Delete
-        </Button>
+        </button>
       ),
     }),
   ];
@@ -88,7 +91,7 @@ export default function SubmissionsView() {
           onClose={() => setPublishModalOpen(false)}
         />
       )}
-      <Table zebra className="w-full">
+      <table className="table-zebra table w-full">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -116,7 +119,7 @@ export default function SubmissionsView() {
             </tr>
           ))}
         </tbody>
-      </Table>
+      </table>
     </>
   );
 }
@@ -174,23 +177,20 @@ function PublishModal({
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Button
-        color="ghost"
-        size="sm"
-        shape="circle"
-        className="absolute right-2 top-2 text-xl"
+      <button
+        className="btn-ghost btn-sm btn-circle btn absolute right-2 top-2 text-xl"
         onClick={onClose}
       >
         ✕
-      </Button>
+      </button>
       <Modal.Header className="mb-4">
         <h2>Confirm Publish</h2>
       </Modal.Header>
       <Modal.Body className="flex flex-col gap-2">
         <div>
           <p>Headline</p>
-          <Input
-            className="w-full"
+          <input
+            className="input-bordered input w-full focus:outline-offset-0"
             type="text"
             value={headline}
             onChange={({ target }) => setHeadline(target.value)}
@@ -198,8 +198,8 @@ function PublishModal({
         </div>
         <div>
           <p>Focus Sentence</p>
-          <Textarea
-            className="w-full"
+          <textarea
+            className="textarea-bordered textarea w-full"
             value={focusSentence}
             onChange={({ target }) => setFocusSentence(target.value)}
           />
@@ -237,16 +237,17 @@ function PublishModal({
           rel="noopener noreferrer"
           target="_blank"
         >
-          <Button>View Article Preview</Button>
+          <button className="btn">View Article Preview</button>
         </Link>
-        <Button
-          className="w-full"
-          color="primary"
+        <button
+          className={cn(
+            "btn-primary btn w-full",
+            (isUploading || isDeletingSubmission) && "loading"
+          )}
           onClick={onClickPublish}
-          loading={isUploading || isDeletingSubmission}
         >
           Publish
-        </Button>
+        </button>
       </Modal.Body>
     </Modal>
   );

@@ -3,7 +3,6 @@ import type {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
-import { Menu } from "react-daisyui";
 import NavigationBar from "../../components/navigationBar";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 import { useState } from "react";
@@ -47,24 +46,30 @@ const SectionPage: NextPage<
       </Head>
       <NavigationBar />
       <div className="flex gap-4 pt-4">
-        <Menu className="col-span-1 h-[75vh] min-w-fit rounded-r-2xl bg-base-200 p-2">
-          <Menu.Item
+        <ul
+          role="menu"
+          className="menu col-span-1 h-[75vh] min-w-fit rounded-r-2xl bg-base-200 p-2"
+        >
+          <li
+            role="menuitem"
             className={`border-b border-gray-300 ${
               activeView === "articles" ? "underline" : ""
             }`}
             onClick={() => setActiveView("articles")}
           >
             <p>Articles</p>
-          </Menu.Item>
-          <Menu.Item
+          </li>
+          <li
+            role="menuitem"
             className={`border-b border-gray-300 ${
               activeView === "submissions" ? "underline" : ""
             }`}
             onClick={() => setActiveView("submissions")}
           >
             <p>Submissions ({articleSubmissions?.length ?? 0})</p>
-          </Menu.Item>
-          <Menu.Item
+          </li>
+          <li
+            role="menuitem"
             className={cn(
               "border-b border-gray-300",
               activeView === "podcasts" ? "underline" : null
@@ -72,9 +77,9 @@ const SectionPage: NextPage<
             onClick={() => setActiveView("podcasts")}
           >
             <p>Podcasts</p>
-          </Menu.Item>
-
-          <Menu.Item
+          </li>
+          <li
+            role="menuitem"
             className={cn(
               "border-b border-gray-300",
               activeView === "contributors" ? "underline" : ""
@@ -82,8 +87,8 @@ const SectionPage: NextPage<
             onClick={() => setActiveView("contributors")}
           >
             <p>Contributors</p>
-          </Menu.Item>
-          <Menu.Item>
+          </li>
+          <li role="menuitem">
             <a
               className="link"
               href="https://builder.io/content"
@@ -92,8 +97,8 @@ const SectionPage: NextPage<
             >
               Builder.io
             </a>
-          </Menu.Item>
-        </Menu>
+          </li>
+        </ul>
         <div className="mr-4 w-full overflow-x-auto">
           {activeView === "articles" ? (
             <ArticlesView />

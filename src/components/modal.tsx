@@ -1,8 +1,13 @@
-import { Modal as DaisyModal, type ModalProps } from "react-daisyui";
-import { useEffect, useRef, useState } from "react";
+import { type HTMLAttributes, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { cn } from "../utils/tw";
 
-const Modal = (props: ModalProps & { onClose?: () => void }) => {
+const Modal = (
+  props: HTMLAttributes<HTMLDivElement> & {
+    open: boolean;
+    onClose?: () => void;
+  }
+) => {
   const { onClose, ...modalProps } = props;
   const ref = useRef<HTMLDivElement>(null);
 
@@ -34,20 +39,37 @@ const Modal = (props: ModalProps & { onClose?: () => void }) => {
 
   return (
     <Portal>
-      <DaisyModal
-        ref={ref}
-        className={`overflow-x-hidden ${modalProps.className}`}
-        {...modalProps}
+      <div
+        aria-modal="true"
+        aria-label="Modal"
+        aria-hidden={!modalProps.open}
+        className={cn("modal ", modalProps.open ? "modal-open" : "")}
       >
-        {modalProps.children}
-      </DaisyModal>
+        <div
+          className={cn("modal-box overflow-x-hidden", modalProps.className)}
+          ref={ref}
+          {...modalProps}
+        >
+          {modalProps.children}
+        </div>
+      </div>
     </Portal>
   );
 };
 
-Modal.Header = DaisyModal.Header;
-Modal.Body = DaisyModal.Body;
-Modal.Actions = DaisyModal.Actions;
+type Props = React.PropsWithChildren<HTMLAttributes<HTMLDivElement>>;
+function Header({ className, ...props }: Props) {
+  return <div className={cn("mb-8 w-full text-xl", className)} {...props} />;
+}
+function Body(props: Props) {
+  return <div {...props} />;
+}
+function Actions({ className, ...props }: Props) {
+  return <div className={cn("modal-action", className)} {...props} />;
+}
+Modal.Header = Header;
+Modal.Body = Body;
+Modal.Actions = Actions;
 
 export default Modal;
 

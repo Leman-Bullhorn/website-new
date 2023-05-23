@@ -5,7 +5,6 @@ import type {
 } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { Card } from "react-daisyui";
 import Balancer from "react-wrap-balancer";
 import { cn } from "../../utils/tw";
 import ByLine from "../byLine";
@@ -76,18 +75,17 @@ export function TopImageArticle(props: {
   const articleUrl = `/article/${article.slug}`;
 
   return (
-    <Card
+    <div
       {...props.attributes}
       key={props.attributes.key}
-      bordered={false}
-      side
+      aria-label="Card"
       className={cn(
-        "rounded-none border-b border-gray-300 py-2 last:border-none",
+        "card card-side rounded-none border-b border-gray-300 py-2 last:border-none",
         props.attributes.className,
         props.className
       )}
     >
-      <Card.Body className="gap-0 p-0 [&>p]:grow-0">
+      <div className="card-body gap-0 p-0 [&>p]:grow-0">
         <h2 className="link-hover font-headline text-lg font-medium leading-5 hover:text-leman-blue">
           <Link href={articleUrl}>
             <Balancer>{article.headline}</Balancer>
@@ -121,8 +119,8 @@ export function TopImageArticle(props: {
           <br />
           <TimeStamp timestamp={article.publicationDate} />
         </p>
-      </Card.Body>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -172,18 +170,17 @@ export function SideImageArticle(props: {
   const articleUrl = `/article/${article.slug}`;
 
   return (
-    <Card
+    <div
       {...props.attributes}
       key={props.attributes.key}
-      bordered={false}
-      side
+      aria-label="Card"
       className={cn(
-        "rounded-none border-b border-gray-300 py-2 last:border-none",
+        "card card-side rounded-none border-b border-gray-300 py-2 last:border-none",
         props.attributes.className,
         props.className
       )}
     >
-      <Card.Body className="gap-0 p-0">
+      <div className="card-body gap-0 p-0">
         <div>
           {article.thumbnail && (
             <CaptionedImage
@@ -216,7 +213,7 @@ export function SideImageArticle(props: {
             <TimeStamp timestamp={article.publicationDate} />
           </p>
         </div>
-      </Card.Body>
-    </Card>
+      </div>
+    </div>
   );
 }

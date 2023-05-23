@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
-import { Input } from "react-daisyui";
 
 const MagnifyingGlass = () => (
   <svg
@@ -34,11 +33,12 @@ export const Search = () => {
       }}
     >
       {showInput ? (
-        <Input
+        <input
           placeholder="Search"
           autoFocus
           onBlur={() => setShowInput(false)}
           ref={inputRef}
+          className="input-bordered input focus:outline-offset-0"
         />
       ) : null}
       <div

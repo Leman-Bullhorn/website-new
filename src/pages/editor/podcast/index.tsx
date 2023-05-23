@@ -4,9 +4,9 @@ import { useState } from "react";
 import Head from "next/head";
 import NavigationBar from "../../../components/navigationBar";
 import RequiredStar from "../../../components/requiredStar";
-import { Button, FileInput, Input, Textarea } from "react-daisyui";
 import { MultiSelectContributor } from "../../../components/selectContributor";
 import { trpc } from "../../../utils/trpc";
+import { cn } from "../../../utils/tw";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const session = await getServerAuthSession(ctx);
@@ -115,8 +115,9 @@ export default function PodcastEditorPage() {
             <p>
               Title <RequiredStar />
             </p>
-            <Input
+            <input
               placeholder="Enter Title"
+              className="input-bordered input focus:outline-offset-0"
               type="text"
               value={title ?? ""}
               onChange={({ target }) => setTitle(target.value)}
@@ -127,8 +128,9 @@ export default function PodcastEditorPage() {
             <p>
               Podcast Description <RequiredStar />
             </p>
-            <Textarea
+            <textarea
               placeholder="Description of the podcast."
+              className="textarea-bordered textarea focus:outline-offset-0"
               onChange={({ target }) => setDescription(target.value)}
               key={resetKey}
             />
@@ -148,22 +150,21 @@ export default function PodcastEditorPage() {
             <p>
               Audio file <RequiredStar />
             </p>
-            <FileInput
+            <input
               accept=".mp3,audio/*"
-              bordered
-              className="cursor-pointer"
+              className="file-input-bordered file-input cursor-pointer"
+              type="file"
               onChange={({ target }) => setAudioFile(target.files?.[0])}
               key={resetKey}
             />
           </div>
-          <Button
+          <button
             type="submit"
-            color="primary"
+            className={cn("btn-primary btn", isSubmitting && "loading")}
             onClick={onSubmit}
-            loading={isSubmitting}
           >
             Submit Podcast
-          </Button>
+          </button>
         </div>
       </div>
     </>
