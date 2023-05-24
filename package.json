@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@artsy/fresnel": "^6.1.0",
-    "@builder.io/react": "^2.0.17",
+    "@builder.io/react": "^3.0.1",
     "@builder.io/utils": "^1.1.10",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-brands-svg-icons": "^6.3.0",
@@ -42,9 +42,10 @@
     "shikwasa": "^2.2.1",
     "superjson": "1.9.1",
     "tailwind-merge": "^1.11.0",
-    "zod": "^3.18.0"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^13.4.3",
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
