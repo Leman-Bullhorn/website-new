@@ -1,8 +1,8 @@
 import type { AppType } from "next/app";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import localFont from "@next/font/local";
-import { Nunito, Bodoni_Moda, Libre_Franklin } from "@next/font/google";
+import localFont from "next/font/local";
+import { Nunito, Bodoni_Moda, Libre_Franklin } from "next/font/google";
 import Head from "next/head";
 import { Analytics } from "@vercel/analytics/react";
 
