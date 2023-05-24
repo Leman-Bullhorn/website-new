@@ -15,7 +15,12 @@ import {
 
 import { getAsyncProps } from "@builder.io/utils";
 import FeaturedArticle from "../components/homePage/featuredArticle";
-import dynamic from "next/dynamic";
+import AdditionalDesktopLayout from "../components/homePage/additionalDesktopLayout";
+import AdditionalMobileLayout from "../components/homePage/additionalMobileLayout";
+import AdditionalTabletLayout from "../components/homePage/additionalTabletLayout";
+import DesktopLayout from "../components/homePage/desktopLayout";
+import TabletLayout from "../components/homePage/tabletLayout";
+import MobileLayout from "../components/homePage/mobileLayout";
 
 builder.init(env.NEXT_PUBLIC_BUILDER_KEY);
 
@@ -124,167 +129,149 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
 
 export default Home;
 
-Builder.registerComponent(
-  dynamic(() => import("../components/homePage/desktopLayout")),
-  {
-    name: "DesktopLayout",
-    inputs: [
-      {
-        name: "featured",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-      {
-        name: "column1",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-      {
-        name: "column2",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-      {
-        name: "column3",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-    ],
-    defaultStyles: {
-      marginTop: "0px",
+Builder.registerComponent(DesktopLayout, {
+  name: "DesktopLayout",
+  inputs: [
+    {
+      name: "featured",
+      type: "uiBlocks",
+      defaultValue: [],
     },
-  }
-);
+    {
+      name: "column1",
+      type: "uiBlocks",
+      defaultValue: [],
+    },
+    {
+      name: "column2",
+      type: "uiBlocks",
+      defaultValue: [],
+    },
+    {
+      name: "column3",
+      type: "uiBlocks",
+      defaultValue: [],
+    },
+  ],
+  defaultStyles: {
+    marginTop: "0px",
+  },
+});
 
-Builder.registerComponent(
-  dynamic(() => import("../components/homePage/additionalDesktopLayout")),
-  {
-    name: "AdditionalDesktopLayout",
-    inputs: [
-      {
-        name: "column1",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-      {
-        name: "column2",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-      {
-        name: "column3",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-    ],
-    defaultStyles: {
-      borderColor: "rgba(77, 168, 223, 0.4)",
-      borderStyle: "solid",
-      borderTopWidth: "1px",
-      marginTop: "0.25rem",
-      paddingTop: "0.5rem",
+Builder.registerComponent(AdditionalDesktopLayout, {
+  name: "AdditionalDesktopLayout",
+  inputs: [
+    {
+      name: "column1",
+      type: "uiBlocks",
+      defaultValue: [],
     },
-    noWrap: true,
-  }
-);
+    {
+      name: "column2",
+      type: "uiBlocks",
+      defaultValue: [],
+    },
+    {
+      name: "column3",
+      type: "uiBlocks",
+      defaultValue: [],
+    },
+  ],
+  defaultStyles: {
+    borderColor: "rgba(77, 168, 223, 0.4)",
+    borderStyle: "solid",
+    borderTopWidth: "1px",
+    marginTop: "0.25rem",
+    paddingTop: "0.5rem",
+  },
+  noWrap: true,
+});
 
-Builder.registerComponent(
-  dynamic(() => import("../components/homePage/additionalTabletLayout")),
-  {
-    name: "AdditionalTabletLayout",
-    inputs: [
-      {
-        name: "column1",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-      {
-        name: "column2",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-    ],
-    defaultStyles: {
-      borderColor: "rgba(77, 168, 223, 0.4)",
-      borderStyle: "solid",
-      borderTopWidth: "1px",
-      marginTop: "0.25rem",
-      paddingTop: "0.5rem",
+Builder.registerComponent(AdditionalTabletLayout, {
+  name: "AdditionalTabletLayout",
+  inputs: [
+    {
+      name: "column1",
+      type: "uiBlocks",
+      defaultValue: [],
     },
-    noWrap: true,
-  }
-);
+    {
+      name: "column2",
+      type: "uiBlocks",
+      defaultValue: [],
+    },
+  ],
+  defaultStyles: {
+    borderColor: "rgba(77, 168, 223, 0.4)",
+    borderStyle: "solid",
+    borderTopWidth: "1px",
+    marginTop: "0.25rem",
+    paddingTop: "0.5rem",
+  },
+  noWrap: true,
+});
 
-Builder.registerComponent(
-  dynamic(() => import("../components/homePage/additionalMobileLayout")),
-  {
-    name: "AdditionalMobileLayout",
-    inputs: [
-      {
-        name: "column1",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-    ],
-    defaultStyles: {
-      borderColor: "rgba(77, 168, 223, 0.4)",
-      borderStyle: "solid",
-      borderTopWidth: "1px",
-      marginTop: "0.25rem",
-      paddingTop: "0.5rem",
+Builder.registerComponent(AdditionalMobileLayout, {
+  name: "AdditionalMobileLayout",
+  inputs: [
+    {
+      name: "column1",
+      type: "uiBlocks",
+      defaultValue: [],
     },
-    noWrap: true,
-  }
-);
+  ],
+  defaultStyles: {
+    borderColor: "rgba(77, 168, 223, 0.4)",
+    borderStyle: "solid",
+    borderTopWidth: "1px",
+    marginTop: "0.25rem",
+    paddingTop: "0.5rem",
+  },
+  noWrap: true,
+});
 
-Builder.registerComponent(
-  dynamic(() => import("../components/homePage/tabletLayout")),
-  {
-    name: "TabletLayout",
-    inputs: [
-      {
-        name: "featured",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-      {
-        name: "column1",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-      {
-        name: "column2",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-    ],
-    defaultStyles: {
-      marginTop: "0px",
+Builder.registerComponent(TabletLayout, {
+  name: "TabletLayout",
+  inputs: [
+    {
+      name: "featured",
+      type: "uiBlocks",
+      defaultValue: [],
     },
-  }
-);
+    {
+      name: "column1",
+      type: "uiBlocks",
+      defaultValue: [],
+    },
+    {
+      name: "column2",
+      type: "uiBlocks",
+      defaultValue: [],
+    },
+  ],
+  defaultStyles: {
+    marginTop: "0px",
+  },
+});
 
-Builder.registerComponent(
-  dynamic(() => import("../components/homePage/mobileLayout")),
-  {
-    name: "MobileLayout",
-    inputs: [
-      {
-        name: "featured",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-      {
-        name: "column1",
-        type: "uiBlocks",
-        defaultValue: [],
-      },
-    ],
-    defaultStyles: {
-      marginTop: "0px",
+Builder.registerComponent(MobileLayout, {
+  name: "MobileLayout",
+  inputs: [
+    {
+      name: "featured",
+      type: "uiBlocks",
+      defaultValue: [],
     },
-  }
-);
+    {
+      name: "column1",
+      type: "uiBlocks",
+      defaultValue: [],
+    },
+  ],
+  defaultStyles: {
+    marginTop: "0px",
+  },
+});
 
 Builder.registerComponent(SideImageArticle, {
   name: "SideImageArticle",

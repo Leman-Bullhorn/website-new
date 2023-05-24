@@ -3,7 +3,7 @@ import Image from "next/image";
 import logoImage from "../logo.png";
 import { sections } from "../utils/section";
 import AwareLink from "./awareLink";
-import { type RefObject, useEffect, useRef, useState, useId } from "react";
+import { type RefObject, useEffect, useRef, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { Search } from "./search";
 import { cn } from "../utils/tw";
