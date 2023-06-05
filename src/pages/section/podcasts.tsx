@@ -23,6 +23,7 @@ export async function getStaticProps() {
     props: {
       podcasts: podcasts.map(serializeArticle),
     },
+    revalidate: 10,
   };
 }
 
