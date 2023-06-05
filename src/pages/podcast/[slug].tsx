@@ -93,7 +93,7 @@ export default function PodcastPage(
                   theme: "light",
                   audio: {
                     title: `${props.podcast.title} - ${hostText}`,
-                    artist: "The Megaphone",
+                    artist: "Real Talk, No Bull",
                     cover: "/android-chrome-144x144.png",
                     src: props.podcast.audioUrl,
                   },
