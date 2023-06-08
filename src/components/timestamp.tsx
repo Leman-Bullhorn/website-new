@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { cn } from "../utils/tw";
 
 const MONTH_NAMES = [
   "Jan.",
@@ -78,10 +77,12 @@ const timeSince = (date: Date) => {
 const Timestamp: React.FC<{ timestamp: Date }> = ({ timestamp }) => {
   const [displayTime, setDisplayTime] = useState(timeSince(timestamp));
   const [serverRendering, setServerRendering] = useState(true);
+  const [reRenderKey, setReRenderKey] = useState(-1);
 
   useEffect(() => {
     setServerRendering(false);
     setDisplayTime(timeSince(timestamp));
+    setReRenderKey(Math.random());
     const interval = setInterval(
       () => setDisplayTime(timeSince(timestamp)),
       1000
@@ -94,8 +95,9 @@ const Timestamp: React.FC<{ timestamp: Date }> = ({ timestamp }) => {
   return (
     <time
       // if we are on the server, hide this element but keep its size to avoid too much layout shift
-      className={cn(serverRendering ? "invisible" : null)}
+      className={serverRendering ? "invisible" : undefined}
       suppressHydrationWarning
+      key={reRenderKey}
     >
       {displayTime}
     </time>
