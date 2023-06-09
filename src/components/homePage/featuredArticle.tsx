@@ -3,7 +3,6 @@ import type {
   Contributor,
   Media,
 } from "@prisma/client";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import Balancer from "react-wrap-balancer";
@@ -17,6 +16,7 @@ import {
   type SerializableArticle,
 } from "../../utils/article";
 import { cn } from "../../utils/tw";
+import { FadeInImage } from "./fadeInImage";
 
 type InputArticle = Omit<
   PrismaArticle,
@@ -99,17 +99,15 @@ export function FeaturedArticle(props: {
           contributorText={article.thumbnail.contributorText}
         >
           <Link href={articleUrl}>
-            <div className="relative h-0 pb-[66.6667%]">
-              <Image
-                priority
-                className="object-cover"
-                src={article.thumbnail.contentUrl}
-                alt={article.thumbnail.alt}
-                fill
-                sizes="(max-width: 768px) 100vw,
+            <FadeInImage
+              className="object-cover"
+              priority
+              src={article.thumbnail.contentUrl}
+              alt={article.thumbnail.alt}
+              fill
+              sizes="(max-width: 768px) 100vw,
                        50vw"
-              />
-            </div>
+            />
           </Link>
         </CaptionedImage>
       )}

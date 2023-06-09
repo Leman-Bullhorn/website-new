@@ -3,7 +3,6 @@ import type {
   Contributor,
   Media,
 } from "@prisma/client";
-import Image from "next/image";
 import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 import { cn } from "../../utils/tw";
@@ -16,6 +15,7 @@ import {
   type SerializableArticle,
 } from "../../utils/article";
 import { Builder } from "@builder.io/react";
+import { FadeInImage } from "./fadeInImage";
 
 type InputArticle = Omit<
   PrismaArticle,
@@ -99,17 +99,14 @@ export function TopImageArticle(props: {
             contributorText={article.thumbnail.contributorText}
           >
             <Link href={articleUrl}>
-              {/* Padding makes the element's height 2/3 the width, allowing for 3:2 AR */}
-              <div className="relative h-0 pb-[66.6667%]">
-                <Image
-                  className=" object-cover"
-                  src={article.thumbnail.contentUrl}
-                  alt={article.thumbnail.alt}
-                  fill
-                  sizes="(max-width: 768px) 100vw,
+              <FadeInImage
+                className="object-cover"
+                src={article.thumbnail.contentUrl}
+                alt={article.thumbnail.alt}
+                fill
+                sizes="(max-width: 768px) 100vw,
                        50vw"
-                />
-              </div>
+              />
             </Link>
           </CaptionedImage>
         )}
@@ -189,15 +186,13 @@ export function SideImageArticle(props: {
               contributorText={article.thumbnail.contributorText}
             >
               <Link href={articleUrl}>
-                <div className="relative h-0 pb-[66.6667%]">
-                  <Image
-                    className="object-cover"
-                    src={article.thumbnail.contentUrl}
-                    alt={article.thumbnail.alt}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                </div>
+                <FadeInImage
+                  className="object-cover"
+                  src={article.thumbnail.contentUrl}
+                  alt={article.thumbnail.alt}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
               </Link>
             </CaptionedImage>
           )}
