@@ -390,6 +390,7 @@ const ArticleEditModal = ({
             placeholder="1-2 sentences. This is the preview of the article"
             className="textarea-bordered textarea focus:outline-offset-0"
             onChange={({ target }) => setFocusSentence(target.value)}
+            value={focusSentence}
           />
         </div>
         <div className="flex flex-col">
