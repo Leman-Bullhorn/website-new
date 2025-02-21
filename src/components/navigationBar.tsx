@@ -18,7 +18,6 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
   const session = useSession();
 
   const toggleDrawer = () => {
-    console.log("toggleDrawer()");
     setShowDrawer((s) => !s);
   };
 
@@ -77,7 +76,7 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
           <div className="flex-none sm:hidden">
             <button
               ref={drawerButtonRef}
-              className="swap-rotate swap btn-ghost btn-square btn h-10 min-h-min w-10"
+              className="swap btn-ghost swap-rotate btn-square btn h-10 min-h-min w-10"
               onClick={toggleDrawer}
               aria-label="Toggle sections drawer"
             >

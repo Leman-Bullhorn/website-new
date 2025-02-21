@@ -71,6 +71,10 @@ export const getStaticProps = async () => {
     .toPromise();
 
   const fetchBuilderArticle = async (props: any) => {
+    if (props.articleReference == null) {
+      return;
+    }
+
     const article = await prisma.article.findUnique({
       where: {
         id: props.articleReference.value.data.id,

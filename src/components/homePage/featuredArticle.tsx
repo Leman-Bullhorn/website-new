@@ -55,6 +55,22 @@ export function FeaturedArticle(props: {
       </p>
     );
   }
+
+  if (props.article == null) {
+    return (
+      <p
+        {...props.attributes}
+        key={props.attributes.key}
+        className={cn(
+          "border border-red-500 font-bold text-red-500",
+          props.attributes.className
+        )}
+      >
+        This article is broken.
+      </p>
+    );
+  }
+
   const article =
     Builder.isPreviewing || Builder.isEditing
       ? previewArticle
