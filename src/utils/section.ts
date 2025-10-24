@@ -70,7 +70,7 @@ export const sections = [
     id: "podcasts",
     display: "Podcasts",
     href: "/section/podcasts",
-    hidden: false,
+    hidden: true,
   },
 ] satisfies {
   id: string;
