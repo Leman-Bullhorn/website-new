@@ -1,4 +1,3 @@
-import type { Section } from "@prisma/client";
 import {
   createColumnHelper,
   flexRender,
@@ -15,7 +14,7 @@ import { cn } from "../../utils/tw";
 import Modal from "../modal";
 
 const sectionOptions = sections.map((s) => ({
-  value: s.dbSection,
+  value: s.id,
   label: s.display,
 }));
 
@@ -135,7 +134,7 @@ function PublishModal({
 }) {
   const [headline, setHeadline] = useState(submission.headline);
   const [focusSentence, setFocusSentence] = useState(submission.focus);
-  const [section, setSection] = useState<Section>(submission.section);
+  const [section, setSection] = useState<string>(submission.section);
   const [writers, setWriters] = useState(submission.writers);
 
   const { data: contributors } = trpc.contributor.all.useQuery();

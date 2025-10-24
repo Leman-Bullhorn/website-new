@@ -76,7 +76,7 @@ const PreviewPage: NextPage<
     () =>
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       sections.find(
-        (s) => s.dbSection === router.query.section ?? submission.section
+        (s) => s.id === router.query.section ?? submission.section
       )!,
     [router.query.section, submission.section]
   );

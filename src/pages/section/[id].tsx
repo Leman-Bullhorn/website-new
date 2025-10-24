@@ -33,7 +33,7 @@ const articlesSelect = Prisma.validator<Prisma.ArticleSelect>()({
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const paths = sections
-    .filter((e) => e.dbSection != "Podcasts")
+    .filter((e) => e.id != "podcasts")
     .map((s) => ({ params: { id: s.id } }));
 
   return {
@@ -54,7 +54,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
 
   const sectionArticles = await prisma.article.findMany({
     where: {
-      section: section.dbSection,
+      section: section.id,
     },
     select: articlesSelect,
     orderBy: {

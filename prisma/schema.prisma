@@ -68,7 +68,7 @@ model Article {
   body            Json
   publicationDate DateTime
   featured        Boolean       @default(false)
-  section         Section
+  section         String
   writers         Contributor[]
   thumbnail       Media?        @relation(name: "thumbnail", fields: [thumbnailId], references: [id])
   thumbnailId     String?
@@ -83,7 +83,7 @@ model ArticleSubmission {
   headline  String
   focus     String        @db.Text
   body      Json
-  section   Section
+  section   String
   writers   Contributor[]
   thumbnail Media?        @relation(name: "thumbnailArticleSubmissions", fields: [thumbnailId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   media     Media[]       @relation(name: "mediaSubmissions")

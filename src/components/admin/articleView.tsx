@@ -1,4 +1,4 @@
-import type { Media, Section } from "@prisma/client";
+import type { Media } from "@prisma/client";
 import { flexRender, useReactTable } from "@tanstack/react-table";
 import { createColumnHelper, getCoreRowModel } from "@tanstack/table-core";
 import Link from "next/link";
@@ -84,8 +84,16 @@ export default function ArticlesView() {
       }
     ),
     columnHelper.accessor(
-      (row) =>
-        row.writers.map((w) => `${w.firstName} ${w.lastName}`).join(", "),
+      (row) => {
+        const str = row.writers
+          .map((w) => `${w.firstName} ${w.lastName}`)
+          .join(", ");
+        if (str.length <= 25) {
+          return str;
+        } else {
+          return str.slice(0, 22) + "...";
+        }
+      },
       { id: "writers" }
     ),
     columnHelper.display({
@@ -203,7 +211,7 @@ const ArticleEditModal = ({
 }) => {
   const [headline, setHeadline] = useState(article.headline);
   const [focusSentence, setFocusSentence] = useState(article.focus);
-  const [section, setSection] = useState<Section>(article.section);
+  const [section, setSection] = useState<string>(article.section);
   const [articleWriters, setArticleWriters] = useState<string[]>(
     article.writers.map((x) => x.id)
   );

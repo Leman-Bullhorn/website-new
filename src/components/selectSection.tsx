@@ -1,10 +1,9 @@
-import type { Section } from "@prisma/client";
 import { useId } from "react";
 import Select from "react-select";
 import { sections } from "../utils/section";
 
 const sectionOptions = sections.map((s) => ({
-  value: s.dbSection,
+  value: s.id,
   label: s.display,
 }));
 
@@ -12,8 +11,8 @@ export default function SelectSection({
   value,
   onChange,
 }: {
-  value: Section;
-  onChange?: (section?: Section) => void;
+  value: string;
+  onChange?: (section?: string) => void;
 }) {
   const instanceId = useId();
   return (

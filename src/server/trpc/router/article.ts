@@ -1,4 +1,3 @@
-import { Section } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { articleBodySchema, slugify } from "../../../utils/article";
@@ -10,6 +9,10 @@ import {
   adminProcedure,
 } from "../trpc";
 import { env } from "../../../env/server.mjs";
+import { sections } from "../../../utils/section";
+
+const sectionIdValues = sections.map((s) => s.id) as [string, ...string[]];
+const sectionSchema = z.enum(sectionIdValues);
 
 export const articleRouter = router({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -56,7 +59,7 @@ export const articleRouter = router({
       z.object({
         headline: z.string(),
         focusSentence: z.string(),
-        section: z.nativeEnum(Section),
+        section: sectionSchema,
         contributorIds: z.string().array(),
         articleContent: articleBodySchema,
         thumbnailMediaId: z.string().optional(),
@@ -99,7 +102,7 @@ export const articleRouter = router({
       z.object({
         headline: z.string(),
         focus: z.string(),
-        section: z.nativeEnum(Section),
+        section: sectionSchema,
         body: articleBodySchema,
         featured: z.boolean().default(false),
         mediaIds: z.string().array(),
@@ -190,7 +193,7 @@ export const articleRouter = router({
         id: z.string(),
         headline: z.string().optional(),
         focus: z.string().optional(),
-        section: z.nativeEnum(Section).optional(),
+        section: sectionSchema.optional(),
         writerIds: z.string().array().optional(),
         publicationDate: z.date().optional(),
         thumbnailId: z.string().optional(),

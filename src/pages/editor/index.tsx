@@ -4,7 +4,7 @@ import { sections } from "../../utils/section";
 import { useId, useState } from "react";
 import Select from "react-select";
 import { trpc } from "../../utils/trpc";
-import type { Media, Section } from "@prisma/client";
+import type { Media } from "@prisma/client";
 import { parseHtml } from "../../utils/article";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 import DrivePicker from "../../components/drivePicker";
@@ -35,16 +35,18 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   };
 };
 
-const sectionOptions = sections.map((s) => ({
-  value: s.dbSection,
-  label: s.display,
-}));
+const sectionOptions = sections
+  .filter((s) => !s.hidden)
+  .map((s) => ({
+    value: s.id,
+    label: s.display,
+  }));
 
 const EditorPage: NextPage = () => {
   const [headline, setHeadline] = useState<string>();
   const [focusSentence, setFocusSentence] = useState<string>();
   const sectionSelectId = useId();
-  const [section, setSection] = useState<Section>();
+  const [section, setSection] = useState<string>();
   const [articleWriters, setArticleWriters] = useState<string[]>([]);
   const [driveData, setDriveData] = useState<{
     images: {

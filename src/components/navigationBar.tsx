@@ -44,15 +44,17 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
             The Bullhorn
           </Link>
           <div className="hidden gap-4 text-base sm:flex">
-            {sections.map((section) => (
-              <AwareLink
-                href={section.href}
-                key={section.id}
-                className="link-hover link font-section opacity-60 hover:opacity-75"
-              >
-                {section.display}
-              </AwareLink>
-            ))}
+            {sections
+              .filter((section) => !section.hidden)
+              .map((section) => (
+                <AwareLink
+                  href={section.href}
+                  key={section.href}
+                  className="link-hover link font-section opacity-60 hover:opacity-75"
+                >
+                  {section.display}
+                </AwareLink>
+              ))}
           </div>
         </div>
         <div className="navbar-end self-start">
@@ -76,7 +78,7 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
           <div className="flex-none sm:hidden">
             <button
               ref={drawerButtonRef}
-              className="swap btn-ghost swap-rotate btn-square btn h-10 min-h-min w-10"
+              className="swap-rotate swap btn-ghost btn-square btn h-10 min-h-min w-10"
               onClick={toggleDrawer}
               aria-label="Toggle sections drawer"
             >
@@ -108,7 +110,7 @@ const NavigationBar: React.FC<{ visible?: boolean; buffer?: boolean }> = ({
           >
             <ul className="menu" role="menu">
               {sections.map((section) => (
-                <li key={section.id} role="menuitem">
+                <li key={section.href} role="menuitem">
                   <AwareLink
                     href={section.href}
                     className="link-hover link font-section opacity-60 hover:opacity-75"

@@ -95,7 +95,7 @@ const ArticlePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
 
   const articleSection = useMemo(
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => sections.find((s) => s.dbSection === article.section)!,
+    () => sections.find((s) => s.id === article.section)!,
     [article]
   );
 
