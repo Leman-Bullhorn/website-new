@@ -5,7 +5,7 @@ import { prisma } from "../server/db/client";
 import { serializeArticle } from "../utils/article";
 import { Media } from "../utils/media";
 import { env } from "../env/client.mjs";
-import Masthead from "../components/homePage/masthead";
+import Masthead from "../components/homePage/mastHead";
 import NavigationBar from "../components/navigationBar";
 import { useState } from "react";
 import {
